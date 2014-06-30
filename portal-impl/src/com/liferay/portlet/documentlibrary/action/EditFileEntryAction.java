@@ -380,16 +380,12 @@ public class EditFileEntryAction extends PortletAction {
 
 			int pos = selectedFileName.indexOf(TEMP_RANDOM_SUFFIX);
 
-			if (pos != -1) {
-				if (FileUtil.getExtension(selectedFileName) == StringPool.BLANK) {
-					selectedFileName = selectedFileName.substring(0, pos);
-				} else {
-					selectedFileName = selectedFileName
-							.substring(0, pos)
-							.concat(StringPool.PERIOD)
-							.concat(FileUtil
-									.getExtension(originalSelectedFileName));
-				}
+			if (pos != -1
+					&& FileUtil.getExtension(selectedFileName) != StringPool.BLANK) {
+				selectedFileName = selectedFileName
+						.substring(0, pos)
+						.concat(StringPool.PERIOD)
+						.concat(FileUtil.getExtension(originalSelectedFileName));
 			}
 
 			while (true) {
@@ -398,14 +394,7 @@ public class EditFileEntryAction extends PortletAction {
 						themeDisplay.getScopeGroupId(), folderId,
 						selectedFileName);
 					
-					if (FileUtil.getExtension(selectedFileName) == StringPool.BLANK) {
-						StringBundler sb = new StringBundler(3);
-						sb.append(selectedFileName);
-						sb.append(StringPool.DASH);
-						sb.append(StringUtil.randomString());
-
-						selectedFileName = sb.toString();
-					} else {
+					if (FileUtil.getExtension(selectedFileName) != StringPool.BLANK) {
 						StringBundler sb = new StringBundler(5);
 						sb.append(FileUtil.stripExtension(selectedFileName));
 						sb.append(StringPool.DASH);
@@ -468,7 +457,7 @@ public class EditFileEntryAction extends PortletAction {
 		String title = sourceFileName;
         
 		if (FileUtil.getExtension(sourceFileName) == StringPool.BLANK) {
-			sourceFileName = sourceFileName.concat(TEMP_RANDOM_SUFFIX).concat(
+			sourceFileName = sourceFileName.concat(StringPool.DASH).concat(
 					StringUtil.randomString());
 		} else {
 			sourceFileName = FileUtil.stripExtension(sourceFileName)
