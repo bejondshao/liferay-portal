@@ -380,8 +380,12 @@ public class EditFileEntryAction extends PortletAction {
 
 			int pos = selectedFileName.indexOf(TEMP_RANDOM_SUFFIX);
 
-			if (pos != -1) {
-				selectedFileName = selectedFileName.substring(0, pos);
+			if (pos != -1
+					&& FileUtil.getExtension(selectedFileName) != StringPool.BLANK) {
+				selectedFileName = selectedFileName
+						.substring(0, pos)
+						.concat(StringPool.PERIOD)
+						.concat(FileUtil.getExtension(originalSelectedFileName));
 			}
 
 			while (true) {
@@ -389,16 +393,17 @@ public class EditFileEntryAction extends PortletAction {
 					DLAppLocalServiceUtil.getFileEntry(
 						themeDisplay.getScopeGroupId(), folderId,
 						selectedFileName);
+					
+					if (FileUtil.getExtension(selectedFileName) != StringPool.BLANK) {
+						StringBundler sb = new StringBundler(5);
+						sb.append(FileUtil.stripExtension(selectedFileName));
+						sb.append(StringPool.DASH);
+						sb.append(StringUtil.randomString());
+						sb.append(StringPool.PERIOD);
+						sb.append(FileUtil.getExtension(selectedFileName));
 
-					StringBundler sb = new StringBundler(5);
-
-					sb.append(FileUtil.stripExtension(selectedFileName));
-					sb.append(StringPool.DASH);
-					sb.append(StringUtil.randomString());
-					sb.append(StringPool.PERIOD);
-					sb.append(FileUtil.getExtension(selectedFileName));
-
-					selectedFileName = sb.toString();
+						selectedFileName = sb.toString();
+					}
 				}
 				catch (Exception e) {
 					break;
@@ -450,10 +455,18 @@ public class EditFileEntryAction extends PortletAction {
 		String sourceFileName = uploadPortletRequest.getFileName("file");
 
 		String title = sourceFileName;
-
-		sourceFileName = sourceFileName.concat(
-			TEMP_RANDOM_SUFFIX).concat(StringUtil.randomString());
-
+        
+		if (FileUtil.getExtension(sourceFileName) == StringPool.BLANK) {
+			sourceFileName = sourceFileName.concat(StringPool.DASH).concat(
+					StringUtil.randomString());
+		} else {
+			sourceFileName = FileUtil.stripExtension(sourceFileName)
+					.concat(TEMP_RANDOM_SUFFIX)
+					.concat(StringUtil.randomString())
+					.concat(StringPool.PERIOD)
+					.concat(FileUtil.getExtension(sourceFileName));
+		}
+		
 		InputStream inputStream = null;
 
 		try {
