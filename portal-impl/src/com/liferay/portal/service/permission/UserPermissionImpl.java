@@ -132,11 +132,14 @@ public class UserPermissionImpl
 			User user = null;
 
 			if (userId != ResourceConstants.PRIMKEY_DNE) {
-				if (UserLocalServiceUtil.getUserById(userId).getCompanyId() != permissionChecker.getCompanyId()) {
-					return false;
-				}
 
 				user = UserLocalServiceUtil.getUserById(userId);
+				
+				if (permissionChecker.getCompanyId() !=
+						user.getCompanyId()) {
+					
+					return false;
+				}
 
 				Contact contact = user.getContact();
 

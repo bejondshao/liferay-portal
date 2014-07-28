@@ -126,6 +126,12 @@ public class OrganizationPermissionImpl implements OrganizationPermission {
 			   (organization.getOrganizationId() !=
 					OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID)) {
 
+			if (permissionChecker.getCompanyId() !=
+					organization.getCompanyId()) {
+				
+				return false;
+			}
+
 			if (actionId.equals(ActionKeys.ADD_ORGANIZATION) &&
 				permissionChecker.hasPermission(
 					groupId, Organization.class.getName(),
