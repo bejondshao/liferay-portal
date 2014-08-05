@@ -31,6 +31,10 @@ public class LogFactoryUtil {
 		return getLog(c.getName());
 	}
 
+	public static Log getLog(Class<?> c, boolean sanitizer) {
+		return getLog(c.getName(), sanitizer);
+	}
+
 	public static Log getLog(String name) {
 
 		// The following concurrent collection retrieve has the side effect of a
@@ -57,6 +61,15 @@ public class LogFactoryUtil {
 		}
 
 		return logWrapper;
+	}
+
+	public static Log getLog(String name, boolean sanitizer) {
+		if (sanitizer) {
+			return getLog(name);
+		}
+		else {
+			return new LogWrapper(_logFactory.getLog(name));
+		}
 	}
 
 	public static LogFactory getLogFactory() {

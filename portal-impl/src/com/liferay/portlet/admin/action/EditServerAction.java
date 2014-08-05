@@ -950,7 +950,8 @@ public class EditServerAction extends PortletAction {
 		ServiceComponentLocalServiceUtil.verifyDB();
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(EditServerAction.class);
+	private static Log _log = LogFactoryUtil.getLog(
+		EditServerAction.class, false);
 
 	private static MethodKey _loadIndexesFromClusterMethodKey = new MethodKey(
 		LuceneClusterUtil.class, "loadIndexesFromCluster", long[].class,
