@@ -23,7 +23,7 @@ PasswordPolicy passwordPolicy = (PasswordPolicy)request.getAttribute("user.passw
 
 boolean passwordResetDisabled = false;
 
-if (((selUser == null) || (selUser.getLastLoginDate() == null)) && ((passwordPolicy == null) || (passwordPolicy.isChangeable() && passwordPolicy.isChangeRequired()))) {
+if (((selUser == null) || ((selUser.getLastLoginDate() == null) && selUser.isPasswordReset())) && ((passwordPolicy == null) || (passwordPolicy.isChangeable() && passwordPolicy.isChangeRequired()))) {
 	passwordResetDisabled = true;
 }
 
