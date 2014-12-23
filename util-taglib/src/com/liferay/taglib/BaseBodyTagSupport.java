@@ -46,6 +46,7 @@ public class BaseBodyTagSupport extends TagSupport {
 
 	@SuppressWarnings("unused")
 	public void doInitBody() throws JspException {
+		// commit 2
 	}
 
 	@Override
