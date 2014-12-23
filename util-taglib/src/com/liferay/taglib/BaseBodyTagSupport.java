@@ -53,6 +53,7 @@ public class BaseBodyTagSupport extends TagSupport {
 	@SuppressWarnings("unused")
 	public int doStartTag() throws JspException {
 		return BodyTag.EVAL_BODY_BUFFERED;
+		// commit 3
 	}
 
 	public BodyContent getBodyContent() {
