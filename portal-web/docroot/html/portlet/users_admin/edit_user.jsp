@@ -31,11 +31,14 @@ if (selUser != null) {
 
 PasswordPolicy passwordPolicy = null;
 
+boolean passwordReset = true;
+
 if (selUser == null) {
 	passwordPolicy = PasswordPolicyLocalServiceUtil.getDefaultPasswordPolicy(company.getCompanyId());
 }
 else {
 	passwordPolicy = selUser.getPasswordPolicy();
+	passwordReset = selUser.getPasswordReset();
 }
 
 List<Group> groups = Collections.emptyList();
@@ -207,6 +210,7 @@ if (selUser != null) {
 	request.setAttribute("user.selUser", selUser);
 	request.setAttribute("user.selContact", selContact);
 	request.setAttribute("user.passwordPolicy", passwordPolicy);
+	request.setAttribute("user.passwordReset", passwordReset);
 	request.setAttribute("user.groups", groups);
 	request.setAttribute("user.inheritedSites", inheritedSites);
 	request.setAttribute("user.organizations", organizations);

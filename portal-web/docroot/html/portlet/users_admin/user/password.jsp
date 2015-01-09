@@ -29,7 +29,7 @@ if (((selUser == null) || ((selUser.getLastLoginDate() == null) && selUser.isPas
 	passwordResetDisabled = true;
 }
 else {
-	passwordReset = BeanParamUtil.getBoolean(selUser, request, "passwordReset");
+	passwordReset = GetterUtil.getBoolean(request.getAttribute("user.passwordReset"));
 
 	if ((passwordPolicy != null) && !passwordPolicy.isChangeable()) {
 		passwordResetDisabled = true;
