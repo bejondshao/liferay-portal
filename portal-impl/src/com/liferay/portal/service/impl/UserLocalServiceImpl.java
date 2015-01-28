@@ -1562,8 +1562,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		if (passwordPolicy.isChangeable() &&
 			passwordPolicy.isChangeRequired()) {
 
-			if (user.getLastLoginDate() == null &&
-				PropsValues.USERS_UPDATE_LAST_LOGIN) {
+			if ((user.getLastLoginDate() == null) &&
+				(Validator.isNull(user.getReminderQueryAnswer()) ||
+				PropsValues.USERS_UPDATE_LAST_LOGIN)) {
 
 				user.setPasswordReset(true);
 
