@@ -549,9 +549,9 @@ public class EditUserAction extends PortletAction {
 		boolean passwordReset = ParamUtil.getBoolean(
 			actionRequest, "passwordReset");
 
-		/*if (!passwordReset && (user.getUserId() != themeDisplay.getUserId())) {
+		if (!passwordReset && Validator.isNull(actionRequest.getParameter("passwordReset"))) {
 			passwordReset = user.getPasswordReset();
-		}*/
+		}
 
 		String reminderQueryQuestion = BeanParamUtil.getString(
 			user, actionRequest, "reminderQueryQuestion");
