@@ -65,12 +65,13 @@ public class CheckboxParametersPortletFilter
 			actionRequest.getParameterNames());
 
 		for (String checkboxName : StringUtil.split(checkboxNames)) {
+			String value = dynamicActionRequest.getParameter(checkboxName);
 			if (!parameterNames.contains(checkboxName)) {
 				dynamicActionRequest.setParameter(
 					checkboxName, Boolean.FALSE.toString());
 			}
 			else {
-				String value = dynamicActionRequest.getParameter(checkboxName);
+				 value = dynamicActionRequest.getParameter(checkboxName);
 
 				if (Validator.equals(value, "on")) {
 					dynamicActionRequest.setParameter(

@@ -42,6 +42,7 @@ import com.liferay.portal.UserSmsException;
 import com.liferay.portal.WebsiteURLException;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.portlet.DynamicActionRequest;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -52,6 +53,7 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -95,6 +97,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -102,7 +105,6 @@ import javax.portlet.PortletConfig;
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -548,6 +550,16 @@ public class EditUserAction extends PortletAction {
 		String newPassword2 = actionRequest.getParameter("password2");
 		boolean passwordReset = ParamUtil.getBoolean(
 			actionRequest, "passwordReset");
+
+		if (!passwordReset && actionRequest instanceof DynamicActionRequest) {
+			Set<String> parameterNames = SetUtil.fromEnumeration(
+					((DynamicActionRequest) actionRequest).getRequest().getParameterNames());
+
+			if (!parameterNames.contains("passwordReset")) {
+				passwordReset = user.getPasswordReset();
+			}
+
+		}
 
 		String reminderQueryQuestion = BeanParamUtil.getString(
 			user, actionRequest, "reminderQueryQuestion");
