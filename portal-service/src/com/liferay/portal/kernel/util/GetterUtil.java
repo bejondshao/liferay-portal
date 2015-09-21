@@ -360,7 +360,7 @@ public class GetterUtil {
 			return defaultValue;
 		}
 
-		value = value.trim();
+		StringUtil.trim(value);
 
 		if (value.indexOf(CharPool.RETURN) != -1) {
 			value = value.replaceAll(
