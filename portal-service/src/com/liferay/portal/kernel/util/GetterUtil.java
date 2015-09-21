@@ -296,6 +296,7 @@ public class GetterUtil {
 				return Double.parseDouble(value);
 			}
 			catch (Exception e) {
+				System.out.println(e.getMessage());
 			}
 		}
 		else {
