@@ -1135,13 +1135,13 @@ public class GetterUtil {
 	}
 
 	private static short _parseShort(String value, short defaultValue) {
-		int i = _parseInt(value, defaultValue);
+		int j = _parseInt(value, defaultValue);
 
-		if ((i < Short.MIN_VALUE) || (i > Short.MAX_VALUE)) {
+		if ((j < Short.MIN_VALUE) || (j > Short.MAX_VALUE)) {
 			return defaultValue;
 		}
 
-		return (short)i;
+		return (short)j;
 	}
 
 }
