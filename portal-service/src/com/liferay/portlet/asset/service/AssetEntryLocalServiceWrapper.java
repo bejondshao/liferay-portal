@@ -456,16 +456,6 @@ public class AssetEntryLocalServiceWrapper implements AssetEntryLocalService,
 		return _assetEntryLocalService.getAssetTagPrimaryKeys(entryId);
 	}
 
-	/**
-	* Returns the Spring bean ID for this bean.
-	*
-	* @return the Spring bean ID for this bean
-	*/
-	@Override
-	public java.lang.String getBeanIdentifier() {
-		return _assetEntryLocalService.getBeanIdentifier();
-	}
-
 	@Override
 	public java.util.List<com.liferay.portlet.asset.model.AssetEntry> getChildEntries(
 		long entryId)
@@ -547,9 +537,24 @@ public class AssetEntryLocalServiceWrapper implements AssetEntryLocalService,
 	}
 
 	@Override
+	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
+		return _assetEntryLocalService.getIndexableActionableDynamicQuery();
+	}
+
+	@Override
 	public com.liferay.portlet.asset.model.AssetEntry getNextEntry(long entryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _assetEntryLocalService.getNextEntry(entryId);
+	}
+
+	/**
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
+	@Override
+	public java.lang.String getOSGiServiceIdentifier() {
+		return _assetEntryLocalService.getOSGiServiceIdentifier();
 	}
 
 	@Override
@@ -656,6 +661,16 @@ public class AssetEntryLocalServiceWrapper implements AssetEntryLocalService,
 	@Override
 	public com.liferay.portal.kernel.search.Hits search(long companyId,
 		long[] groupIds, long userId, java.lang.String className,
+		long classTypeId, java.lang.String keywords, boolean showNonindexable,
+		int[] statuses, int start, int end) {
+		return _assetEntryLocalService.search(companyId, groupIds, userId,
+			className, classTypeId, keywords, showNonindexable, statuses,
+			start, end);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.search.Hits search(long companyId,
+		long[] groupIds, long userId, java.lang.String className,
 		long classTypeId, java.lang.String keywords, int status, int start,
 		int end) {
 		return _assetEntryLocalService.search(companyId, groupIds, userId,
@@ -672,6 +687,19 @@ public class AssetEntryLocalServiceWrapper implements AssetEntryLocalService,
 		return _assetEntryLocalService.search(companyId, groupIds, userId,
 			className, classTypeId, userName, title, description,
 			assetCategoryIds, assetTagNames, showNonindexable, status,
+			andSearch, start, end);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.search.Hits search(long companyId,
+		long[] groupIds, long userId, java.lang.String className,
+		long classTypeId, java.lang.String userName, java.lang.String title,
+		java.lang.String description, java.lang.String assetCategoryIds,
+		java.lang.String assetTagNames, boolean showNonindexable,
+		int[] statuses, boolean andSearch, int start, int end) {
+		return _assetEntryLocalService.search(companyId, groupIds, userId,
+			className, classTypeId, userName, title, description,
+			assetCategoryIds, assetTagNames, showNonindexable, statuses,
 			andSearch, start, end);
 	}
 
@@ -746,16 +774,6 @@ public class AssetEntryLocalServiceWrapper implements AssetEntryLocalService,
 	@Override
 	public void setAssetTagAssetEntries(long tagId, long[] entryIds) {
 		_assetEntryLocalService.setAssetTagAssetEntries(tagId, entryIds);
-	}
-
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	@Override
-	public void setBeanIdentifier(java.lang.String beanIdentifier) {
-		_assetEntryLocalService.setBeanIdentifier(beanIdentifier);
 	}
 
 	/**
@@ -896,6 +914,13 @@ public class AssetEntryLocalServiceWrapper implements AssetEntryLocalService,
 		java.lang.String className, long classPK, boolean visible)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _assetEntryLocalService.updateVisible(className, classPK, visible);
+	}
+
+	@Override
+	public com.liferay.portlet.asset.model.AssetEntry updateVisible(
+		com.liferay.portlet.asset.model.AssetEntry entry, boolean visible)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _assetEntryLocalService.updateVisible(entry, visible);
 	}
 
 	/**

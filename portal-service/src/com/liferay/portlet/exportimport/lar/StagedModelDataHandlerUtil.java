@@ -183,6 +183,20 @@ public class StagedModelDataHandlerUtil {
 			portletDataContext, stagedModel);
 	}
 
+	/**
+	 * Imports the staged model that is referenced by a portlet. To import a
+	 * staged model referenced by another staged model, use {@link
+	 * #importReferenceStagedModel(PortletDataContext, StagedModel, Class,
+	 * long)}.
+	 *
+	 * @param  portletDataContext the portlet data context of the current
+	 *         process
+	 * @param  stagedModelClass the class of the referenced staged model to be
+	 *         imported
+	 * @param  classPK the primary key of the referenced staged model to be
+	 *         imported
+	 * @throws PortletDataException if a portlet data exception occurred
+	 */
 	public static void importReferenceStagedModel(
 			PortletDataContext portletDataContext, Class<?> stagedModelClass,
 			long classPK)
@@ -192,6 +206,20 @@ public class StagedModelDataHandlerUtil {
 			portletDataContext, stagedModelClass.getName(), classPK);
 	}
 
+	/**
+	 * Imports the staged model that is referenced by a portlet. To import a
+	 * staged model referenced by another staged model, use {@link
+	 * #importReferenceStagedModel(PortletDataContext, StagedModel, String,
+	 * long)}.
+	 *
+	 * @param  portletDataContext the portlet data context of the current
+	 *         process
+	 * @param  stagedModelClassName the class name of the referenced staged
+	 *         model to be imported
+	 * @param  classPK the primary key of the referenced staged model to be
+	 *         imported
+	 * @throws PortletDataException if a portlet data exception occurred
+	 */
 	public static void importReferenceStagedModel(
 			PortletDataContext portletDataContext, String stagedModelClassName,
 			long classPK)
@@ -201,9 +229,25 @@ public class StagedModelDataHandlerUtil {
 			stagedModelClassName, classPK);
 
 		doImportReferenceStagedModel(
-			portletDataContext, referenceElement, stagedModelClassName);
+			portletDataContext, referenceElement, stagedModelClassName,
+			classPK);
 	}
 
+	/**
+	 * Imports the staged model that is referenced by another staged model. To
+	 * import a staged model referenced by a portlet, use {@link
+	 * #importReferenceStagedModel(PortletDataContext, Class, long)}.
+	 *
+	 * @param  portletDataContext the portlet data context of the current
+	 *         process
+	 * @param  referrerStagedModel the staged model that references the staged
+	 *         model to be imported
+	 * @param  stagedModelClass the class of the referenced staged model to be
+	 *         imported
+	 * @param  classPK the primary key of the referenced staged model to be
+	 *         imported
+	 * @throws PortletDataException if a portlet data exception occurred
+	 */
 	public static <T extends StagedModel> void importReferenceStagedModel(
 			PortletDataContext portletDataContext, T referrerStagedModel,
 			Class<?> stagedModelClass, long classPK)
@@ -214,6 +258,21 @@ public class StagedModelDataHandlerUtil {
 			classPK);
 	}
 
+	/**
+	 * Imports the staged model that is referenced by another staged model. To
+	 * import a staged model referenced by a portlet, use {@link
+	 * #importReferenceStagedModel(PortletDataContext, String, long)}.
+	 *
+	 * @param  portletDataContext the portlet data context of the current
+	 *         process
+	 * @param  referrerStagedModel the staged model that references the staged
+	 *         model to be imported
+	 * @param  stagedModelClassName the class name of the referenced staged
+	 *         model to be imported
+	 * @param  classPK the primary key of the referenced staged model to be
+	 *         imported
+	 * @throws PortletDataException if a portlet data exception occurred
+	 */
 	public static <T extends StagedModel> void importReferenceStagedModel(
 			PortletDataContext portletDataContext, T referrerStagedModel,
 			String stagedModelClassName, long classPK)
@@ -223,7 +282,8 @@ public class StagedModelDataHandlerUtil {
 			referrerStagedModel, stagedModelClassName, classPK);
 
 		doImportReferenceStagedModel(
-			portletDataContext, referenceElement, stagedModelClassName);
+			portletDataContext, referenceElement, stagedModelClassName,
+			classPK);
 	}
 
 	public static void importReferenceStagedModels(
@@ -249,8 +309,8 @@ public class StagedModelDataHandlerUtil {
 				continue;
 			}
 
-			boolean missing = GetterUtil.getBoolean(
-				referenceElement.attributeValue("missing"));
+			boolean missing = portletDataContext.isMissingReference(
+				referenceElement);
 
 			StagedModelDataHandler<?> stagedModelDataHandler =
 				StagedModelDataHandlerRegistryUtil.getStagedModelDataHandler(
@@ -318,15 +378,15 @@ public class StagedModelDataHandlerUtil {
 
 	protected static void doImportReferenceStagedModel(
 			PortletDataContext portletDataContext, Element referenceElement,
-			String stagedModelClassName)
+			String stagedModelClassName, long classPK)
 		throws PortletDataException {
 
 		if (referenceElement == null) {
 			return;
 		}
 
-		boolean missing = GetterUtil.getBoolean(
-			referenceElement.attributeValue("missing"));
+		boolean missing = portletDataContext.isMissingReference(
+			referenceElement);
 
 		StagedModelDataHandler<?> stagedModelDataHandler =
 			StagedModelDataHandlerRegistryUtil.getStagedModelDataHandler(
@@ -343,7 +403,26 @@ public class StagedModelDataHandlerUtil {
 			return;
 		}
 
-		importStagedModel(portletDataContext, referenceElement);
+		if (referenceElement != null) {
+			importStagedModel(portletDataContext, referenceElement);
+
+			return;
+		}
+
+		long groupId = GetterUtil.getLong(
+			referenceElement.attributeValue("group-id"),
+			portletDataContext.getSourceGroupId());
+
+		String stagedModelPath = ExportImportPathUtil.getModelPath(
+			groupId, stagedModelClassName, classPK);
+
+		StagedModel stagedModel =
+			(StagedModel)portletDataContext.getZipEntryAsObject(
+				stagedModelPath);
+
+		if (stagedModel != null) {
+			importStagedModel(portletDataContext, stagedModel);
+		}
 	}
 
 	private static StagedModel _getReferenceStagedModel(

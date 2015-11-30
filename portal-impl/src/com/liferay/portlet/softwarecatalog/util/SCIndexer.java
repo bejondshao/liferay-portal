@@ -15,6 +15,7 @@
 package com.liferay.portlet.softwarecatalog.util;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -196,21 +197,19 @@ public class SCIndexer extends BaseIndexer<SCProductEntry> {
 	protected void reindexProductEntries(long companyId)
 		throws PortalException {
 
-		final ActionableDynamicQuery actionableDynamicQuery =
-			SCProductEntryLocalServiceUtil.getActionableDynamicQuery();
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+			SCProductEntryLocalServiceUtil.getIndexableActionableDynamicQuery();
 
-		actionableDynamicQuery.setCompanyId(companyId);
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+		indexableActionableDynamicQuery.setCompanyId(companyId);
+		indexableActionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod<SCProductEntry>() {
 
 				@Override
-				public void performAction(Object object) {
-					SCProductEntry productEntry = (SCProductEntry)object;
-
+				public void performAction(SCProductEntry productEntry) {
 					try {
 						Document document = getDocument(productEntry);
 
-						actionableDynamicQuery.addDocument(document);
+						indexableActionableDynamicQuery.addDocument(document);
 					}
 					catch (PortalException pe) {
 						if (_log.isWarnEnabled()) {
@@ -223,9 +222,9 @@ public class SCIndexer extends BaseIndexer<SCProductEntry> {
 				}
 
 			});
-		actionableDynamicQuery.setSearchEngineId(getSearchEngineId());
+		indexableActionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
-		actionableDynamicQuery.performActions();
+		indexableActionableDynamicQuery.performActions();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(SCIndexer.class);

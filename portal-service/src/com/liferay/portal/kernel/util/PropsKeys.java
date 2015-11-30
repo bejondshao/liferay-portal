@@ -63,10 +63,6 @@ public interface PropsKeys {
 
 	public static final String ADMIN_SYNC_DEFAULT_ASSOCIATIONS = "admin.sync.default.associations";
 
-	public static final String AIM_LOGIN = "aim.login";
-
-	public static final String AIM_PASSWORD = "aim.password";
-
 	public static final String ANNOUNCEMENTS_EMAIL_BODY = "announcements.email.body";
 
 	public static final String ANNOUNCEMENTS_EMAIL_FROM_ADDRESS = "announcements.email.from.address";
@@ -244,8 +240,6 @@ public interface PropsKeys {
 	public static final String BLOGS_IMAGE_EXTENSIONS = "blogs.image.extensions";
 
 	public static final String BLOGS_IMAGE_MAX_SIZE = "blogs.image.max.size";
-
-	public static final String BLOGS_IMAGE_SMALL_MAX_SIZE = "blogs.image.small.max.size";
 
 	public static final String BLOGS_LINKBACK_EXCERPT_LENGTH = "blogs.linkback.excerpt.length";
 
@@ -515,6 +509,10 @@ public interface PropsKeys {
 
 	public static final String DEFAULT_LOGOUT_PAGE_PATH = "default.logout.page.path";
 
+	public static final String DEFAULT_PORTLET_DECORATOR_CSS_CLASS = "default.portlet.decorator.css.class";
+
+	public static final String DEFAULT_PORTLET_DECORATOR_ID = "default.portlet.decorator.id";
+
 	public static final String DEFAULT_REGULAR_COLOR_SCHEME_ID = "default.regular.color.scheme.id";
 
 	public static final String DEFAULT_REGULAR_THEME_ID = "default.regular.theme.id";
@@ -753,8 +751,6 @@ public interface PropsKeys {
 
 	public static final String DOCKBAR_ADD_PORTLETS = "dockbar.add.portlets";
 
-	public static final String DOCKBAR_ADMINISTRATIVE_LINKS_SHOW_IN_POP_UP = "dockbar.administrative.links.show.in.pop.up";
-
 	public static final String DYNAMIC_RESOURCE_SERVLET_ALLOWED_PATHS = "dynamic.resource.servlet.allowed.paths";
 
 	public static final String EDITOR_WYSIWYG_DEFAULT = "editor.wysiwyg.default";
@@ -859,12 +855,6 @@ public interface PropsKeys {
 
 	public static final String HTTP_HEADER_VERSION_VERBOSITY = "http.header.version.verbosity";
 
-	public static final String ICQ_JAR = "icq.jar";
-
-	public static final String ICQ_LOGIN = "icq.login";
-
-	public static final String ICQ_PASSWORD = "icq.password";
-
 	public static final String IFRAME_PASSWORD_PASSWORD_TOKEN_ROLE = "iframe.password.token.role";
 
 	public static final String IMAGE_AUTO_SCALE = "image.auto.scale";
@@ -890,6 +880,8 @@ public interface PropsKeys {
 	public static final String IMAGEMAGICK_GLOBAL_SEARCH_PATH = "imagemagick.global.search.path";
 
 	public static final String IMAGEMAGICK_RESOURCE_LIMIT = "imagemagick.resource.limit.";
+
+	public static final String INDEX_COMMIT_IMMEDIATELY = "index.commit.immediately";
 
 	public static final String INDEX_DATE_FORMAT_PATTERN = "index.date.format.pattern";
 
@@ -947,6 +939,8 @@ public interface PropsKeys {
 
 	public static final String INDEX_WITH_THREAD = "index.with.thread";
 
+	public static final String INDEXER_ENABLED = "indexer.enabled";
+
 	public static final String INTRABAND_IMPL = "intraband.impl";
 
 	public static final String INTRABAND_MAILBOX_REAPER_THREAD_ENABLED = "intraband.mailbox.reaper.thread.enabled";
@@ -998,6 +992,8 @@ public interface PropsKeys {
 	public static final String JAVASCRIPT_LOG_ENABLED = "javascript.log.enabled";
 
 	public static final String JAVASCRIPT_SINGLE_PAGE_APPLICATION_ENABLED = "javascript.single.page.application.enabled";
+
+	public static final String JAVASCRIPT_SINGLE_PAGE_APPLICATION_TIMEOUT = "javascript.single.page.application.timeout";
 
 	public static final String JDBC_DEFAULT_DRIVER_CLASS_NAME = "jdbc.default.driverClassName";
 
@@ -1078,6 +1074,20 @@ public interface PropsKeys {
 	public static final String LAYOUT_GUEST_SHOW_MIN_ICON = "layout.guest.show.min.icon";
 
 	public static final String LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN = "layout.manage.pages.initial.children";
+
+	public static final String LAYOUT_PARALLEL_RENDER_ENABLE = "layout.parallel.render.enable";
+
+	public static final String LAYOUT_PARALLEL_RENDER_THREAD_POOL_ALLOW_CORE_THREAD_TIMEOUT = "layout.parallel.render.thread.pool.allow.core.thread.timeout";
+
+	public static final String LAYOUT_PARALLEL_RENDER_THREAD_POOL_CORE_THREAD_COUNT = "layout.parallel.render.thread.pool.core.thread.count";
+
+	public static final String LAYOUT_PARALLEL_RENDER_THREAD_POOL_KEEP_ALIVE_TIME = "layout.parallel.render.thread.pool.keep.alive.time";
+
+	public static final String LAYOUT_PARALLEL_RENDER_THREAD_POOL_MAX_QUEUE_SIZE = "layout.parallel.render.thread.pool.max.queue.size";
+
+	public static final String LAYOUT_PARALLEL_RENDER_THREAD_POOL_MAX_THREAD_COUNT = "layout.parallel.render.thread.pool.max.thread.count";
+
+	public static final String LAYOUT_PARALLEL_RENDER_TIMEOUT = "layout.parallel.render.timeout";
 
 	public static final String LAYOUT_PARENTABLE = "layout.parentable";
 
@@ -1297,10 +1307,6 @@ public interface PropsKeys {
 
 	public static final String MAIL_BATCH_SIZE = "mail.batch.size";
 
-	public static final String MAIL_HOOK_CYRUS_ADD_USER = "mail.hook.cyrus.add.user";
-
-	public static final String MAIL_HOOK_CYRUS_DELETE_USER = "mail.hook.cyrus.delete.user";
-
 	public static final String MAIL_HOOK_CYRUS_HOME = "mail.hook.cyrus.home";
 
 	public static final String MAIL_HOOK_FUSEMAIL_ACCOUNT_TYPE = "mail.hook.fusemail.account.type";
@@ -1501,10 +1507,6 @@ public interface PropsKeys {
 
 	public static final String MODULE_FRAMEWORK_WEB_GENERATOR_JSP_COMPILER_DEPENDENCIES = "module.framework.web.generator.jsp.compiler.dependencies";
 
-	public static final String MSN_LOGIN = "msn.login";
-
-	public static final String MSN_PASSWORD = "msn.password";
-
 	public static final String MULTI_VALUE_MAP = "multi.value.map.";
 
 	public static final String MY_SITES_DIRECTORY_SITE_EXCLUDES = "my.sites.directory.site.excludes";
@@ -1608,8 +1610,6 @@ public interface PropsKeys {
 	public static final String ORGANIZATIONS_FORM_UPDATE_MAIN = "organizations.form.update.main";
 
 	public static final String ORGANIZATIONS_FORM_UPDATE_MISCELLANEOUS = "organizations.form.update.miscellaneous";
-
-	public static final String ORGANIZATIONS_INDEXER_ENABLED = "organizations.indexer.enabled";
 
 	public static final String ORGANIZATIONS_MEMBERSHIP_STRICT = "organizations.membership.strict";
 
@@ -1746,10 +1746,6 @@ public interface PropsKeys {
 	public static final String POP_SERVER_NOTIFICATIONS_INTERVAL = "pop.server.notifications.interval";
 
 	public static final String POP_SERVER_SUBDOMAIN = "pop.server.subdomain";
-
-	public static final String PORTAL_CACHE_MANAGER_TYPE_MULTI_VM ="portal.cache.manager.type.multi.vm";
-
-	public static final String PORTAL_CACHE_MANAGER_TYPE_SINGLE_VM ="portal.cache.manager.type.single.vm";
 
 	public static final String PORTAL_FABRIC_AGENT_SELECTOR_CLASS = "portal.fabric.agent.selector.class";
 
@@ -1918,6 +1914,8 @@ public interface PropsKeys {
 	public static final String RESOURCE_REPOSITORIES_ROOT = "resource.repositories.root";
 
 	public static final String REST_PROXY_URL_PREFIXES_ALLOWED = "rest.proxy.url.prefixes.allowed";
+
+	public static final String RETRY_ADVICE_MAX_RETRIES = "retry.advice.max.retries";
 
 	public static final String ROBOTS_TXT_WITH_SITEMAP = "robots.txt.with.sitemap";
 
@@ -2341,8 +2339,6 @@ public interface PropsKeys {
 
 	public static final String USER_GROUPS_COPY_LAYOUTS_TO_USER_PERSONAL_SITE = "user.groups.copy.layouts.to.user.personal.site";
 
-	public static final String USER_GROUPS_INDEXER_ENABLED = "user.groups.indexer.enabled";
-
 	public static final String USER_GROUPS_NAME_ALLOW_NUMERIC = "user.groups.name.allow.numeric";
 
 	public static final String USER_GROUPS_SEARCH_WITH_INDEX = "user.groups.search.with.index";
@@ -2396,8 +2392,6 @@ public interface PropsKeys {
 	public static final String USERS_IMAGE_MAX_SIZE = "users.image.max.size";
 
 	public static final String USERS_IMAGE_MAX_WIDTH = "users.image.max.width";
-
-	public static final String USERS_INDEXER_ENABLED = "users.indexer.enabled";
 
 	public static final String USERS_LIST_VIEWS = "users.list.views";
 
@@ -2510,10 +2504,6 @@ public interface PropsKeys {
 	public static final String XUGGLER_JAR_OPTIONS = "xuggler.jar.options";
 
 	public static final String XUGGLER_JAR_URL = "xuggler.jar.url";
-
-	public static final String YM_LOGIN = "ym.login";
-
-	public static final String YM_PASSWORD = "ym.password";
 
 	public static final String YUI_COMPRESSOR_CSS_LINE_BREAK = "yui.compressor.css.line.break";
 

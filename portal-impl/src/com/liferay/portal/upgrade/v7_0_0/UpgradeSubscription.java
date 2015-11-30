@@ -15,8 +15,11 @@
 package com.liferay.portal.upgrade.v7_0_0;
 
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowInstance;
@@ -44,6 +47,30 @@ import java.util.Map;
  */
 public class UpgradeSubscription extends UpgradeProcess {
 
+	protected void addClassName(long classNameId, String className)
+		throws Exception {
+
+		Connection con = null;
+		PreparedStatement ps = null;
+
+		try {
+			con = DataAccess.getUpgradeOptimizedConnection();
+
+			ps = con.prepareStatement(
+				"insert into ClassName_ (mvccVersion, classNameId, value) " +
+					"values (?, ?, ?)");
+
+			ps.setLong(1, 0);
+			ps.setLong(2, classNameId);
+			ps.setString(3, className);
+
+			ps.executeUpdate();
+		}
+		finally {
+			DataAccess.cleanUp(con, ps);
+		}
+	}
+
 	@Override
 	protected void doUpgrade() throws Exception {
 		updateSubscriptionClassNames(
@@ -53,6 +80,20 @@ public class UpgradeSubscription extends UpgradeProcess {
 			"com.liferay.portlet.journal.model.JournalFolder");
 
 		updateSubscriptionGroupIds();
+	}
+
+	protected long getClassNameId(String className) throws Exception {
+		long classNameId = PortalUtil.getClassNameId(className);
+
+		if (classNameId != 0) {
+			return classNameId;
+		}
+
+		classNameId = increment();
+
+		addClassName(classNameId, className);
+
+		return classNameId;
 	}
 
 	protected long getGroupId(long classNameId, long classPK) throws Exception {
@@ -67,6 +108,16 @@ public class UpgradeSubscription extends UpgradeProcess {
 
 			String[] groupIdSQLParts = StringUtil.split(
 				_getGroupIdSQLPartsMap.get(className));
+
+			if (ArrayUtil.isEmpty(groupIdSQLParts)) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to determine the group ID for the class name " +
+							className);
+				}
+
+				return 0;
+			}
 
 			String sql =
 				"select " + groupIdSQLParts[1] + " from " + groupIdSQLParts[0] +
@@ -126,7 +177,7 @@ public class UpgradeSubscription extends UpgradeProcess {
 		StringBundler sb = new StringBundler(4);
 
 		sb.append("update Subscription set classNameId = ");
-		sb.append(PortalUtil.getClassNameId(newClassName));
+		sb.append(getClassNameId(newClassName));
 		sb.append(" where classNameId = ");
 		sb.append(PortalUtil.getClassNameId(oldClassName));
 
@@ -176,6 +227,9 @@ public class UpgradeSubscription extends UpgradeProcess {
 			DataAccess.cleanUp(con, ps, rs);
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradeSubscription.class);
 
 	private static final Map<String, String> _getGroupIdSQLPartsMap =
 		new HashMap<>();

@@ -64,7 +64,7 @@ for (long groupId : groupIds) {
 						href="<%= _getURL(curGroupId, plid, entry.getValue(), assetRendererFactory.getPortletId(), message, addDisplayPageParameter, layout, pageContext, portletResponse) %>"
 						iconCssClass="<%= assetRendererFactory.getIconCssClass() %>"
 						iconSrc="<%= assetRendererFactory.getIconPath(portletRequest) %>"
-						label='<%= LanguageUtil.format(request, (groupIds.length == 1) ? "add-x" : "add-x-in-x", new Object [] {HtmlUtil.escape(message), HtmlUtil.escape((GroupLocalServiceUtil.getGroup(groupId)).getDescriptiveName(locale))}, false) %>'
+						label='<%= LanguageUtil.format(request, (groupIds.length == 1) ? "add-x" : "add-x-in-x", new Object[] {HtmlUtil.escape(message), HtmlUtil.escape((GroupLocalServiceUtil.getGroup(groupId)).getDescriptiveName(locale))}, false) %>'
 					/>
 				</c:when>
 				<c:otherwise>
@@ -144,12 +144,12 @@ private String _getMessage(String className, Map<String, PortletURL> addPortletU
 }
 
 private String _getURL(long groupId, long plid, PortletURL addPortletURL, String portletId, String message, boolean addDisplayPageParameter, Layout layout, PageContext pageContext, PortletResponse portletResponse) {
+	addPortletURL.setParameter("hideDefaultSuccessMessage", Boolean.TRUE.toString());
 	addPortletURL.setParameter("groupId", String.valueOf(groupId));
 	addPortletURL.setParameter("showHeader", Boolean.FALSE.toString());
 
 	String addPortletURLString = addPortletURL.toString();
 
-	addPortletURLString = HttpUtil.addParameter(addPortletURLString, "doAsGroupId", groupId);
 	addPortletURLString = HttpUtil.addParameter(addPortletURLString, "refererPlid", plid);
 
 	String namespace = PortalUtil.getPortletNamespace(portletId);

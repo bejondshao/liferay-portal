@@ -151,12 +151,6 @@ public class DLUtil {
 		return getDL().getFileIconCssClass(extension);
 	}
 
-	public static String getFileName(
-		long groupId, long folderId, String tempFileName) {
-
-		return getDL().getFileName(groupId, folderId, tempFileName);
-	}
-
 	public static String getGenericName(String extension) {
 		return getDL().getGenericName(extension);
 	}
@@ -211,6 +205,13 @@ public class DLUtil {
 
 		return getDL().getRepositoryModelOrderByComparator(
 			orderByCol, orderByType);
+	}
+
+	public static <T> OrderByComparator<T> getRepositoryModelOrderByComparator(
+		String orderByCol, String orderByType, boolean orderByModel) {
+
+		return getDL().getRepositoryModelOrderByComparator(
+			orderByCol, orderByType, orderByModel);
 	}
 
 	public static String getSanitizedFileName(String title, String extension) {
@@ -289,6 +290,12 @@ public class DLUtil {
 
 	public static String getTitleWithExtension(String title, String extension) {
 		return getDL().getTitleWithExtension(title, extension);
+	}
+
+	public static String getUniqueFileName(
+		long groupId, long folderId, String fileName) {
+
+		return getDL().getUniqueFileName(groupId, folderId, fileName);
 	}
 
 	public static String getWebDavURL(

@@ -39,6 +39,7 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -55,8 +56,9 @@ import java.util.Set;
  * @generated
  */
 public class UserNotificationEventPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -254,6 +256,19 @@ public class UserNotificationEventPersistenceTest {
 	}
 
 	@Test
+	public void testCountByU_T_DT_D() throws Exception {
+		_persistence.countByU_T_DT_D(RandomTestUtil.nextLong(),
+			StringPool.BLANK, RandomTestUtil.nextInt(),
+			RandomTestUtil.randomBoolean());
+
+		_persistence.countByU_T_DT_D(0L, StringPool.NULL, 0,
+			RandomTestUtil.randomBoolean());
+
+		_persistence.countByU_T_DT_D(0L, (String)null, 0,
+			RandomTestUtil.randomBoolean());
+	}
+
+	@Test
 	public void testCountByU_DT_D_A() throws Exception {
 		_persistence.countByU_DT_D_A(RandomTestUtil.nextLong(),
 			RandomTestUtil.nextInt(), RandomTestUtil.randomBoolean(),
@@ -413,11 +428,10 @@ public class UserNotificationEventPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = UserNotificationEventLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<UserNotificationEvent>() {
 				@Override
-				public void performAction(Object object) {
-					UserNotificationEvent userNotificationEvent = (UserNotificationEvent)object;
-
+				public void performAction(
+					UserNotificationEvent userNotificationEvent) {
 					Assert.assertNotNull(userNotificationEvent);
 
 					count.increment();
