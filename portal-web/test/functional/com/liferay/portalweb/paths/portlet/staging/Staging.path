@@ -9,6 +9,11 @@
 </thead>
 <tbody>
 <tr>
+	<td>EDITED_SITE_PAGES_VARIATION</td>
+	<td>//span[contains(@class,'layout-set-branch-selector')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>STAGING_NAVIGATION</td>
 	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Staging')]</td>
 	<td></td>
@@ -62,7 +67,7 @@
 <!--PG-->
 <tr>
 	<td>LIVE_BUTTON</td>
-	<td>//a[contains(.,'Live')]</td>
+	<td>//a[contains(@value,'live')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -72,7 +77,7 @@
 </tr>
 <tr>
 	<td>STAGING_BUTTON</td>
-	<td>//a[contains(.,'Staging')]</td>
+	<td>//a[contains(@value,'staging')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -92,22 +97,22 @@
 </tr>
 <tr>
 	<td>PAGE_VARIATION</td>
-	<td>//div[contains(@class,'page-variations-options')]//span[contains(.,'${key_pageVariationName}')]</td>
+	<td>//span[contains(.,'${key_pageVariationName}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>SITE_PAGES_VARIATION</td>
-	<td>//div[contains(@class,'site-pages-variation-options')]//span[contains(.,'${key_sitePagesVariationName}')]</td>
+	<td>//div[contains(@class,'layout-set-branch-selector')]/a//span[contains(.,'${key_sitePagesVariationName}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>SITE_PAGES_VARIATION_DROPDOWN</td>
-	<td>//div[contains(@class,'site-pages-variation-options')]//span[contains(.,'${key_sitePagesVariationName}')]/following-sibling::i</td>
+	<td>//span[contains(.,'${key_sitePagesVariationName}')]/following-sibling::i</td>
 	<td></td>
 </tr>
 <tr>
 	<td>PAGE_VARIATION_DROPDOWN</td>
-	<td>//div[contains(@class,'page-variation-options')]//span[contains(.,'${key_pageVariationName}')]/following-sibling::i</td>
+	<td>//span[contains(.,'${key_pageVariationName}')]/following-sibling::i</td>
 	<td></td>
 </tr>
 <tr>
@@ -192,7 +197,7 @@
 </tr>
 <tr>
 	<td>STAGING_MENU_MARK_AS_READY_FOR_PUBLICATION_BUTTON</td>
-	<td>//a[contains(@id,'submitLink')]/span[contains(.,'Mark as Ready for Publication')]</td>
+	<td>//a[contains(@id,'submitLink') and contains(.,'Mark as Ready for Publication')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -202,7 +207,7 @@
 </tr>
 <tr>
 	<td>STAGING_MENU_SUBMIT_FOR_PUBLICATION</td>
-	<td>//a[contains(@id,'submitLink')]/span[contains(.,'Submit for Publication')]</td>
+	<td>//a[contains(@id,'submitLink') and contains(.,'Submit for Publication')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -227,7 +232,7 @@
 </tr>
 <tr>
 	<td>STAGING_MENU_REVISION_DETAILS_MESSAGE</td>
-	<td>//div[contains(@id,'layoutRevisionDetails')]</td>
+	<td>//li[contains(@id,'layoutRevisionDetails')]/ul/li/p</td>
 	<td></td>
 </tr>
 <tr>
@@ -243,7 +248,7 @@
 <!--STAGING_MENULIST-->
 <tr>
 	<td>STAGING_MENULIST_PUBLISH_TO_LIVE_NOW</td>
-	<td>//a[contains(.,'Publish to Live')]</td>
+	<td>//button[contains(.,'Publish to Live')]</td>
 	<td></td>
 </tr>
 </tbody>

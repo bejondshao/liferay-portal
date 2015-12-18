@@ -20,20 +20,21 @@
 	cssClass="portlet-options"
 	direction="<%= direction %>"
 	extended="<%= false %>"
-	icon="../aui/cog"
+	icon="../aui/ellipsis-vertical"
 	markupView="<%= markupView %>"
 	message="options"
-	showArrow="<%= showArrow %>"
+	showArrow="<%= false %>"
 	showWhenSingleIcon="<%= true %>"
+	triggerCssClass="icon-monospaced"
 >
 
 	<%
-	List<PortletConfigurationIconFactory> portletConfigurationIconFactories = ListUtil.copy(PortletConfigurationIconTracker.getPortletConfigurationIcons());
+	List<PortletConfigurationIconFactory> portletConfigurationIconFactories = ListUtil.copy(PortletConfigurationIconTracker.getPortletConfigurationIcons(portletRequest));
 
 	portletConfigurationIconFactories = ListUtil.sort(portletConfigurationIconFactories, new PropertyComparator("weight", false, false));
 
 	for (PortletConfigurationIconFactory portletConfigurationIconFactory : portletConfigurationIconFactories) {
-		PortletConfigurationIcon portletConfigurationIcon = portletConfigurationIconFactory.create(request);
+		PortletConfigurationIcon portletConfigurationIcon = portletConfigurationIconFactory.create(portletRequest);
 
 		if (portletConfigurationIcon.isShow()) {
 			boolean include = portletConfigurationIconFactory.include(request, new PipingServletResponse(pageContext));

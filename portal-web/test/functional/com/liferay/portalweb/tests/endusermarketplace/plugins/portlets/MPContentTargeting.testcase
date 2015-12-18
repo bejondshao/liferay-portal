@@ -6,29 +6,29 @@
 	</set-up>
 
 	<command name="MarketplacePortletContentTargetingSmoke" priority="4">
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Store" />
+		<execute macro="ProductMenu#gotoControlPanelApps">
+			<var name="portlet" value="Store" />
 		</execute>
 
 		<execute macro="Marketplace#signIn">
-			<var name="userEmailAddress" property-value="email.address.5" />
-			<var name="userEmailPassword" property-value="email.password.5" />
+			<var method="TestPropsUtil#get('email.address.5')" name="userEmailAddress" />
+			<var method="TestPropsUtil#get('email.password.5')" name="userEmailPassword" />
 		</execute>
 
 		<execute macro="Portlet#shutdownServer" />
 
 		<execute macro="Portlet#startServer" />
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Store" />
+		<execute macro="ProductMenu#gotoControlPanelApps">
+			<var name="portlet" value="Store" />
 		</execute>
 
 		<execute macro="Marketplace#downloadApp">
 			<var name="appName" value="Audience Targeting" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Purchased" />
+		<execute macro="ProductMenu#gotoControlPanelApps">
+			<var name="portlet" value="Purchased" />
 		</execute>
 
 		<execute macro="Marketplace#installApp">

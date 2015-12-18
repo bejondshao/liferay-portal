@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManagerUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -295,11 +296,9 @@ public class MBMessageIndexer
 
 	@Override
 	protected void doReindex(MBMessage mbMessage) throws Exception {
-		if (!mbMessage.isApproved() && !mbMessage.isInTrash()) {
-			return;
-		}
+		if ((!mbMessage.isApproved() && !mbMessage.isInTrash()) ||
+			(mbMessage.isDiscussion() && mbMessage.isRoot())) {
 
-		if (mbMessage.isDiscussion() && mbMessage.isRoot()) {
 			return;
 		}
 
@@ -366,13 +365,11 @@ public class MBMessageIndexer
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<MBCategory>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(MBCategory category)
 					throws PortalException {
-
-					MBCategory category = (MBCategory)object;
 
 					reindexMessages(
 						companyId, category.getGroupId(),
@@ -392,14 +389,10 @@ public class MBMessageIndexer
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<Group>() {
 
 				@Override
-				public void performAction(Object object)
-					throws PortalException {
-
-					Group group = (Group)object;
-
+				public void performAction(Group group) throws PortalException {
 					reindexMessages(
 						companyId, group.getGroupId(),
 						MBCategoryConstants.DISCUSSION_CATEGORY_ID);
@@ -414,10 +407,10 @@ public class MBMessageIndexer
 			long companyId, long groupId, final long categoryId)
 		throws PortalException {
 
-		final ActionableDynamicQuery actionableDynamicQuery =
-			MBMessageLocalServiceUtil.getActionableDynamicQuery();
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+			MBMessageLocalServiceUtil.getIndexableActionableDynamicQuery();
 
-		actionableDynamicQuery.setAddCriteriaMethod(
+		indexableActionableDynamicQuery.setAddCriteriaMethod(
 			new ActionableDynamicQuery.AddCriteriaMethod() {
 
 				@Override
@@ -439,15 +432,13 @@ public class MBMessageIndexer
 				}
 
 			});
-		actionableDynamicQuery.setCompanyId(companyId);
-		actionableDynamicQuery.setGroupId(groupId);
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+		indexableActionableDynamicQuery.setCompanyId(companyId);
+		indexableActionableDynamicQuery.setGroupId(groupId);
+		indexableActionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod<MBMessage>() {
 
 				@Override
-				public void performAction(Object object) {
-					MBMessage message = (MBMessage)object;
-
+				public void performAction(MBMessage message) {
 					if (message.isDiscussion() && message.isRoot()) {
 						return;
 					}
@@ -455,7 +446,7 @@ public class MBMessageIndexer
 					try {
 						Document document = getDocument(message);
 
-						actionableDynamicQuery.addDocument(document);
+						indexableActionableDynamicQuery.addDocuments(document);
 					}
 					catch (PortalException pe) {
 						if (_log.isWarnEnabled()) {
@@ -468,9 +459,9 @@ public class MBMessageIndexer
 				}
 
 			});
-		actionableDynamicQuery.setSearchEngineId(getSearchEngineId());
+		indexableActionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
-		actionableDynamicQuery.performActions();
+		indexableActionableDynamicQuery.performActions();
 	}
 
 	protected void reindexRoot(final long companyId) throws PortalException {
@@ -479,14 +470,10 @@ public class MBMessageIndexer
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<Group>() {
 
 				@Override
-				public void performAction(Object object)
-					throws PortalException {
-
-					Group group = (Group)object;
-
+				public void performAction(Group group) throws PortalException {
 					reindexMessages(
 						companyId, group.getGroupId(),
 						MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);

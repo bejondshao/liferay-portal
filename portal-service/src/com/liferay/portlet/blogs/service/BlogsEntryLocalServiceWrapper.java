@@ -53,6 +53,13 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	}
 
 	@Override
+	public void addCoverImage(long entryId,
+		com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector imageSelector)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_blogsEntryLocalService.addCoverImage(entryId, imageSelector);
+	}
+
+	@Override
 	public com.liferay.portlet.blogs.model.BlogsEntry addEntry(long userId,
 		java.lang.String title, java.lang.String content,
 		java.util.Date displayDate,
@@ -162,6 +169,22 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 		com.liferay.portal.service.permission.ModelPermissions modelPermissions)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		_blogsEntryLocalService.addEntryResources(entryId, modelPermissions);
+	}
+
+	@Override
+	public long addOriginalImageFileEntry(long userId, long groupId,
+		long entryId,
+		com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector imageSelector)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _blogsEntryLocalService.addOriginalImageFileEntry(userId,
+			groupId, entryId, imageSelector);
+	}
+
+	@Override
+	public void addSmallImage(long entryId,
+		com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector imageSelector)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_blogsEntryLocalService.addSmallImage(entryId, imageSelector);
 	}
 
 	@Override
@@ -351,16 +374,6 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _blogsEntryLocalService.getActionableDynamicQuery();
-	}
-
-	/**
-	* Returns the Spring bean ID for this bean.
-	*
-	* @return the Spring bean ID for this bean
-	*/
-	@Override
-	public java.lang.String getBeanIdentifier() {
-		return _blogsEntryLocalService.getBeanIdentifier();
 	}
 
 	/**
@@ -712,8 +725,23 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	}
 
 	@Override
+	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
+		return _blogsEntryLocalService.getIndexableActionableDynamicQuery();
+	}
+
+	@Override
 	public java.util.List<com.liferay.portlet.blogs.model.BlogsEntry> getNoAssetEntries() {
 		return _blogsEntryLocalService.getNoAssetEntries();
+	}
+
+	/**
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
+	@Override
+	public java.lang.String getOSGiServiceIdentifier() {
+		return _blogsEntryLocalService.getOSGiServiceIdentifier();
 	}
 
 	@Override
@@ -791,9 +819,6 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	* @param userId the primary key of the user moving the blogs entry
 	* @param entry the blogs entry to be moved
 	* @return the moved blogs entry
-	* @throws PortalException if a user with the primary key could not be found
-	or if the blogs entry owner's social activity counter could not
-	be updated
 	*/
 	@Override
 	public com.liferay.portlet.blogs.model.BlogsEntry moveEntryToTrash(
@@ -808,9 +833,6 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	* @param userId the primary key of the user moving the blogs entry
 	* @param entryId the primary key of the blogs entry to be moved
 	* @return the moved blogs entry
-	* @throws PortalException if a user or blogs entry with the primary key
-	could not be found or if the blogs entry owner's social activity
-	counter could not be updated
 	*/
 	@Override
 	public com.liferay.portlet.blogs.model.BlogsEntry moveEntryToTrash(
@@ -826,25 +848,12 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	* @param userId the primary key of the user restoring the blogs entry
 	* @param entryId the primary key of the blogs entry to be restored
 	* @return the restored blogs entry from the recycle bin
-	* @throws PortalException if a user or blogs entry with the primary key
-	could not be found or if the blogs entry owner's social activity
-	counter could not be updated
 	*/
 	@Override
 	public com.liferay.portlet.blogs.model.BlogsEntry restoreEntryFromTrash(
 		long userId, long entryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _blogsEntryLocalService.restoreEntryFromTrash(userId, entryId);
-	}
-
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	@Override
-	public void setBeanIdentifier(java.lang.String beanIdentifier) {
-		_blogsEntryLocalService.setBeanIdentifier(beanIdentifier);
 	}
 
 	@Override
@@ -863,10 +872,10 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	public void updateAsset(long userId,
 		com.liferay.portlet.blogs.model.BlogsEntry entry,
 		long[] assetCategoryIds, java.lang.String[] assetTagNames,
-		long[] assetLinkEntryIds)
+		long[] assetLinkEntryIds, java.lang.Double priority)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		_blogsEntryLocalService.updateAsset(userId, entry, assetCategoryIds,
-			assetTagNames, assetLinkEntryIds);
+			assetTagNames, assetLinkEntryIds, priority);
 	}
 
 	/**

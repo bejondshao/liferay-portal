@@ -54,18 +54,23 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ADD_PAGE_BTN</td>
+	<td>//button[contains(@id,'GroupPagesPortlet') and contains(.,'Add Page')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ADD_PRODUCER</td>
-	<td>//button[contains(.,'Add Producer')]</td>
+	<td>//a[contains(.,'Add Producer')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ADD_PORTLET</td>
-	<td>//button[contains(.,'Add Portlet')]</td>
+	<td>//a[contains(.,'Add Portlet')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ADD_PAGE_VARIATION</td>
-	<td>//button[contains(.,'Add Page Variation')]</td>
+	<td>//a[contains(.,'Add Page Variation')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -99,13 +104,18 @@
 	<td></td>
 </tr>
 <tr>
-	<td>ADD_WIKI</td>
-	<td>//a[contains(@id,'addNodeButton') and contains(.,'Add Wiki')]</td>
+	<td>ADD_TEAM_MEMBERS</td>
+	<td>//button[span[contains(.,'Add Team Members')]]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>BASIC_PREVIEW</td>
-	<td>//a[contains(.,'Basic Preview')]</td>
+	<td>ADD_USER</td>
+	<td>//button[contains(.,'Add Users')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_WIKI</td>
+	<td>//a[contains(@id,'addNodeButton') and contains(.,'Add Wiki')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -274,6 +284,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>EXECUTE</td>
+	<td>//button[contains(.,'Execute')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EDITOR_SWITCH</td>
+	<td>//button[contains(@id,'EditorSwitch')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>EXPIRE</td>
 	<td>//button[contains(.,'Expire')]</td>
 	<td></td>
@@ -395,7 +415,7 @@
 </tr>
 <tr>
 	<td>PLUS</td>
-	<td>//a[contains(@class,'btn') and span[contains(@class,'icon-plus')]] | //button[span[contains(@class,'icon-plus')]]</td>
+	<td>//*[@data-qa-id='addButton'] | //a[contains(@class,'btn') and span[contains(@class,'icon-plus')]] | //button[span[contains(@class,'icon-plus')]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -410,7 +430,7 @@
 </tr>
 <tr>
 	<td>PUBLISH</td>
-	<td>//button[contains(.,'Publish')]</td>
+	<td>//button[span[contains(.,'Publish')]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -464,6 +484,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SAVE_ATTACHMENT</td>
+	<td>//div[contains(@id,'selectedFileName')]//button[contains(.,'Save')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SAVE</td>
 	<td>//button[contains(.,'Save')] | //div[@class='button-holder ']/button[contains(.,'Save')]</td>
 	<td></td>
@@ -495,7 +520,7 @@
 </tr>
 <tr>
 	<td>SEARCH</td>
-	<td>//button[contains(.,'Search')]</td>
+	<td>//*[@data-qa-id='searchButton'] | //button[contains(.,'Search')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -510,7 +535,7 @@
 </tr>
 <tr>
 	<td>SELECT_CATEGORIES</td>
-	<td>//button[contains(.,'Select Categories')]</td>
+	<td>//button[contains(.,'Select Categories')] | //button[@title='Select Categories']</td>
 	<td></td>
 </tr>
 <tr>
@@ -530,7 +555,7 @@
 </tr>
 <tr>
 	<td>SELECT_SCOPE</td>
-	<td>//div[contains (@class,'btn-group')]/a[@title='Default']</td>
+	<td>//div[contains(@class,'btn-group')]/a[@title='Default']</td>
 	<td></td>
 </tr>
 <tr>
@@ -550,7 +575,7 @@
 </tr>
 <tr>
 	<td>SIGN_IN</td>
-	<td>//button[contains(.,'Sign In')]</td>
+	<td>//button[contains(.,'Sign In')] | //button[contains(.,'Acceder')] | //button[contains(.,'Anmelden')] | //button[contains(.,'ログイン')] | //button[contains(.,'登录')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -571,6 +596,11 @@
 <tr>
 	<td>SUBMIT_FOR_PUBLICATION</td>
 	<td>//button[contains(.,'Submit for Publication')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>UNDO</td>
+	<td>//a[contains(.,'Undo')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -595,7 +625,7 @@
 </tr>
 <tr>
 	<td>VIEW_HISTORY</td>
-	<td>//a[contains(.,'View History')]</td>
+	<td>//button[contains(.,'View History')] | //a[contains(.,'View History')]</td>
 	<td></td>
 </tr>
 <tr>

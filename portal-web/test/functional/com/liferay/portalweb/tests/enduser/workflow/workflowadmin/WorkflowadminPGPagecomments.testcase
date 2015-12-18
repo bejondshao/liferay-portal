@@ -1,28 +1,36 @@
 <definition component-name="portal-workflow">
 	<property name="testray.main.component.name" value="Workflow" />
 
-	<var name="pageName" value="Page Comments Page" />
 	<var name="portletName" value="Page Comments" />
 	<var name="workflowAssetType" value="Comments" />
 
 	<set-up>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="SignIn#signInPortalInstanceSetUp" />
+			</then>
+		</if>
+
 		<execute macro="User#firstLoginPG" />
 
 		<execute macro="Page#gotoConfigurationCP">
 			<var name="portletName" value="Workflow Configuration" />
 		</execute>
 
-		<execute macro="Workflow#configureSiteWorkflow">
+		<execute macro="Workflow#configureWorkflow">
 			<var name="workflowDefinition" value="Single Approver (Version 1)" />
 			<var name="workflowResourceKey" value="RESOURCE_TABLE_COMMENTS_SELECT" />
 		</execute>
 
 		<execute macro="Page#addPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="Page#gotoPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="Portlet#addPG">
@@ -31,13 +39,25 @@
 	</set-up>
 
 	<tear-down>
-		<execute macro="PageComment#tearDownPG" />
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
 
-		<execute macro="Page#tearDownPG" />
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="PageComment#tearDownPG">
+					<var name="pageName" value="Page Comments Page" />
+				</execute>
 
-		<execute macro="Workflow#tearDownPortalWorkflow" />
+				<execute macro="Page#tearDownPG" />
 
-		<execute macro="Workflow#tearDownSiteWorkflow" />
+				<execute macro="Workflow#tearDownPortalWorkflow" />
+
+				<execute macro="Workflow#tearDownSiteWorkflow" />
+			</else>
+		</if>
 	</tear-down>
 
 	<command name="ApprovePageCommentPG" priority="4">
@@ -45,7 +65,7 @@
 		<var name="commentBody" value="Page Comment Comment" />
 
 		<execute macro="Page#gotoPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="PageComment#addWithWorkflowPG">
@@ -54,7 +74,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="PageComment#viewWithWorkflowPG">
@@ -74,7 +94,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="PageComment#viewWithWorkflowPG">
@@ -94,11 +114,23 @@
 		</execute>
 
 		<execute macro="Page#gotoPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="PageComment#viewPG">
 			<var name="commentAuthor" value="${commentAuthor}" />
+			<var name="commentBody" value="${commentBody}" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Submissions" />
+		</execute>
+
+		<execute macro="Workflow#gotoViewCompletedAssetViaMySubmissions">
+			<var name="workflowAssetTitle" value="${commentBody}" />
+		</execute>
+
+		<execute macro="PageComment#viewAsWorkflowAsset">
 			<var name="commentBody" value="${commentBody}" />
 		</execute>
 	</command>
@@ -107,7 +139,7 @@
 		<description message="This is a use case for LPS-54707." />
 
 		<execute macro="Page#gotoPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="PageComment#addWithWorkflowPG">
@@ -116,7 +148,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="PageComment#viewWithWorkflowPG">
@@ -137,7 +169,7 @@
 		</execute>
 
 		<execute macro="PageComment#tearDownPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="Page#gotoMyAccount">
@@ -152,7 +184,7 @@
 		<var name="commentBody" value="Page Comment Comment" />
 
 		<execute macro="Page#gotoPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="PageComment#addWithWorkflowPG">
@@ -161,7 +193,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="PageComment#viewWithWorkflowPG">
@@ -200,7 +232,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPG">
-			<var name="pageName" value="${pageName}" />
+			<var name="pageName" value="Page Comments Page" />
 		</execute>
 
 		<execute macro="PageComment#viewWithWorkflowPG">

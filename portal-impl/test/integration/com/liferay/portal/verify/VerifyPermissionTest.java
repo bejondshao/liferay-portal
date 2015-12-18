@@ -37,11 +37,10 @@ import com.liferay.portal.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.permission.PortletPermissionUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.test.rule.MainServletTestRule;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.verify.test.BaseVerifyProcessTestCase;
+import com.liferay.portlet.util.test.PortletKeys;
 
 import java.util.List;
 
@@ -63,8 +62,7 @@ public class VerifyPermissionTest extends BaseVerifyProcessTestCase {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new AggregateTestRule(
-			new LiferayIntegrationTestRule(), MainServletTestRule.INSTANCE);
+		new LiferayIntegrationTestRule();
 
 	@Test
 	public void testFixUserDefaultRolePermissions() throws Exception {
@@ -73,11 +71,11 @@ public class VerifyPermissionTest extends BaseVerifyProcessTestCase {
 		Role powerUserRole = RoleLocalServiceUtil.getRole(
 			TestPropsValues.getCompanyId(), RoleConstants.POWER_USER);
 		String primKey = PortletPermissionUtil.getPrimaryKey(
-			layout.getPlid(), PortletKeys.DOCKBAR);
+			layout.getPlid(), PortletKeys.TEST);
 
 		ResourcePermission resourcePermission =
 			ResourcePermissionLocalServiceUtil.fetchResourcePermission(
-				TestPropsValues.getCompanyId(), PortletKeys.DOCKBAR,
+				TestPropsValues.getCompanyId(), PortletKeys.TEST,
 				ResourceConstants.SCOPE_INDIVIDUAL, primKey,
 				powerUserRole.getRoleId());
 
@@ -88,7 +86,7 @@ public class VerifyPermissionTest extends BaseVerifyProcessTestCase {
 
 		resourcePermission =
 			ResourcePermissionLocalServiceUtil.getResourcePermission(
-				TestPropsValues.getCompanyId(), PortletKeys.DOCKBAR,
+				TestPropsValues.getCompanyId(), PortletKeys.TEST,
 				ResourceConstants.SCOPE_INDIVIDUAL, primKey,
 				userRole.getRoleId());
 
@@ -103,7 +101,7 @@ public class VerifyPermissionTest extends BaseVerifyProcessTestCase {
 
 		resourcePermission =
 			ResourcePermissionLocalServiceUtil.fetchResourcePermission(
-				TestPropsValues.getCompanyId(), PortletKeys.DOCKBAR,
+				TestPropsValues.getCompanyId(), PortletKeys.TEST,
 				ResourceConstants.SCOPE_INDIVIDUAL, primKey,
 				powerUserRole.getRoleId());
 
@@ -111,7 +109,7 @@ public class VerifyPermissionTest extends BaseVerifyProcessTestCase {
 
 		resourcePermission =
 			ResourcePermissionLocalServiceUtil.getResourcePermission(
-				TestPropsValues.getCompanyId(), PortletKeys.DOCKBAR,
+				TestPropsValues.getCompanyId(), PortletKeys.TEST,
 				ResourceConstants.SCOPE_INDIVIDUAL, primKey,
 				userRole.getRoleId());
 
@@ -151,7 +149,7 @@ public class VerifyPermissionTest extends BaseVerifyProcessTestCase {
 		_request.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
 		Portlet portlet = PortletLocalServiceUtil.getPortletById(
-			user.getCompanyId(), PortletKeys.DOCKBAR);
+			user.getCompanyId(), PortletKeys.TEST);
 
 		PortalUtil.addPortletDefaultResource(_request, portlet);
 

@@ -1,86 +1,96 @@
 import com.liferay.gradle.util.FileUtil
-import com.liferay.gradle.util.OSDetector
-import com.liferay.gradle.util.copy.StripPathSegmentsAction
 
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 buildscript {
+	dependencies {
+		classpath group: "com.liferay", name: "com.liferay.gradle.util", version: "1.0.23"
+	}
+
 	repositories {
 		if (!Boolean.getBoolean("maven.local.ignore")) {
 			mavenLocal()
 		}
 
 		maven {
-			url "http://cdn.repository.liferay.com/nexus/content/groups/public"
+			url System.properties["repository.url"] ?: "http://cdn.repository.liferay.com/nexus/content/groups/public"
 		}
 	}
-
-	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.util", version: "1.0.19"
-	}
 }
+
+_setPropertyDefault project, "junit.java.integration.gc", "-Xms512m -Xmx512m -XX:MaxNewSize=32m -XX:MaxPermSize=200m -XX:MaxTenuringThreshold=0 -XX:NewSize=32m -XX:ParallelGCThreads=2 -XX:PermSize=200m -XX:SurvivorRatio=65536 -XX:TargetSurvivorRatio=0 -XX:-UseAdaptiveSizePolicy -XX:+UseParallelOldGC"
+_setPropertyDefault project, "junit.java.unit.gc", "-Xms256m -Xmx256m -XX:MaxNewSize=32m -XX:MaxPermSize=64m -XX:MaxTenuringThreshold=0 -XX:NewSize=32m -XX:ParallelGCThreads=2 -XX:PermSize=64m -XX:SurvivorRatio=65536 -XX:TargetSurvivorRatio=0 -XX:-UseAdaptiveSizePolicy -XX:+UseParallelOldGC -XX:-UseSplitVerifier"
+
+_setPropertyDefault project, "nodejs.npm.module.author", "Nathan Cavanaugh <nathan.cavanaugh@liferay.com> (https://github.com/natecavanaugh)"
+_setPropertyDefault project, "nodejs.npm.module.bugs.url", "https://issues.liferay.com/"
+_setPropertyDefault project, "nodejs.npm.module.license", "LGPL"
+_setPropertyDefault project, "nodejs.npm.module.repository", "liferay/liferay-portal"
 
 apply plugin: "com.liferay.plugin"
 apply plugin: "eclipse"
 apply plugin: "findbugs"
+apply plugin: "idea"
+
+if (FileUtil.exists(project, "service.xml")) {
+	apply plugin: "com.liferay.portal.tools.service.builder"
+	apply plugin: "com.liferay.portal.tools.upgrade.table.builder"
+	apply plugin: "com.liferay.portal.tools.wsdd.builder"
+}
+
+if (FileUtil.exists(project, "wsdl")) {
+	apply plugin: "com.liferay.wsdl.builder"
+}
+
+if (FileUtil.exists(project, "xsd")) {
+	apply plugin: "com.liferay.xsd.builder"
+}
 
 File appServerClassesPortalDir = new File(liferay.appServerPortalDir, "WEB-INF/classes")
 File appServerLibPortalDir = new File(liferay.appServerPortalDir, "WEB-INF/lib")
-File moduleFrameworkBaseDir = new File(liferay.liferayHome, "osgi")
+File portalRootDir = _getPortalRootDir(project)
 
-distsDirName = FileUtil.relativize(rootProject.file("../tools/sdk/dist"), buildDir)
+if (portalRootDir) {
+	distsDirName = FileUtil.relativize(new File(portalRootDir, "tools/sdk/dist"), buildDir)
+	libsDirName = distsDirName
+}
+
 group = "com.liferay"
-libsDirName = distsDirName
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 
 afterEvaluate {
-	project.ext.set("app.server.lib.portal.dir", project.relativePath(appServerLibPortalDir))
-	project.ext.set("app.server.portal.dir", project.relativePath(liferay.appServerPortalDir))
-	project.ext.set("plugin.full.version", project.version.toString())
+	project.ext.set "app.server.lib.portal.dir", project.relativePath(appServerLibPortalDir)
+	project.ext.set "app.server.portal.dir", project.relativePath(liferay.appServerPortalDir)
+	project.ext.set "plugin.full.version", project.version.toString()
 
 	if (project.hasProperty("snapshot") && !project.version.endsWith("-SNAPSHOT")) {
 		project.version = project.version + "-SNAPSHOT"
 	}
 
-	Iterable<Task> publishNodeModuleTasks = tasks.matching {
-		it.class.name.startsWith "com.liferay.gradle.plugins.node.tasks.PublishNodeModuleTask"
-	}
+	if (!project.version.endsWith("-SNAPSHOT")) {
+		Iterable<Task> publishNodeModuleTasks = tasks.matching {
+			it.class.name.startsWith "com.liferay.gradle.plugins.node.tasks.PublishNodeModuleTask"
+		}
 
-	publishNodeModuleTasks.each {
-		it.dependsOn jar
-
-		if (!project.version.endsWith("-SNAPSHOT")) {
+		publishNodeModuleTasks.each {
 			uploadArchives.dependsOn it
 		}
 	}
-
-	javadoc {
-		classpath = sourceSets.main.output + sourceSets.main.compileClasspath
-	}
 }
 
-buildCSS {
-	dependsOn ":frontend:frontend-common-css:buildCssCommon"
-	portalCommonDirName = relativePath(new File(rootDir, "frontend/frontend-common-css/tmp/META-INF/resources"))
-	sassCompilerClassName = project.properties["sass.compiler.class.name"]
-}
+Project frontendCommonCssProject = findProject(":frontend:frontend-common-css")
 
-buildService {
-	doFirst {
-		if (project.name.endsWith("-service")) {
-			String requiredApiDirName = "../${project.name[0 .. -9]}-api/src"
+if (frontendCommonCssProject) {
+	buildCSS {
+		dependsOn {
+			FileCollection cssFiles = getCSSFiles()
 
-			if (apiDirName != requiredApiDirName) {
-				throw new GradleException("Please configure the 'buildService' task.")
+			if (!cssFiles.empty) {
+				return frontendCommonCssProject.path + ":buildCssCommon"
 			}
 		}
-	}
-}
 
-buildSoy {
-	ext {
-		autoClean = false
+		portalCommonDir = new File(frontendCommonCssProject.projectDir, "tmp/META-INF/resources")
 	}
 }
 
@@ -98,45 +108,31 @@ configurations {
 			eachDependency {
 				DependencyResolveDetails dependencyResolveDetails ->
 
-				if ((dependencyResolveDetails.requested.version == "default") && project.hasProperty(dependencyResolveDetails.requested.name + ".version")) {
-					dependencyResolveDetails.useVersion project.properties[dependencyResolveDetails.requested.name + ".version"]
+				if (dependencyResolveDetails.requested.group == "com.liferay.portal") {
+					dependencyResolveDetails.useVersion liferay.portalVersion
 				}
 			}
 		}
 	}
 
 	portal
-	portalEclipse
 	portalTest
 
 	alloyTaglib {
 		extendsFrom configurations.runtime
 		extendsFrom portal
 	}
-
-	whenObjectAdded {
-		Configuration configuration ->
-
-		if (configuration.name == "portalToolsThumbnailBuilder") {
-			configuration.extendsFrom portal
-		}
-	}
-}
-
-if (FileUtil.exists(project, "docroot")) {
-	copyLibs {
-		from(appServerLibPortalDir) {
-			include "util-bridges.jar", "util-java.jar", "util-taglib.jar"
-		}
-	}
 }
 
 dependencies {
-	alloyTaglib rootProject.files("../lib/development/alloy-taglib.jar", "../lib/development/org.freemarker-2.3.17.LIFERAY-PATCHED-1.jar")
+	alloyTaglib group: "com.liferay", name: "com.liferay.alloy.taglib", version: "1.1.6"
+	alloyTaglib group: "com.liferay", name: "org.freemarker", version: "2.3.17.LIFERAY-PATCHED-1"
 
-	cssBuilder group: "com.liferay", name: "com.liferay.css.builder", version: "default"
-	javadocFormatter group: "com.liferay", name: "com.liferay.javadoc.formatter", version: "default"
-	langBuilder group: "com.liferay", name: "com.liferay.lang.builder", version: "default"
+	cssBuilder group: "com.liferay", name: "com.liferay.css.builder", version: "1.0.13"
+	javadocFormatter group: "com.liferay", name: "com.liferay.javadoc.formatter", version: "1.0.8"
+	jspCTool group: "com.liferay", name: "com.liferay.jasper.jspc", version: "1.0.4"
+	jspCTool group: "org.apache.ant", name: "ant", version: "1.9.4"
+	langBuilder group: "com.liferay", name: "com.liferay.lang.builder", version: "1.0.3"
 
 	portal files(appServerClassesPortalDir)
 	portal fileTree(dir: appServerLibPortalDir, include: "*.jar")
@@ -147,23 +143,19 @@ dependencies {
 	portal group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
 	portal group: "javax.servlet.jsp", name: "jsp-api", version: "2.1"
 
-	portalEclipse group: "biz.aQute.bnd", name: "biz.aQute.bnd", version: "2.4.1"
-	portalEclipse group: "commons-logging", name: "commons-logging", version: "1.1.3"
-	portalEclipse group: "javax.activation", name: "activation", version: "1.1"
-	portalEclipse group: "javax.annotation", name: "jsr250-api", version: "1.0"
-	portalEclipse group: "javax.mail", name: "mail", version: "1.4"
-	portalEclipse group: "javax.portlet", name: "portlet-api", version: "2.0"
-	portalEclipse group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
-	portalEclipse group: "javax.servlet.jsp", name: "jsp-api", version: "2.1"
-	portalEclipse group: "log4j", name: "log4j", version: "1.2.17"
+	portalTest group: "com.liferay.portal", name: "portal-test", version: liferay.portalVersion
+	portalTest group: "com.liferay.portal", name: "portal-test-internal", version: liferay.portalVersion
 
-	portalTest fileTree(dir: new File(moduleFrameworkBaseDir, "test"), include: "portal-test*.jar")
-	serviceBuilder fileTree(dir: rootProject.file("../tools/sdk/tmp/portal-tools"), include: "*.jar")
-	sourceFormatter group: "com.liferay", name: "com.liferay.source.formatter", version: "default"
-	tldFormatter group: "com.liferay", name: "com.liferay.tld.formatter", version: "default"
-	upgradeTableBuilder group: "com.liferay", name: "com.liferay.portal.tools.upgrade.table.builder", version: "default"
-	wsddBuilder group: "com.liferay", name: "com.liferay.portal.tools.wsdd.builder", version: "dependencies"
-	xmlFormatter group: "com.liferay", name: "com.liferay.xml.formatter", version: "default"
+	sourceFormatter group: "com.liferay", name: "com.liferay.source.formatter", version: "1.0.100"
+
+	testCompile group: "org.powermock", name: "powermock-api-mockito", version: "1.6.1"
+	testCompile group: "org.powermock", name: "powermock-core", version: "1.6.1"
+	testCompile group: "org.powermock", name: "powermock-module-junit4", version: "1.6.1"
+	testCompile group: "org.springframework", name: "spring-test", version: "3.2.15.RELEASE"
+
+	tldFormatter group: "com.liferay", name: "com.liferay.tld.formatter", version: "1.0.0"
+	whip group: "com.liferay", name: "com.liferay.whip", version: "1.0.0"
+	xmlFormatter group: "com.liferay", name: "com.liferay.xml.formatter", version: "1.0.0"
 }
 
 eclipse {
@@ -174,51 +166,105 @@ eclipse {
 					(it.kind == "lib") && it.path.endsWith(".pom")
 				}
 			}
+		}
 
+		plusConfigurations += [configurations.portalTest]
+	}
+}
+
+idea {
+	module {
+		excludeDirs += sourceSets.main.output.classesDir
+
+		iml {
 			withXml {
-				Node node = it.asNode()
+				XmlProvider xmlProvider ->
 
-				node.appendNode "classpathentry", [kind: "src", path: "/portal-master"]
+				if (!FileUtil.exists(project, "src/main/resources/META-INF/resources")) {
+					return
+				}
 
-				["portal-service", "util-bridges", "util-java", "util-taglib"].each {
-					node.appendNode "classpathentry", [kind: "lib", path: "/portal-master/${it}/${it}.jar"]
+				Node node = xmlProvider.node.component.find {
+					it.@name == "NewModuleRootManager"
+				}
+
+				node.plus {
+					NodeBuilder nodeBuilder = new NodeBuilder()
+
+					nodeBuilder.module(name: "NewModuleRootManager") {
+						component(name: "FacetManager") {
+							facet(name: "Web", type: "web") {
+								configuration {
+									webroots {
+										root relative: "/", url: 'file://$MODULE_DIR$/src/main/resources/META-INF/resources'
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 
-		plusConfigurations += [configurations.portalEclipse]
+		scopes.TEST.plus += [configurations.portalTest]
 	}
 }
 
-eclipseClasspath {
-	ext {
-		autoClean = false
-	}
-}
+javadoc {
+	String exportPackages = bundle.instructions["Export-Package"]
 
-eclipseProject {
-	ext {
-		autoClean = false
+	if (exportPackages) {
+		List<String> exportPackagesList = exportPackages.tokenize("," as char)
+
+		exportPackagesList*.trim()
+
+		exportPackagesList.each {
+			String pattern ->
+
+			boolean excludePattern = false
+
+			int start = 0
+
+			if (pattern.startsWith("!")) {
+				excludePattern = true
+
+				start = 1
+			}
+
+			int end = pattern.indexOf(";")
+
+			if (end == -1) {
+				end = pattern.length()
+			}
+
+			pattern = pattern[start .. (end - 1)]
+
+			pattern = "**/" + pattern.replace("." as char, "/" as char)
+
+			if (pattern.endsWith("/*")) {
+				pattern = pattern[0 .. -2]
+			}
+			else {
+				pattern += "/*"
+			}
+
+			if (excludePattern) {
+				exclude pattern
+			}
+			else {
+				include pattern
+			}
+		}
 	}
 }
 
 jsModuleConfigGenerator {
-	version = project.properties["nodejs.lfr.module.config.generator.version"]
-}
-
-jspC {
-	jspCVersion = project.properties["com.liferay.jasper.jspc.version"]
+	version = "1.1.7"
 }
 
 jsTranspiler {
-	babelVersion = project.properties["nodejs.babel.version"]
-	lfrAmdLoaderVersion = project.properties["nodejs.lfr.amd.loader.version"]
-}
-
-node {
-	npmArgs "--fetch-retries", "10"
-	npmArgs "--fetch-retry-maxtimeout", "120000"
-	npmArgs "--fetch-retry-mintimeout", "60000"
+	babelVersion = "5.8.23"
+	lfrAmdLoaderVersion = "1.3.5"
 }
 
 repositories {
@@ -227,15 +273,11 @@ repositories {
 	}
 
 	maven {
-		url "http://cdn.repository.liferay.com/nexus/content/groups/public"
+		url System.properties["repository.url"] ?: "http://cdn.repository.liferay.com/nexus/content/groups/public"
 	}
 }
 
 sourceSets {
-	main {
-		compileClasspath += configurations.portal
-	}
-
 	test {
 		compileClasspath = configurations.compile + configurations.portal + compileClasspath + configurations.portalTest
 		runtimeClasspath = configurations.compile + configurations.portal + runtimeClasspath + configurations.portalTest
@@ -251,8 +293,17 @@ tasks.eclipse {
 	dependsOn cleanEclipse
 }
 
-whip {
-	version = project.properties["com.liferay.whip.version"]
+testIntegration {
+	File testIntegrationResultsDir = file("test-results/integration")
+
+	binResultsDir = new File(testIntegrationResultsDir, "binary/testIntegration")
+	reports.junitXml.destination = testIntegrationResultsDir
+}
+
+pluginManager.withPlugin("com.liferay.alloy.taglib") {
+	buildTaglibs {
+		classpath = configurations.alloyTaglib
+	}
 }
 
 pluginManager.withPlugin("com.liferay.maven.plugin.builder") {
@@ -271,6 +322,29 @@ pluginManager.withPlugin("com.liferay.maven.plugin.builder") {
 	}
 }
 
+pluginManager.withPlugin("com.liferay.portal.tools.service.builder") {
+	dependencies {
+		if (portalRootDir) {
+			serviceBuilder fileTree(dir: new File(portalRootDir, "tools/sdk/tmp/portal-tools/portal-tools-service-builder"), include: "*.jar")
+		}
+		else {
+			serviceBuilder group: "com.liferay", name: "com.liferay.portal.tools.service.builder", version: "1.0.65"
+		}
+	}
+}
+
+pluginManager.withPlugin("com.liferay.portal.tools.upgrade.table.builder") {
+	dependencies {
+		upgradeTableBuilder group: "com.liferay", name: "com.liferay.portal.tools.upgrade.table.builder", version: "1.0.2"
+	}
+}
+
+pluginManager.withPlugin("com.liferay.portal.tools.wsdd.builder") {
+	dependencies {
+		wsddBuilder group: "com.liferay", name: "com.liferay.portal.tools.wsdd.builder", version: "1.0.4"
+	}
+}
+
 tasks.withType(FindBugs) {
 	maxHeapSize = "1g"
 
@@ -285,29 +359,26 @@ tasks.withType(JavaCompile) {
 	options.warnings = false
 }
 
-if (gradle.hasProperty("testClassGroupIndex")) {
-	configure([test, testIntegration]) {
-		include gradle.testClasses
+private File _getPortalRootDir(Project project) {
+	File dir = project.rootDir.parentFile
 
-		jvmArgs "-Dtest.class.group.index=" + gradle.testClassGroupIndex
-		jvmArgs "-Dtest.class.groups=" + gradle.testClassGroups
+	while (true) {
+		File portalImplDir = new File(dir, "portal-impl")
+
+		if (portalImplDir.exists()) {
+			return dir
+		}
+
+		dir = dir.parentFile
+
+		if (!dir) {
+			return null
+		}
 	}
 }
 
-if (System.getenv("JENKINS_HOME")) {
-	node {
-		nodeUrl = "https://nodejs.org/dist/v${nodeVersion}/node-v${nodeVersion}-linux-x64.tar.gz"
-	}
-
-	pluginManager.withPlugin("com.liferay.cache") {
-		cache {
-			forcedCache = true
-		}
-	}
-
-	startTestableTomcat {
-		ext {
-			deleteLiferayHome = false
-		}
+private void _setPropertyDefault(Project project, String name, Object value) {
+	if (!project.hasProperty(name)) {
+		project.ext.set name, value
 	}
 }

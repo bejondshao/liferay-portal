@@ -1,7 +1,7 @@
 <definition>
 	<command name="configureDisplaySettingsPG">
 		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletNameBorderless" value="${portletNameBorderless}" />
+			<var name="portletName" value="${portletName}" />
 			<var name="portletOption" value="Configuration" />
 		</execute>
 
@@ -89,7 +89,7 @@
 
 	<command name="configureRootFolderPG">
 		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletNameBorderless" value="${portletNameBorderless}" />
+			<var name="portletName" value="Documents and Media" />
 			<var name="portletOption" value="Configuration" />
 		</execute>
 
@@ -112,22 +112,23 @@
 	</command>
 
 	<command name="configureScopetoGlobalPG">
-		<execute function="Click" locator1="Icon#COG" />
-
-		<execute function="AssertClick" locator1="MenuItem#CONFIGURATION" value1="Configuration" />
+		<execute macro="Portlet#gotoPortletOptions">
+			<var name="portletName" value="Documents and Media" />
+			<var name="portletOption" value="Configuration" />
+		</execute>
 
 		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
 
-		<execute function="AssertClick" locator1="NavPill#SCOPE" value1="Scope" />
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Scope" />
+		</execute>
 
-		<execute function="AssertClick" locator1="MenuItem#SCOPE" value1="${currentScope}" />
-
-		<execute function="AssertClick" locator1="MenuItem#GLOBAL" value1="Global" />
+		<execute function="Select" locator1="Select#SCOPE" value1="Global" />
 	</command>
 
 	<command name="viewDefaultConfigurationDisplaySettingsPG">
 		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletNameBorderless" value="${portletNameBorderless}" />
+			<var name="portletName" value="${portletName}" />
 			<var name="portletOption" value="Configuration" />
 		</execute>
 
@@ -147,7 +148,9 @@
 	</command>
 
 	<command name="viewDefaultPG">
-		<execute function="AssertTextEquals" locator1="Portlet#TITLE" value1="Documents and Media" />
+		<var name="key_portletName" value="Documents and Media" />
+
+		<execute function="AssertTextEquals" locator1="BasePortlet#TITLE" value1="Documents and Media" />
 		<execute function="AssertTextEquals" locator1="Message#INFO" value1="There are no documents or media files in this folder." />
 	</command>
 
@@ -158,7 +161,7 @@
 
 	<command name="viewRootFolderPG">
 		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletNameBorderless" value="${portletNameBorderless}" />
+			<var name="portletName" value="${portletName}" />
 			<var name="portletOption" value="Configuration" />
 		</execute>
 

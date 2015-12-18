@@ -55,8 +55,8 @@
 			<var name="userScreenName" value="${userScreenName}" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Roles" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
 		</execute>
 
 		<execute macro="Role#assignRegRoleCP">
@@ -87,8 +87,8 @@
 			<var name="userScreenName" value="${userScreenName}" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Roles" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
 		</execute>
 
 		<execute macro="Role#addCP">
@@ -407,8 +407,8 @@
 			<var name="teamName" value="${teamName}" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
@@ -557,8 +557,8 @@
 			<var name="siteType" value="${siteType}" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Roles" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
 		</execute>
 
 		<execute macro="Role#addCP">
@@ -580,8 +580,8 @@
 			<var name="userScreenName" value="${userScreenName}" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="User#assignSiteRoleCP">
@@ -608,12 +608,8 @@
 		</execute>
 
 		<execute macro="SOProfile#addInstantMessenger">
-			<var name="userInstantMessengerAIM" value="socialofficesn" />
-			<var name="userInstantMessengerICQ" value="socialofficesn" />
 			<var name="userInstantMessengerJabber" value="socialofficesn" />
 			<var name="userInstantMessengerSkype" value="socialofficesn" />
-			<var name="userInstantMessengerWindowsLiveMessenger" value="socialofficesn" />
-			<var name="userInstantMessengerYM" value="socialofficesn" />
 		</execute>
 
 		<execute macro="SOProfile#addIntroduction">
@@ -663,12 +659,8 @@
 		</execute>
 
 		<execute macro="SOProfile#editInstantMessenger">
-			<var name="userInstantMessengerAIM" value="socialofficesnedit" />
-			<var name="userInstantMessengerICQ" value="socialofficesnedit" />
 			<var name="userInstantMessengerJabber" value="socialofficesnedit" />
 			<var name="userInstantMessengerSkype" value="socialofficesnedit" />
-			<var name="userInstantMessengerWindowsLiveMessenger" value="socialofficesnedit" />
-			<var name="userInstantMessengerYM" value="socialofficesnedit" />
 		</execute>
 
 		<execute macro="SOProfile#editIntroduction">

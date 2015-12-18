@@ -1,39 +1,56 @@
 <definition component-name="portal-staging">
 	<property name="testray.main.component.name" value="Staging" />
 
-	<var name="siteName" value="Site Name" />
-
 	<set-up>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="SignIn#signInPortalInstanceSetUp" />
+			</then>
+		</if>
+
 		<execute macro="User#firstLoginPG" />
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="SitePage#addCP">
+			<var name="page" value="Public Pages" />
 			<var name="siteName" value="Site Name" />
 			<var name="sitePageName" value="Staging Test Page" />
-			<var name="sitePagePrivacy" value="Public" />
 		</execute>
 	</set-up>
 
 	<tear-down>
-		<execute macro="Site#tearDownCP" />
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
 
-		<execute macro="Organization#tearDownCP" />
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Site#tearDownCP" />
 
-		<execute macro="User#tearDownCP" />
+				<execute macro="Organization#tearDownCP" />
+
+				<execute macro="User#tearDownCP" />
+			</else>
+		</if>
 	</tear-down>
 
-	<command known-issues="LPS-55450" name="ActivateDeactivateRemoteStaging" priority="4">
+	<command name="ActivateDeactivateRemoteStaging" priority="4">
 		<property name="custom.properties" value="tunneling.servlet.shared.secret=1234567890123456${line.separator}auth.verifier.TunnelingServletAuthVerifier.hosts.allowed=" />
 
 		<execute macro="Staging#remoteStagingSetUp">
@@ -80,7 +97,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -101,7 +118,7 @@
 		</execute>
 	</command>
 
-	<command known-issues="LRQA-16325" name="ActivateDeactivateStagingLocalLiveDM" priority="4">
+	<command name="ActivateDeactivateStagingLocalLiveDM" priority="4">
 		<execute macro="Page#gotoPG">
 			<var name="pageName" value="Staging Test Page" />
 			<var name="siteName" value="Site Name" />
@@ -114,13 +131,13 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
 
 		<execute macro="Staging#activateStagingCP">
-			<var name="siteName" value="${siteName}" />
+			<var name="siteName" value="Site Name" />
 		</execute>
 
 		<execute macro="Page#gotoPG">
@@ -139,7 +156,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -149,13 +166,13 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
 
 		<execute macro="Staging#activateStagingCP">
-			<var name="siteName" value="${siteName}" />
+			<var name="siteName" value="Site Name" />
 		</execute>
 
 		<execute macro="Page#gotoPG">
@@ -172,13 +189,14 @@
 		</execute>
 	</command>
 
-	<command known-issues="LRQA-16325" name="ActivateRemoteStaging" priority="4">
+	<command name="ActivateRemoteStaging" priority="5">
 		<property name="custom.properties" value="tunneling.servlet.shared.secret=1234567890123456${line.separator}auth.verifier.TunnelingServletAuthVerifier.hosts.allowed=" />
+		<property name="portal.acceptance" value="true" />
 
 		<var name="siteID" value="${siteID}" />
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
@@ -195,7 +213,7 @@
 		<execute function="Copy" locator1="SitesEditSite#SITE_ID" value1="siteID" />
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -207,18 +225,20 @@
 	</command>
 
 	<command name="ActivateStaging" priority="5">
+		<property name="portal.acceptance" value="true" />
+
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
 
 		<execute macro="Staging#activateStagingCP">
-			<var name="siteName" value="${siteName}" />
+			<var name="siteName" value="Site Name" />
 		</execute>
 	</command>
 
-	<command known-issues="LRQA-16325" name="AddDMDocumentStagingLocalLive" priority="4">
+	<command name="AddDMDocumentStagingLocalLive" priority="3">
 		<execute macro="Page#gotoPG">
 			<var name="pageName" value="Staging Test Page" />
 			<var name="siteName" value="Site Name" />
@@ -231,13 +251,13 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
 
 		<execute macro="Staging#activateStagingCP">
-			<var name="siteName" value="${siteName}" />
+			<var name="siteName" value="Site Name" />
 		</execute>
 
 		<execute macro="Page#gotoPG">
@@ -270,9 +290,9 @@
 		</execute>
 	</command>
 
-	<command known-issues="LRQA-16325" name="AddEventRepeatDaily" priority="4">
+	<command name="AddEventRepeatDaily" priority="4">
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -294,9 +314,11 @@
 		</execute>
 	</command>
 
-	<command known-issues="LPS-58342" name="AddPageVariation" priority="5">
+	<command name="AddPageVariation" priority="5">
+		<property name="portal.acceptance" value="true" />
+
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -329,9 +351,11 @@
 		</execute>
 	</command>
 
-	<command known-issues="LPS-58342" name="AddPageWithPageVersioningEnabled" priority="5">
+	<command name="AddPageWithPageVersioningEnabled" priority="5">
+		<property name="portal.acceptance" value="true" />
+
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -341,20 +365,23 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoSitesPages">
+			<var name="page" value="Public Pages" />
 		</execute>
 
 		<execute macro="SitePage#addCP">
+			<var name="page" value="Public Pages" />
 			<var name="siteName" value="Site Name" />
 			<var name="sitePageName" value="Staging Test Page" />
-			<var name="sitePagePrivacy" value="Public" />
+			<var name="siteScopeSelected" value="true" />
 		</execute>
 	</command>
 
-	<command known-issues="LPS-58342" name="AddSitePagesVariation" priority="5">
+	<command name="AddSitePagesVariation" priority="5">
+		<property name="portal.acceptance" value="true" />
+
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -387,7 +414,7 @@
 		</execute>
 	</command>
 
-	<command name="AssertEditWebContentStaging" priority="4">
+	<command name="AssertEditWebContentStaging" priority="3">
 		<execute macro="Page#gotoPG">
 			<var name="pageName" value="Staging Test Page" />
 			<var name="siteName" value="Site Name" />
@@ -408,7 +435,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -429,7 +456,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -449,7 +476,7 @@
 		</execute>
 	</command>
 
-	<command name="AssertNoEditLink" priority="4">
+	<command name="AssertNoEditLink" priority="3">
 		<execute macro="Page#addPG">
 			<var name="pageName" value="Blogs Test Page" />
 			<var name="siteName" value="Site Name" />
@@ -511,7 +538,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -532,7 +559,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -553,9 +580,9 @@
 		</execute>
 	</command>
 
-	<command known-issues="LRQA-16325" name="BlogsOrganizationWorkflowStaging" priority="4">
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Roles" />
+	<command name="BlogsOrganizationWorkflowStaging" priority="3">
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
 		</execute>
 
 		<execute macro="Role#definePermissionCP">
@@ -566,8 +593,8 @@
 			<var name="roleName" value="Organization User" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Roles" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
 		</execute>
 
 		<execute macro="Role#definePermissionCP">
@@ -578,8 +605,8 @@
 			<var name="roleName" value="Organization User" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="Organization#addCP">
@@ -587,26 +614,26 @@
 			<var name="orgType" value="Regular Organization" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="Organization#addSiteCP">
 			<var name="orgName" value="Organization Name" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="SitePage#addCP">
+			<var name="page" value="Public Pages" />
 			<var name="siteName" value="Organization Name" />
 			<var name="sitePageName" value="Staging Test Page" />
-			<var name="sitePagePrivacy" value="Public" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -616,8 +643,8 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="User#editPasswordCP">
@@ -626,8 +653,8 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="Organization#addMemberCP">
@@ -637,8 +664,8 @@
 			<var name="userScreenName" value="usersn" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -648,8 +675,8 @@
 			<var name="userScreenName" value="usersncr" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="User#editPasswordCP">
@@ -658,8 +685,8 @@
 			<var name="userScreenName" value="usersncr" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="Organization#addMemberCP">
@@ -669,8 +696,8 @@
 			<var name="userScreenName" value="usersncr" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="Organization#assignOrgRoleCP">
@@ -681,8 +708,8 @@
 			<var name="userScreenName" value="usersncr" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="User#addCP">
@@ -692,8 +719,8 @@
 			<var name="userScreenName" value="usersnoa" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="User#editPasswordCP">
@@ -702,8 +729,8 @@
 			<var name="userScreenName" value="usersnoa" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="Organization#addMemberCP">
@@ -713,8 +740,8 @@
 			<var name="userScreenName" value="usersnoa" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Users and Organizations" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Users and Organizations" />
 		</execute>
 
 		<execute macro="Organization#assignOrgRoleCP">
@@ -726,7 +753,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Organization Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -741,7 +768,7 @@
 			<var name="siteURL" value="true" />
 		</execute>
 
-		<execute macro="Workflow#configureSiteWorkflow">
+		<execute macro="Workflow#configureWorkflow">
 			<var name="workflowDefinition" value="Single Approver (Version 1)" />
 			<var name="workflowResourceKey" value="RESOURCE_TABLE_BLOGS_ENTRY_SELECT" />
 		</execute>
@@ -888,8 +915,8 @@
 			<var name="userEmailAddress" value="test@liferay.com" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Roles" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
 		</execute>
 
 		<execute macro="Role#removePermissionCP">
@@ -900,8 +927,8 @@
 			<var name="roleName" value="Organization User" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Roles" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
 		</execute>
 
 		<execute macro="Role#removePermissionCP">
@@ -915,17 +942,17 @@
 
 	<command name="DeactivateStaging" priority="4">
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
 
 		<execute macro="Staging#activateStagingCP">
-			<var name="siteName" value="${siteName}" />
+			<var name="siteName" value="Site Name" />
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -935,7 +962,7 @@
 		</execute>
 	</command>
 
-	<command known-issues="LRQA-16325" name="DeleteDMDocument" priority="4">
+	<command name="DeleteDMDocument" priority="4">
 		<execute macro="Page#gotoPG">
 			<var name="pageName" value="Staging Test Page" />
 			<var name="siteName" value="Site Name" />
@@ -948,7 +975,7 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -1003,10 +1030,10 @@
 			<var name="dmDocumentTitle" value="DM Document Title" />
 		</execute>
 
-		<execute macro="Page#gotoPagesCP">
+		<execute macro="Page#gotoPG">
+			<var name="pageName" value="Staging Test Page" />
 			<var name="pageStaging" value="true" />
-			<var name="portletName" value="Site Pages" />
-			<var name="siteScopeName" value="Site Name" />
+			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
 
@@ -1046,17 +1073,17 @@
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
 
 		<execute macro="Staging#activateStagingCP">
-			<var name="siteName" value="${siteName}" />
+			<var name="siteName" value="Site Name" />
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -1068,7 +1095,7 @@
 		<execute function="Pause" locator1="5000" />
 	</command>
 
-	<command known-issues="LPS-58641" name="PublishWCIncludingTextsAndImages" priority="4">
+	<command name="PublishWCIncludingTextsAndImages" priority="3">
 		<execute macro="Page#gotoContentCP">
 			<var name="portletName" value="Documents and Media" />
 			<var name="siteName" value="Liferay" />
@@ -1115,7 +1142,7 @@
 		<execute macro="WebContent#publish" />
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -1167,7 +1194,7 @@
 		</execute>
 	</command>
 
-	<command known-issues="LPS-55450" name="PublishWCViaRemoteStaging" priority="4">
+	<command name="PublishWCViaRemoteStaging" priority="3">
 		<property name="custom.properties" value="tunneling.servlet.shared.secret=1234567890123456${line.separator}auth.verifier.TunnelingServletAuthVerifier.hosts.allowed=" />
 
 		<execute macro="Staging#remoteStagingSetUp">
@@ -1205,7 +1232,7 @@
 		</execute>
 	</command>
 
-	<command known-issues="LRQA-16325" name="PublishWCWithPagesVariationViaRemoteStaging" priority="4">
+	<command name="PublishWCWithPagesVariationViaRemoteStaging" priority="3">
 		<property name="custom.properties" value="tunneling.servlet.shared.secret=1234567890123456${line.separator}auth.verifier.TunnelingServletAuthVerifier.hosts.allowed=" />
 
 		<execute macro="Staging#remoteStagingSetUp">
@@ -1327,7 +1354,7 @@
 			<var name="siteURL" value="true" />
 		</execute>
 
-		<execute macro="BlogsEntry#gotoPG">
+		<execute macro="BlogsNavigator#gotoEntryPG">
 			<var name="entryContent" value="Blogs Entry Content" />
 			<var name="entryTitle" value="Blogs Entry Title" />
 		</execute>
@@ -1338,15 +1365,17 @@
 		</execute>
 	</command>
 
-	<command known-issues="LRQA-17954" name="StagingPublishPortlet" priority="4">
+	<command name="StagingPublishPortlet" priority="5">
+		<property name="portal.acceptance" value="true" />
+
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
 
 		<execute macro="Staging#activateStagingCP">
-			<var name="siteName" value="${siteName}" />
+			<var name="siteName" value="Site Name" />
 		</execute>
 
 		<execute macro="Page#gotoPG">

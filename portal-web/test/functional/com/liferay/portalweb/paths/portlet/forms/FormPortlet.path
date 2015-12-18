@@ -9,6 +9,11 @@
 </thead>
 <tbody>
 <tr>
+	<td>FORM_CONTENT</td>
+	<td>//div[contains(@class,'form-container')]/div[contains(@class,'form-content')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SELECT_FORM</td>
 	<td>//span[contains(@class,'taglib-text') and contains(.,'Select Form')]</td>
 	<td></td>
@@ -24,8 +29,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>FORM_PAGE_COMPLETE</td>
-	<td>//ul[contains(@class,'multi-step-progress-bar')]/li[@class='complete' and contains(.,'${key_formPageName}')]/div[@class='progress-bar-title']</td>
+	<td>FORM_PAGE_INACTIVE</td>
+	<td>//ul[contains(@class,'multi-step-progress-bar')]/li[not(contains(@class,'active')) and contains(.,'${key_formPageName}')]/div[@class='progress-bar-title']</td>
 	<td></td>
 </tr>
 </tbody>

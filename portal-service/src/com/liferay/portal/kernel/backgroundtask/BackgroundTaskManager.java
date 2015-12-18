@@ -31,9 +31,18 @@ import java.util.Map;
 public interface BackgroundTaskManager {
 
 	public BackgroundTask addBackgroundTask(
-		long userId, long groupId, String name, String[] servletContextNames,
-		Class<?> taskExecutorClass, Map<String, Serializable> taskContextMap,
-		ServiceContext serviceContext) throws PortalException;
+			long userId, long groupId, String name,
+			String taskExecutorClassName,
+			Map<String, Serializable> taskContextMap,
+			ServiceContext serviceContext)
+		throws PortalException;
+
+	public BackgroundTask addBackgroundTask(
+			long userId, long groupId, String name,
+			String[] servletContextNames, Class<?> taskExecutorClass,
+			Map<String, Serializable> taskContextMap,
+			ServiceContext serviceContext)
+		throws PortalException;
 
 	public void addBackgroundTaskAttachment(
 			long userId, long backgroundTaskId, String fileName, File file)
@@ -108,6 +117,10 @@ public interface BackgroundTaskManager {
 		OrderByComparator<BackgroundTask> orderByComparator);
 
 	public List<BackgroundTask> getBackgroundTasks(
+		long[] groupIds, String name, String taskExecutorClassName, int start,
+		int end, OrderByComparator<BackgroundTask> orderByComparator);
+
+	public List<BackgroundTask> getBackgroundTasks(
 		String taskExecutorClassName, int status);
 
 	public List<BackgroundTask> getBackgroundTasks(
@@ -139,6 +152,13 @@ public interface BackgroundTaskManager {
 
 	public int getBackgroundTasksCount(
 		long groupId, String[] taskExecutorClassNames, boolean completed);
+
+	public int getBackgroundTasksCount(
+		long[] groupIds, String name, String taskExecutorClassName);
+
+	public int getBackgroundTasksCount(
+		long[] groupIds, String name, String taskExecutorClassName,
+		boolean completed);
 
 	public String getBackgroundTaskStatusJSON(long backgroundTaskId);
 

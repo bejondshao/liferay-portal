@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashRenderer;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
@@ -139,6 +140,21 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		catch (Exception e) {
 			throw new SearchException(e);
 		}
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object == this) {
+			return true;
+		}
+
+		if (!(object instanceof Indexer<?>)) {
+			return false;
+		}
+
+		Indexer<?> indexer = (Indexer<?>)object;
+
+		return Validator.equals(getClassName(), indexer.getClassName());
 	}
 
 	/**
@@ -383,6 +399,11 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	}
 
 	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, getClassName());
+	}
+
+	@Override
 	public boolean hasPermission(
 			PermissionChecker permissionChecker, String entryClassName,
 			long entryClassPK, String actionId)
@@ -401,7 +422,20 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		return _filterSearch;
 	}
 
+	@Override
 	public boolean isIndexerEnabled() {
+		String className = getClassName();
+
+		if (_indexerEnabled == null) {
+			String indexerEnabled = PropsUtil.get(
+				PropsKeys.INDEXER_ENABLED,
+				new com.liferay.portal.kernel.configuration.Filter(className));
+
+			_indexerEnabled = GetterUtil.getBoolean(indexerEnabled, true);
+
+			return _indexerEnabled;
+		}
+
 		return _indexerEnabled;
 	}
 
@@ -660,6 +694,11 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 
 	public void setCommitImmediately(boolean commitImmediately) {
 		_commitImmediately = commitImmediately;
+	}
+
+	@Override
+	public void setIndexerEnabled(boolean indexerEnabled) {
+		_indexerEnabled = indexerEnabled;
 	}
 
 	public void setSelectAllLocales(boolean selectAllLocales) {
@@ -1182,12 +1221,24 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 			BooleanFilter contextBooleanFilter, SearchContext searchContext)
 		throws Exception {
 
-		int status = GetterUtil.getInteger(
-			searchContext.getAttribute(Field.STATUS),
-			WorkflowConstants.STATUS_APPROVED);
+		int[] statuses = GetterUtil.getIntegerValues(
+			searchContext.getAttribute(Field.STATUS), null);
 
-		if (status != WorkflowConstants.STATUS_ANY) {
-			contextBooleanFilter.addRequiredTerm(Field.STATUS, status);
+		if (ArrayUtil.isEmpty(statuses)) {
+			int status = GetterUtil.getInteger(
+				searchContext.getAttribute(Field.STATUS),
+				WorkflowConstants.STATUS_APPROVED);
+
+			statuses = new int[] {status};
+		}
+
+		if (!ArrayUtil.contains(statuses, WorkflowConstants.STATUS_ANY)) {
+			TermsFilter statusesTermsFilter = new TermsFilter(Field.STATUS);
+
+			statusesTermsFilter.addValues(ArrayUtil.toStringArray(statuses));
+
+			contextBooleanFilter.add(
+				statusesTermsFilter, BooleanClauseOccur.MUST);
 		}
 		else {
 			contextBooleanFilter.addTerm(
@@ -1844,10 +1895,6 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		_filterSearch = filterSearch;
 	}
 
-	protected void setIndexerEnabled(boolean indexerEnabled) {
-		_indexerEnabled = indexerEnabled;
-	}
-
 	protected void setPermissionAware(boolean permissionAware) {
 		_permissionAware = permissionAware;
 	}
@@ -1865,7 +1912,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	private String[] _defaultSelectedLocalizedFieldNames;
 	private final Document _document = new DocumentImpl();
 	private boolean _filterSearch;
-	private boolean _indexerEnabled = true;
+	private Boolean _indexerEnabled;
 	private IndexerPostProcessor[] _indexerPostProcessors =
 		new IndexerPostProcessor[0];
 	private boolean _permissionAware;

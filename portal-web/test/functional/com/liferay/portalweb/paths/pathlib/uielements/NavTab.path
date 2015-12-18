@@ -114,6 +114,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>GOOGLE</td>
+	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'Google')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>LDAP</td>
 	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'LDAP')]</td>
 	<td></td>
@@ -231,6 +236,11 @@
 <tr>
 	<td>SYSTEM_PROPERTIES</td>
 	<td>//ul[contains(@class,'nav-tabs')]/li/a[contains(.,'System Properties')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TAB_LINK</td>
+	<td>//ul[contains(@class,'nav-tabs')]//li[contains(.,'${key_tab}')]/a</td>
 	<td></td>
 </tr>
 <tr>

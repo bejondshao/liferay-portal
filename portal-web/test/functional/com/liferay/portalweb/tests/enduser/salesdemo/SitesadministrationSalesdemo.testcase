@@ -1,19 +1,38 @@
 <definition component-name="portal-wcm">
-	<property name="testray.main.component.name" value="WCM" />
+	<property name="testray.main.component.name" value="Site Administration" />
 
 	<set-up>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="SignIn#signInPortalInstanceSetUp" />
+			</then>
+		</if>
+
 		<execute macro="User#firstLoginPG" />
 	</set-up>
 
 	<tear-down>
-		<execute macro="User#tearDownCP" />
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
 
-		<execute macro="Site#tearDownCP" />
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="User#tearDownCP" />
 
-		<execute macro="Page#tearDownPG" />
+				<execute macro="Site#tearDownCP" />
+
+				<execute macro="Page#tearDownPG" />
+			</else>
+		</if>
 	</tear-down>
 
-	<command known-issues="LPS-47210" name="Demo1" priority="4">
+	<command name="Demo1" priority="3">
 		<property name="portlet.plugins.includes" value="opensocial-portlet,vimeo-portlet,web-form-portlet" />
 		<property name="theme.plugins.includes" value="zoe-healthcare-theme" />
 		<property name="web.plugins.includes" value="resources-importer-web" />
@@ -22,8 +41,8 @@
 		<var name="siteNameLists" value="Site1 Name,Site2 Name,Site3 Name" />
 
 		<for list="${siteNameLists}" param="siteNameListsCount" >
-			<execute macro="Page#gotoCP">
-				<var name="portletName" value="Sites" />
+			<execute macro="ProductMenu#gotoControlPanelSites">
+				<var name="portlet" value="Sites" />
 			</execute>
 
 			<execute macro="Site#addCommunityCP">
@@ -31,28 +50,27 @@
 			</execute>
 		</for>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
 			<var name="siteName" value="Staging Site Name" />
 		</execute>
 
-		<execute macro="Page#gotoPagesCP">
-			<var name="portletName" value="Site Pages" />
-			<var name="siteScopeName" value="Staging Site Name" />
-			<var name="siteURL" value="true" />
+		<execute macro="ProductMenu#gotoSitesPages">
+			<var name="page" value="Public Pages" />
+			<var name="site" value="Staging Site Name" />
 		</execute>
 
 		<execute macro="SitePage#addCP">
+			<var name="page" value="Public Pages" />
 			<var name="sitePageName" value="Site Page Name" />
-			<var name="sitePagePrivacy" value="Public" />
 			<var name="siteScopeSelected" value="true" />
 		</execute>
 
 		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+			<var name="portletName" value="Staging Processes" />
 			<var name="siteScopeName" value="Staging Site Name" />
 			<var name="siteScopeSelected" value="true" />
 		</execute>
@@ -71,8 +89,8 @@
 
 		<execute macro="Staging#viewStagingLocalLivePG" />
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="Site#addCP">
@@ -87,8 +105,8 @@
 			<var name="siteTemplate" value="Zoe Healthcare Theme" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<for list="${allSiteNameLists}" param="allSiteNameListsCount" >
@@ -112,8 +130,8 @@
 			</execute>
 		</for>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Site Templates" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Site Templates" />
 		</execute>
 
 		<execute macro="SiteTemplates#addCP">

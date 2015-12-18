@@ -104,14 +104,6 @@
 		<put name="content" value="/portal/verify_email_address.jsp" />
 	</definition>
 
-	<!-- Background Task-->
-
-	<definition name="portlet.background_task" extends="portlet" />
-
-	<definition name="portlet.background_task.error" extends="portlet.background_task">
-		<put name="portlet_content" value="/portlet/background_task/error.jsp" />
-	</definition>
-
 	<!-- Calendar -->
 
 	<definition name="portlet.calendar" extends="portlet" />
@@ -132,50 +124,12 @@
 		<put name="portlet_content" value="/portlet/calendar/view_event.jsp" />
 	</definition>
 
-	<!-- Directory -->
-
-	<definition name="portlet.directory" extends="portlet" />
-
-	<definition name="portlet.directory.error" extends="portlet.directory">
-		<put name="portlet_content" value="/portlet/directory/error.jsp" />
-	</definition>
-
-	<definition name="portlet.directory.view" extends="portlet.directory">
-		<put name="portlet_content" value="/portlet/directory/view.jsp" />
-	</definition>
-
-	<definition name="portlet.directory.view_organization" extends="portlet.directory">
-		<put name="portlet_content" value="/portlet/directory/view_organization.jsp" />
-	</definition>
-
-	<definition name="portlet.directory.view_user" extends="portlet.directory">
-		<put name="portlet_content" value="/portlet/directory/view_user.jsp" />
-	</definition>
-
-	<!-- Dockbar -->
-
-	<definition name="portlet.dockbar" extends="portlet" />
-
-	<definition name="portlet.dockbar.view" path="/portlet/dockbar/view.jsp" />
-
-	<!-- Flags -->
-
-	<definition name="portlet.flags.edit_entry" path="/portlet/flags/edit_entry.jsp" />
-
 	<!-- Group Statistics -->
 
 	<definition name="portlet.group_statistics" extends="portlet" />
 
 	<definition name="portlet.group_statistics.add_activity_counter" extends="portlet.group_statistics">
 		<put name="portlet_content" value="/portlet/group_statistics/add_activity_counter.jsp" />
-	</definition>
-
-	<!-- Image Uploader -->
-
-	<definition name="portlet.image_uploader" extends="portlet" />
-
-	<definition name="portlet.image_uploader.view" extends="portlet.image_uploader">
-		<put name="portlet_content" value="/portlet/image_uploader/view.jsp" />
 	</definition>
 
 	<!-- Invitation -->
@@ -230,50 +184,6 @@
 
 	<definition name="portlet.recent_documents.view" extends="portlet.recent_documents">
 		<put name="portlet_content" value="/portlet/recent_documents/view.jsp" />
-	</definition>
-
-	<!-- Sites Directory -->
-
-	<definition name="portlet.sites_directory" extends="portlet" />
-
-	<definition name="portlet.sites_directory.view" extends="portlet.sites_directory">
-		<put name="portlet_content" value="/portlet/sites_directory/view.jsp" />
-	</definition>
-
-	<!-- Software Catalog -->
-
-	<definition name="portlet.software_catalog" extends="portlet" />
-
-	<definition name="portlet.software_catalog.edit_framework_version" extends="portlet.software_catalog">
-		<put name="portlet_content" value="/portlet/software_catalog/edit_framework_version.jsp" />
-	</definition>
-
-	<definition name="portlet.software_catalog.edit_license" extends="portlet.software_catalog">
-		<put name="portlet_content" value="/portlet/software_catalog/edit_license.jsp" />
-	</definition>
-
-	<definition name="portlet.software_catalog.edit_product_entry" extends="portlet.software_catalog">
-		<put name="portlet_content" value="/portlet/software_catalog/edit_product_entry.jsp" />
-	</definition>
-
-	<definition name="portlet.software_catalog.edit_product_version" extends="portlet.software_catalog">
-		<put name="portlet_content" value="/portlet/software_catalog/edit_product_version.jsp" />
-	</definition>
-
-	<definition name="portlet.software_catalog.error" extends="portlet.software_catalog">
-		<put name="portlet_content" value="/portlet/software_catalog/error.jsp" />
-	</definition>
-
-	<definition name="portlet.software_catalog.search" extends="portlet.software_catalog">
-		<put name="portlet_content" value="/portlet/software_catalog/search.jsp" />
-	</definition>
-
-	<definition name="portlet.software_catalog.view" extends="portlet.software_catalog">
-		<put name="portlet_content" value="/portlet/software_catalog/view.jsp" />
-	</definition>
-
-	<definition name="portlet.software_catalog.view_product_entry" extends="portlet.software_catalog">
-		<put name="portlet_content" value="/portlet/software_catalog/view_product_entry.jsp" />
 	</definition>
 
 	<!-- User Statistics -->
