@@ -2962,16 +2962,9 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 			else if (repositoryEntry instanceof Folder) {
 				Folder currentFolder = (Folder)repositoryEntry;
 
-				Folder newFolder = toRepository.addFolder(
-					getUserId(), destinationFolderId, currentFolder.getName(),
-					currentFolder.getDescription(), serviceContext);
-
-				dlAppHelperLocalService.addFolder(
-					getUserId(), newFolder, serviceContext);
-
-				copyFolderDependencies(
-					currentFolder.getFolderId(), newFolder.getFolderId(),
-					fromRepository, toRepository, serviceContext);
+				copyFolder(currentFolder.getFolderId(),
+					currentFolder.getParentFolderId(), fromRepository,
+					toRepository, serviceContext);
 			}
 			else if (repositoryEntry instanceof FileShortcut) {
 				Folder destinationFolder = dlAppLocalService.getFolder(

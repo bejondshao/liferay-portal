@@ -1306,16 +1306,8 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 			else if (repositoryEntry instanceof Folder) {
 				Folder currentFolder = (Folder)repositoryEntry;
 
-				Folder newFolder = toLocalRepository.addFolder(
-					userId, destinationFolderId, currentFolder.getName(),
-					currentFolder.getDescription(), serviceContext);
-
-				dlAppHelperLocalService.addFolder(
-					userId, newFolder, serviceContext);
-
-				copyFolderDependencies(
-					userId, currentFolder.getFolderId(),
-					newFolder.getFolderId(), fromLocalRepository,
+				copyFolder(userId, currentFolder.getFolderId(),
+					currentFolder.getParentFolderId(), fromLocalRepository,
 					toLocalRepository, serviceContext);
 			}
 			else if (repositoryEntry instanceof FileShortcut) {
