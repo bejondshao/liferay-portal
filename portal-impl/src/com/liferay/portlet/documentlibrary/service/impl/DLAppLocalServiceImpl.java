@@ -1269,31 +1269,19 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 			LocalRepository toLocalRepository, ServiceContext serviceContext)
 		throws PortalException {
 
-		Folder newFolder = null;
+		Folder folder = fromLocalRepository.getFolder(folderId);
 
-		try {
-			Folder folder = fromLocalRepository.getFolder(folderId);
+		Folder newFolder = toLocalRepository.addFolder(
+			userId, parentFolderId, folder.getName(), folder.getDescription(),
+			serviceContext);
 
-			newFolder = toLocalRepository.addFolder(
-				userId, parentFolderId, folder.getName(),
-				folder.getDescription(), serviceContext);
+		dlAppHelperLocalService.addFolder(userId, newFolder, serviceContext);
 
-			dlAppHelperLocalService.addFolder(
-				userId, newFolder, serviceContext);
+		copyFolderDependencies(
+			userId, folder, newFolder, fromLocalRepository, toLocalRepository,
+			serviceContext);
 
-			copyFolderDependencies(
-				userId, folder, newFolder, fromLocalRepository,
-				toLocalRepository, serviceContext);
-
-			return newFolder;
-		}
-		catch (PortalException pe) {
-			if (newFolder != null) {
-				toLocalRepository.deleteFolder(newFolder.getFolderId());
-			}
-
-			throw pe;
-		}
+		return newFolder;
 	}
 
 	protected void copyFolderDependencies(
@@ -1434,9 +1422,20 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 			LocalRepository toLocalRepository, ServiceContext serviceContext)
 		throws PortalException {
 
-		Folder newFolder = copyFolder(
-			userId, folderId, parentFolderId, fromLocalRepository,
-			toLocalRepository, serviceContext);
+		Folder newFolder = null;
+
+		try {
+			newFolder = copyFolder(
+				userId, folderId, parentFolderId, fromLocalRepository,
+				toLocalRepository, serviceContext);
+		}
+		catch (PortalException pe) {
+			if (newFolder != null) {
+				toLocalRepository.deleteFolder(newFolder.getFolderId());
+			}
+
+			throw pe;
+		}
 
 		fromLocalRepository.deleteFolder(folderId);
 
