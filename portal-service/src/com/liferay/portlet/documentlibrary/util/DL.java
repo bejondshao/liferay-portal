@@ -52,8 +52,6 @@ public interface DL {
 	public static final String OFFICE_EXTENSION_PATH =
 		StringPool.SLASH + OFFICE_EXTENSION;
 
-	public static final String TEMP_RANDOM_SUFFIX = "--tempRandomSuffix--";
-
 	public static final String WEBDAV_CHECK_IN_MODE = "webDAVCheckInMode";
 
 	public int compareVersions(String version1, String version2);
@@ -108,8 +106,6 @@ public interface DL {
 
 	public String getFileIconCssClass(String extension);
 
-	public String getFileName(long groupId, long folderId, String tempFileName);
-
 	public String getGenericName(String extension);
 
 	public String getImagePreviewURL(
@@ -140,6 +136,9 @@ public interface DL {
 
 	public <T> OrderByComparator<T> getRepositoryModelOrderByComparator(
 		String orderByCol, String orderByType);
+
+	public <T> OrderByComparator<T> getRepositoryModelOrderByComparator(
+		String orderByCol, String orderByType, boolean orderByModel);
 
 	public String getSanitizedFileName(String title, String extension);
 
@@ -186,6 +185,9 @@ public interface DL {
 	public String getTitleWithExtension(FileEntry fileEntry);
 
 	public String getTitleWithExtension(String title, String extension);
+
+	public String getUniqueFileName(
+		long groupId, long folderId, String fileName);
 
 	public String getWebDavURL(
 			ThemeDisplay themeDisplay, Folder folder, FileEntry fileEntry)

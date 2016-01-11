@@ -17,7 +17,7 @@ package com.liferay.portal.util;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -193,9 +193,8 @@ public class PortalUtil {
 	 * Adds the default resource permissions for the portlet to the page in the
 	 * request.
 	 *
-	 * @param  request the servlet request for the page
-	 * @param  portlet the portlet
-	 * @throws PortalException if adding the default resource permissions failed
+	 * @param request the servlet request for the page
+	 * @param portlet the portlet
 	 */
 	public static void addPortletDefaultResource(
 			HttpServletRequest request, Portlet portlet)
@@ -238,7 +237,7 @@ public class PortalUtil {
 
 	/**
 	 * Adds the preserved parameters doAsUserId, doAsUserLanguageId,
-	 * doAsGroupId, refererPlid, and controlPanelCategory to the URL.
+	 * doAsGroupId, and refererPlid to the URL.
 	 *
 	 * @param  themeDisplay the current theme display
 	 * @param  url the URL
@@ -346,7 +345,6 @@ public class PortalUtil {
 	 * @param  layout the page being requested
 	 * @return the alternate URL for the requested canonical URL in the given
 	 *         locale
-	 * @throws PortalException if a portal exception occurred
 	 */
 	public static String getAlternateURL(
 			String canonicalURL, ThemeDisplay themeDisplay, Locale locale,
@@ -388,8 +386,6 @@ public class PortalUtil {
 	 * @return the base model instance, or <code>null</code> if the resource
 	 *         permission does not have a base model instance (such as if it's a
 	 *         portlet)
-	 * @throws PortalException if a base model instance for the resource
-	 *         permission could not be found
 	 */
 	public static BaseModel<?> getBaseModel(
 			ResourcePermission resourcePermission)
@@ -405,8 +401,6 @@ public class PortalUtil {
 	 * @param  primKey the primary key of the model instance to get
 	 * @return the base model instance, or <code>null</code> if the model does
 	 *         not have a base model instance (such as if it's a portlet)
-	 * @throws PortalException if a base model instance with the primary key
-	 *         could not be found
 	 */
 	public static BaseModel<?> getBaseModel(String modelName, String primKey)
 		throws PortalException {
@@ -466,9 +460,6 @@ public class PortalUtil {
 	 * @param  layout the page being requested (optionally <code>null</code>).
 	 *         If <code>null</code> is specified, the current page is used.
 	 * @return the canonical URL for the page
-	 * @throws PortalException if a group for the page could not be found, if a
-	 *         group friendly URL could not be retrieved for the page, or if a
-	 *         portal exception occurred
 	 */
 	public static String getCanonicalURL(
 			String completeURL, ThemeDisplay themeDisplay, Layout layout)
@@ -499,9 +490,6 @@ public class PortalUtil {
 	 * @param  forceLayoutFriendlyURL whether to add the page's friendly URL to
 	 *         the canonical URL
 	 * @return the canonical URL of the page
-	 * @throws PortalException if a group for the page could not be found, if a
-	 *         group friendly URL could not be retrieved for the page, or if a
-	 *         portal exception occurred
 	 */
 	public static String getCanonicalURL(
 			String completeURL, ThemeDisplay themeDisplay, Layout layout,
@@ -621,18 +609,6 @@ public class PortalUtil {
 		return getPortal().getComputerName();
 	}
 
-	public static Map<String, List<Portlet>> getControlPanelCategoriesMap(
-		HttpServletRequest request) {
-
-		return getPortal().getControlPanelCategoriesMap(request);
-	}
-
-	public static String getControlPanelCategory(
-		String portletId, ThemeDisplay themeDisplay) {
-
-		return getPortal().getControlPanelCategory(portletId, themeDisplay);
-	}
-
 	public static String getControlPanelFullURL(
 			long scopeGroupId, String ppid, Map<String, String[]> params)
 		throws PortalException {
@@ -652,48 +628,35 @@ public class PortalUtil {
 		return getPortal().getControlPanelPlid(portletRequest);
 	}
 
-	public static Set<Portlet> getControlPanelPortlets(
-		long companyId, String category) {
-
-		return getPortal().getControlPanelPortlets(companyId, category);
-	}
-
-	public static List<Portlet> getControlPanelPortlets(
-		String category, ThemeDisplay themeDisplay) {
-
-		return getPortal().getControlPanelPortlets(category, themeDisplay);
-	}
-
 	public static PortletURL getControlPanelPortletURL(
 		HttpServletRequest request, Group group, String portletId,
-		long refererPlid, String lifecycle) {
+		long refererGroupId, long refererPlid, String lifecycle) {
 
 		return getPortal().getControlPanelPortletURL(
-			request, group, portletId, refererPlid, lifecycle);
+			request, group, portletId, refererGroupId, refererPlid, lifecycle);
 	}
 
 	public static PortletURL getControlPanelPortletURL(
-		HttpServletRequest request, String portletId, long refererPlid,
-		String lifecycle) {
+		HttpServletRequest request, String portletId, String lifecycle) {
 
 		return getPortal().getControlPanelPortletURL(
-			request, portletId, refererPlid, lifecycle);
+			request, portletId, lifecycle);
 	}
 
 	public static PortletURL getControlPanelPortletURL(
 		PortletRequest portletRequest, Group group, String portletId,
-		long refererPlid, String lifecycle) {
+		long refererGroupId, long refererPlid, String lifecycle) {
 
 		return getPortal().getControlPanelPortletURL(
-			portletRequest, group, portletId, refererPlid, lifecycle);
+			portletRequest, group, portletId, refererGroupId, refererPlid,
+			lifecycle);
 	}
 
 	public static PortletURL getControlPanelPortletURL(
-		PortletRequest portletRequest, String portletId, long refererPlid,
-		String lifecycle) {
+		PortletRequest portletRequest, String portletId, String lifecycle) {
 
 		return getPortal().getControlPanelPortletURL(
-			portletRequest, portletId, refererPlid, lifecycle);
+			portletRequest, portletId, lifecycle);
 	}
 
 	public static String getCreateAccountURL(
@@ -804,8 +767,6 @@ public class PortalUtil {
 	 *         date.
 	 * @return the date object, or <code>null</code> if the date is invalid and
 	 *         no exception to throw was provided
-	 * @throws PortalException if the date was invalid and <code>clazz</code>
-	 *         was not <code>null</code>
 	 */
 	public static Date getDate(
 			int month, int day, int year,
@@ -829,8 +790,6 @@ public class PortalUtil {
 	 *         date.
 	 * @return the date object, or <code>null</code> if the date is invalid and
 	 *         no exception to throw was provided
-	 * @throws PortalException if the date was invalid and <code>clazz</code>
-	 *         was not <code>null</code>
 	 */
 	public static Date getDate(
 			int month, int day, int year, int hour, int min,
@@ -855,8 +814,6 @@ public class PortalUtil {
 	 *         date.
 	 * @return the date object, or <code>null</code> if the date is invalid and
 	 *         no exception to throw was provided
-	 * @throws PortalException if the date was invalid and <code>clazz</code>
-	 *         was not <code>null</code>
 	 */
 	public static Date getDate(
 			int month, int day, int year, int hour, int min, TimeZone timeZone,
@@ -880,8 +837,6 @@ public class PortalUtil {
 	 *         date.
 	 * @return the date object, or <code>null</code> if the date is invalid and
 	 *         no exception to throw was provided
-	 * @throws PortalException if the date was invalid and <code>clazz</code>
-	 *         was not <code>null</code>
 	 */
 	public static Date getDate(
 			int month, int day, int year, TimeZone timeZone,
@@ -892,11 +847,11 @@ public class PortalUtil {
 	}
 
 	/**
-	 * @deprecated As of 6.1.0, replaced by {@link DBFactoryUtil#getDB()}
+	 * @deprecated As of 6.1.0, replaced by {@link DBManagerUtil#getDB()}
 	 */
 	@Deprecated
 	public static DB getDB() {
-		return DBFactoryUtil.getDB();
+		return DBManagerUtil.getDB();
 	}
 
 	public static long getDefaultCompanyId() {
@@ -988,22 +943,8 @@ public class PortalUtil {
 			portlet, facebookCanvasPageURL, themeDisplay);
 	}
 
-	/**
-	 * @deprecated As of 7.0.0, with no direct replacement
-	 */
-	@Deprecated
-	public static Portlet getFirstMyAccountPortlet(ThemeDisplay themeDisplay) {
-		return getPortal().getFirstMyAccountPortlet(themeDisplay);
-	}
-
 	public static String getFirstPageLayoutTypes(HttpServletRequest request) {
 		return getPortal().getFirstPageLayoutTypes(request);
-	}
-
-	public static Portlet getFirstSiteAdministrationPortlet(
-		ThemeDisplay themeDisplay) {
-
-		return getPortal().getFirstSiteAdministrationPortlet(themeDisplay);
 	}
 
 	public static String getFullName(
@@ -1808,24 +1749,6 @@ public class PortalUtil {
 			companyId, groupId, userId);
 	}
 
-	public static Map<String, List<Portlet>> getSiteAdministrationCategoriesMap(
-		HttpServletRequest request) {
-
-		return getPortal().getSiteAdministrationCategoriesMap(request);
-	}
-
-	/**
-	 * @deprecated As of 7.0.0, replaced by {@link
-	 *             #getControlPanelPortletURL(PortletRequest, Group, String,
-	 *             long, String)}
-	 */
-	@Deprecated
-	public static PortletURL getSiteAdministrationURL(
-		HttpServletRequest request, ThemeDisplay themeDisplay) {
-
-		return getPortal().getSiteAdministrationURL(request, themeDisplay);
-	}
-
 	/**
 	 * @deprecated As of 7.0.0, replaced by {@link
 	 *             #getControlPanelPortletURL(PortletRequest, Group, String,
@@ -1838,19 +1761,6 @@ public class PortalUtil {
 
 		return getPortal().getSiteAdministrationURL(
 			request, themeDisplay, portletId);
-	}
-
-	/**
-	 * @deprecated As of 7.0.0, replaced by {@link
-	 *             #getControlPanelPortletURL(PortletRequest, Group, String,
-	 *             long, String)}
-	 */
-	@Deprecated
-	public static PortletURL getSiteAdministrationURL(
-		PortletResponse portletResponse, ThemeDisplay themeDisplay) {
-
-		return getPortal().getSiteAdministrationURL(
-			portletResponse, themeDisplay);
 	}
 
 	/**
@@ -2203,13 +2113,6 @@ public class PortalUtil {
 			portletId, themeDisplay);
 	}
 
-	public static boolean isCompanyControlPanelVisible(
-			ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		return getPortal().isCompanyControlPanelVisible(themeDisplay);
-	}
-
 	public static boolean isControlPanelPortlet(
 		String portletId, String category, ThemeDisplay themeDisplay) {
 
@@ -2350,7 +2253,7 @@ public class PortalUtil {
 	 */
 	@Deprecated
 	public static void runSQL(String sql) throws IOException, SQLException {
-		DBFactoryUtil.getDB().runSQL(sql);
+		DBManagerUtil.getDB().runSQL(sql);
 	}
 
 	public static void sendError(

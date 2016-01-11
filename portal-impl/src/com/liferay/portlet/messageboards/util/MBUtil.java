@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Company;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Organization;
@@ -64,7 +65,6 @@ import com.liferay.portal.theme.PortletDisplay;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.messageboards.MBGroupServiceSettings;
@@ -226,7 +226,7 @@ public class MBUtil {
 			Part part, MBMailMessage mbMailMessage)
 		throws Exception {
 
-		Object partContent = part.getContent();
+		Object partContent = _getPartContent(part);
 
 		String contentType = StringUtil.toLowerCase(part.getContentType());
 
@@ -1131,6 +1131,24 @@ public class MBUtil {
 		}
 
 		return parentMessageId;
+	}
+
+	private static Object _getPartContent(Part part) throws Exception {
+
+		// See LPS-56173
+
+		Thread currentThread = Thread.currentThread();
+
+		ClassLoader classLoader = currentThread.getContextClassLoader();
+
+		try {
+			currentThread.setContextClassLoader(Part.class.getClassLoader());
+
+			return part.getContent();
+		}
+		finally {
+			currentThread.setContextClassLoader(classLoader);
+		}
 	}
 
 	private static boolean _isEntityRank(

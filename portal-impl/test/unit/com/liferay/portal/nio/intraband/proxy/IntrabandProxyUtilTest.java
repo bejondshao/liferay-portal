@@ -468,17 +468,19 @@ public class IntrabandProxyUtilTest {
 		List<Method> copiedMethods = _getCopiedMethods(
 			TestGenerateStubFunction2.class);
 
-		Collections.sort(copiedMethods, new Comparator<Method>() {
+		Collections.sort(
+			copiedMethods,
+			new Comparator<Method>() {
 
-			@Override
-			public int compare(Method method1, Method method2) {
-				String name1 = method1.getName();
-				String name2 = method2.getName();
+				@Override
+				public int compare(Method method1, Method method2) {
+					String name1 = method1.getName();
+					String name2 = method2.getName();
 
-				return name1.compareTo(name2);
-			}
+					return name1.compareTo(name2);
+				}
 
-		});
+			});
 
 		try (CaptureHandler captureHandler =
 				JDKLoggerTestUtil.configureJDKLogger(
@@ -634,6 +636,7 @@ public class IntrabandProxyUtilTest {
 			private String[] _getProxyMethodSignatures() {
 				return new String[0];
 			}
+
 		}
 
 		ClassNode classNode = _loadClass(TestClass.class);
@@ -750,6 +753,7 @@ public class IntrabandProxyUtilTest {
 						1);
 				}
 			}
+
 		}
 
 		try {
@@ -819,8 +823,6 @@ public class IntrabandProxyUtilTest {
 			Assert.assertEquals("Unable to dispatch", logRecord.getMessage());
 
 			Throwable throwable = logRecord.getThrown();
-
-			throwable = throwable.getCause();
 
 			Assert.assertSame(
 				IllegalArgumentException.class, throwable.getClass());
@@ -2137,11 +2139,12 @@ public class IntrabandProxyUtilTest {
 			Assert.fail();
 		}
 		catch (IllegalArgumentException iae) {
+			Field field = TestValidateClass1.class.getDeclaredField(
+				"PROXY_METHOD_SIGNATURES");
+
 			Assert.assertEquals(
-				"Field " + TestValidateClass1.class.getDeclaredField(
-						"PROXY_METHOD_SIGNATURES") +
-					" is expected to be of type " + String[].class +
-						" and static",
+				"Field " + field + " is expected to be of type " +
+					String[].class + " and static",
 				iae.getMessage());
 		}
 
@@ -2159,11 +2162,12 @@ public class IntrabandProxyUtilTest {
 				Assert.fail();
 			}
 			catch (IllegalArgumentException iae) {
+				Field field = TestValidateClass2.class.getDeclaredField(
+					"_PROXY_METHODS_MAPPING");
+
 				Assert.assertEquals(
-					"Field " + TestValidateClass2.class.getDeclaredField(
-							"_PROXY_METHODS_MAPPING") +
-						" is expected to be of type " + String.class +
-							" and static",
+					"Field " + field + " is expected to be of type " +
+						String.class + " and static",
 					iae.getMessage());
 			}
 
@@ -2180,9 +2184,10 @@ public class IntrabandProxyUtilTest {
 				Assert.fail();
 			}
 			catch (IllegalArgumentException iae) {
+				Field field = TestValidateClass3.class.getDeclaredField("_log");
+
 				Assert.assertEquals(
-					"Field " + TestValidateClass3.class.getDeclaredField(
-							"_log") + " is expected to be of type " +
+					"Field " + field + " is expected to be of type " +
 						Log.class + " and static",
 					iae.getMessage());
 			}
@@ -2200,9 +2205,11 @@ public class IntrabandProxyUtilTest {
 				Assert.fail();
 			}
 			catch (IllegalArgumentException iae) {
+				Field field = TestValidateClass4.class.getDeclaredField(
+					"_targetLocator");
+
 				Assert.assertEquals(
-					"Field " + TestValidateClass4.class.getDeclaredField(
-							"_targetLocator") + " is expected to be of type " +
+					"Field " + field + " is expected to be of type " +
 						TargetLocator.class + " and not static",
 					iae.getMessage());
 			}
@@ -2221,9 +2228,11 @@ public class IntrabandProxyUtilTest {
 				Assert.fail();
 			}
 			catch (IllegalArgumentException iae) {
+				Field field = TestValidateClass5.class.getDeclaredField(
+					"_proxyType");
+
 				Assert.assertEquals(
-					"Field " + TestValidateClass5.class.getDeclaredField(
-							"_proxyType") + " is expected to be of type " +
+					"Field " + field + " is expected to be of type " +
 						byte.class + " and static",
 					iae.getMessage());
 			}
@@ -2241,9 +2250,10 @@ public class IntrabandProxyUtilTest {
 				Assert.fail();
 			}
 			catch (IllegalArgumentException iae) {
+				Field field = TestValidateClass6.class.getDeclaredField("_id");
+
 				Assert.assertEquals(
-					"Field " + TestValidateClass6.class.getDeclaredField(
-							"_id") + " is expected to be of type " +
+					"Field " + field + " is expected to be of type " +
 						String.class + " and not static",
 					iae.getMessage());
 			}
@@ -2261,9 +2271,11 @@ public class IntrabandProxyUtilTest {
 				Assert.fail();
 			}
 			catch (IllegalArgumentException iae) {
+				Field field = TestValidateClass7.class.getDeclaredField(
+					"_intraband");
+
 				Assert.assertEquals(
-					"Field " + TestValidateClass7.class.getDeclaredField(
-							"_intraband") + " is expected to be of type " +
+					"Field " + field + " is expected to be of type " +
 						Intraband.class + " and not static",
 					iae.getMessage());
 			}
@@ -2281,11 +2293,12 @@ public class IntrabandProxyUtilTest {
 				Assert.fail();
 			}
 			catch (IllegalArgumentException iae) {
+				Field field = TestValidateClass8.class.getDeclaredField(
+					"_registrationReference");
+
 				Assert.assertEquals(
-					"Field " + TestValidateClass8.class.getDeclaredField(
-							"_registrationReference") +
-						" is expected to be of type " +
-							RegistrationReference.class + " and not static",
+					"Field " + field + " is expected to be of type " +
+						RegistrationReference.class + " and not static",
 					iae.getMessage());
 			}
 
@@ -2302,11 +2315,12 @@ public class IntrabandProxyUtilTest {
 				Assert.fail();
 			}
 			catch (IllegalArgumentException iae) {
+				Field field = TestValidateClass9.class.getDeclaredField(
+					"_exceptionHandler");
+
 				Assert.assertEquals(
-					"Field " + TestValidateClass9.class.getDeclaredField(
-							"_exceptionHandler") +
-						" is expected to be of type " + ExceptionHandler.class +
-							" and not static",
+					"Field " + field + " is expected to be of type " +
+						ExceptionHandler.class + " and not static",
 					iae.getMessage());
 			}
 		}
@@ -2767,7 +2781,7 @@ public class IntrabandProxyUtilTest {
 
 	private interface TestGenerateInterface1
 		extends Comparable<String>, Callable<String>, Runnable,
-		TestEmptyMethodsInterface, TestProxyMethodsInterface {
+				TestEmptyMethodsInterface, TestProxyMethodsInterface {
 	}
 
 	private interface TestGenerateInterface2

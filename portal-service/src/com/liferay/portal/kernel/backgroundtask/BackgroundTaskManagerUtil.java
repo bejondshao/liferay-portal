@@ -32,6 +32,18 @@ public class BackgroundTaskManagerUtil {
 
 	public static BackgroundTask addBackgroundTask(
 			long userId, long groupId, String name,
+			String taskExecutorClassName,
+			Map<String, Serializable> taskContextMap,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		return _backgroundTaskManager.addBackgroundTask(
+			userId, groupId, name, taskExecutorClassName, taskContextMap,
+			serviceContext);
+	}
+
+	public static BackgroundTask addBackgroundTask(
+			long userId, long groupId, String name,
 			String[] servletContextNames, Class<?> taskExecutorClass,
 			Map<String, Serializable> taskContextMap,
 			ServiceContext serviceContext)
@@ -188,6 +200,15 @@ public class BackgroundTaskManagerUtil {
 	}
 
 	public static List<BackgroundTask> getBackgroundTasks(
+		long[] groupIds, String name, String taskExecutorClassName, int start,
+		int end, OrderByComparator<BackgroundTask> orderByComparator) {
+
+		return _backgroundTaskManager.getBackgroundTasks(
+			groupIds, name, taskExecutorClassName, start, end,
+			orderByComparator);
+	}
+
+	public static List<BackgroundTask> getBackgroundTasks(
 		String taskExecutorClassName, int status) {
 
 		return _backgroundTaskManager.getBackgroundTasks(
@@ -258,6 +279,21 @@ public class BackgroundTaskManagerUtil {
 
 		return _backgroundTaskManager.getBackgroundTasksCount(
 			groupId, taskExecutorClassNames, completed);
+	}
+
+	public static int getBackgroundTasksCount(
+		long[] groupIds, String name, String taskExecutorClassName) {
+
+		return _backgroundTaskManager.getBackgroundTasksCount(
+			groupIds, name, taskExecutorClassName);
+	}
+
+	public static int getBackgroundTasksCount(
+		long[] groupIds, String name, String taskExecutorClassName,
+		boolean completed) {
+
+		return _backgroundTaskManager.getBackgroundTasksCount(
+			groupIds, name, taskExecutorClassName, completed);
 	}
 
 	public static String getBackgroundTaskStatusJSON(long backgroundTaskId) {

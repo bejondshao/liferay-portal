@@ -46,8 +46,8 @@ public class TableMapperImpl<L extends BaseModel<L>, R extends BaseModel<R>>
 	implements TableMapper<L, R> {
 
 	public TableMapperImpl(
-		String tableName, String leftColumnName, String rightColumnName,
-		BasePersistence<L> leftBasePersistence,
+		String tableName, String companyColumnName, String leftColumnName,
+		String rightColumnName, BasePersistence<L> leftBasePersistence,
 		BasePersistence<R> rightBasePersistence) {
 
 		this.leftColumnName = leftColumnName;
@@ -59,9 +59,9 @@ public class TableMapperImpl<L extends BaseModel<L>, R extends BaseModel<R>>
 
 		addTableMappingSqlUpdate = SqlUpdateFactoryUtil.getSqlUpdate(
 			dataSource,
-			"INSERT INTO " + tableName + " (" + leftColumnName + ", " +
-				rightColumnName + ") VALUES (?, ?)",
-			new int[] {Types.BIGINT, Types.BIGINT});
+			"INSERT INTO " + tableName + " (" + companyColumnName + ", " +
+				leftColumnName + ", " + rightColumnName + ") VALUES (?, ?, ?)",
+			new int[] {Types.BIGINT, Types.BIGINT, Types.BIGINT});
 		deleteLeftPrimaryKeyTableMappingsSqlUpdate =
 			SqlUpdateFactoryUtil.getSqlUpdate(
 				dataSource,
@@ -91,6 +91,7 @@ public class TableMapperImpl<L extends BaseModel<L>, R extends BaseModel<R>>
 				"SELECT " + rightColumnName + " FROM " + tableName + " WHERE " +
 					leftColumnName + " = ?",
 				new int[] {Types.BIGINT}, RowMapper.PRIMARY_KEY);
+
 		leftToRightPortalCache = MultiVMPoolUtil.getPortalCache(
 			TableMapper.class.getName() + "-" + tableName + "-LeftToRight");
 		rightToLeftPortalCache = MultiVMPoolUtil.getPortalCache(
@@ -98,7 +99,9 @@ public class TableMapperImpl<L extends BaseModel<L>, R extends BaseModel<R>>
 	}
 
 	@Override
-	public boolean addTableMapping(long leftPrimaryKey, long rightPrimaryKey) {
+	public boolean addTableMapping(
+		long companyId, long leftPrimaryKey, long rightPrimaryKey) {
+
 		if (containsTableMapping(leftPrimaryKey, rightPrimaryKey, false)) {
 			return false;
 		}
@@ -127,7 +130,8 @@ public class TableMapperImpl<L extends BaseModel<L>, R extends BaseModel<R>>
 		}
 
 		try {
-			addTableMappingSqlUpdate.update(leftPrimaryKey, rightPrimaryKey);
+			addTableMappingSqlUpdate.update(
+				companyId, leftPrimaryKey, rightPrimaryKey);
 		}
 		catch (Exception e) {
 			throw new SystemException(e);

@@ -8,5 +8,8 @@ Export-Package:\
 	com.liferay.message.boards.web.trash
 Include-Resource:\
 	classes,\
-	META-INF/resources=src/META-INF/resources
+	META-INF/resources=src/main/resources/META-INF/resources
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Message Boards
 Web-ContextPath: /message-boards-web
+-include: ../../../../marketplace/collaboration/bnd.bnd

@@ -4,7 +4,6 @@ Bundle-Version: 1.0.0
 Export-Package:\
 	com.liferay.portal.wab.extender.ws.axis
 Import-Package:\
-	com.liferay.portal.servlet.jsp.compiler;version='[1.0.0,2.0)',\
 	javax.servlet;version='[2.3.0,4.0.0)',\
 	javax.servlet.http;version='[2.3.0,4.0.0)',\
 	org.apache.axis;resolution:='optional',\
@@ -22,3 +21,6 @@ Include-Resource:\
 	@../../../portal-service/portal-service.jar!/com/liferay/portal/kernel/util/GetterUtil.class,\
 	@../../../portal-service/portal-service.jar!/com/liferay/portal/kernel/util/HashMapDictionary.class,\
 	@../../../portal-service/portal-service.jar!/com/liferay/portal/kernel/util/ReflectionUtil.class
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: WAB
+-include: ../../../marketplace/platform/bnd.bnd

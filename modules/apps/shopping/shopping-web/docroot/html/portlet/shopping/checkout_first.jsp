@@ -88,7 +88,7 @@ List addresses = AddressServiceUtil.getAddresses(Contact.class.getName(), contac
 					%>
 
 					<aui:select label="" name="addressBilling" onChange="<%= taglibUpdateBillingAddress %>" title="billing-address">
-						<aui:option label='<%= "--" + LanguageUtil.get(request,"my-addresses") + "--" %>' />
+						<aui:option label='<%= "--" + LanguageUtil.get(request, "my-addresses") + "--" %>' />
 
 						<%
 						for (int i = 0; addresses != null && i < addresses.size(); i++) {
@@ -127,7 +127,7 @@ List addresses = AddressServiceUtil.getAddresses(Contact.class.getName(), contac
 					%>
 
 					<aui:select label="" name="addressShipping" onChange="<%= taglibUpdateShippingAddress %>" title="shipping-address">
-						<aui:option label='<%= "--" + LanguageUtil.get(request,"my-addresses") + "--" %>' />
+						<aui:option label='<%= "--" + LanguageUtil.get(request, "my-addresses") + "--" %>' />
 
 						<%
 						for (int i = 0; addresses != null && i < addresses.size(); i++) {
@@ -243,13 +243,13 @@ List addresses = AddressServiceUtil.getAddresses(Contact.class.getName(), contac
 	</liferay-ui:panel-container>
 
 	<aui:button-row>
-		<aui:button type="submit" value="continue" />
+		<aui:button cssClass="btn-lg" type="submit" value="continue" />
 
 		<portlet:renderURL var="cartURL">
 			<portlet:param name="struts_action" value="/shopping/cart" />
 		</portlet:renderURL>
 
-		<aui:button href="<%= cartURL.toString() %>" value="back-to-cart" />
+		<aui:button cssClass="btn-lg" href="<%= cartURL.toString() %>" value="back-to-cart" />
 	</aui:button-row>
 </aui:form>
 

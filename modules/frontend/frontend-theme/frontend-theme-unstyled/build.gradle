@@ -1,99 +1,46 @@
 import com.liferay.gradle.plugins.node.tasks.PublishNodeModuleTask
-import com.liferay.gradle.util.FileUtil
-import com.liferay.gradle.util.copy.ReplaceLeadingPathAction
 import com.liferay.gradle.util.copy.StripPathSegmentsAction
 
-dependencies {
-	compile group: "org.osgi", name: "org.osgi.compendium", version: "5.0.0"
-	compile group: "org.osgi", name: "org.osgi.core", version: "5.0.0"
+configurations {
+	alloyUI
+	lexicon
 }
 
-ext {
-	alloyBootstrapVersion = "3.2.0-2"
-	alloyFontAwesomeVersion = "2.0.0"
-	alloyVersion = "3.0.1"
-	lexiconVersion = "0.1.17"
-}
-
-liferay {
-	deployDir = file("${liferayHome}/osgi/modules")
-}
-
-File themeDestinationDir = file("src/META-INF/resources/_unstyled");
-File thirdPartyDir = file("../../../../portal-web/third-party")
-
-task buildAlloyBootstrapTheme(type: Copy)
-task buildAlloyFontAwesome(type: Copy)
-task buildAlloyTheme(type: Copy)
+task buildAlloyUITheme(type: Copy)
 task buildLexicon(type: Copy)
+task buildLexiconFonts(type: Copy)
+task buildLexiconIcons(type: Copy)
 task buildTheme
 task publishNodeModule(type: PublishNodeModuleTask)
 
-buildAlloyBootstrapTheme {
-	File alloyBootstrapDestinationDir = new File(themeDestinationDir, "css/aui")
-	File bootstrapSassZipFile = new File(thirdPartyDir, "bootstrap-sass-${alloyBootstrapVersion}.zip")
+String alloyUIVersion = "3.0.3-deprecated.5"
+String lexiconVersion = "0.1.28"
 
-	doFirst {
-		delete alloyBootstrapDestinationDir
-	}
+File themeDestinationDir = file("src/main/resources/META-INF/resources/_unstyled");
 
-	eachFile new ReplaceLeadingPathAction("bootstrap-sass-${alloyBootstrapVersion}/assets/fonts/bootstrap": "glyphicons/font", "bootstrap-sass-${alloyBootstrapVersion}/assets/stylesheets": "")
-	exclude "bootstrap-sass-${alloyBootstrapVersion}/assets/stylesheets/_bootstrap-*.scss"
-	from zipTree(bootstrapSassZipFile)
-	includeEmptyDirs = false
-	into alloyBootstrapDestinationDir
-
-	onlyIf {
-		!FileUtil.isUpToDate(project, bootstrapSassZipFile, alloyBootstrapDestinationDir)
-	}
-}
-
-buildAlloyFontAwesome {
-	File alloyFontAwesomeDestinationDir = new File(themeDestinationDir, "css/aui/alloy-font-awesome")
-	File alloyFontAwesomeZipFile = new File(thirdPartyDir, "alloy-font-awesome-${alloyFontAwesomeVersion}.zip")
-
-	dependsOn buildAlloyBootstrapTheme
-
-	doFirst {
-		delete alloyFontAwesomeDestinationDir
-	}
-
-	eachFile new StripPathSegmentsAction(1)
-
-	exclude "alloy-font-awesome/css/**"
-	exclude "alloy-font-awesome/less/**"
-
-	from zipTree(alloyFontAwesomeZipFile)
-	includeEmptyDirs = false
-	into alloyFontAwesomeDestinationDir
-
-	onlyIf {
-		!FileUtil.isUpToDate(project, alloyFontAwesomeZipFile, alloyFontAwesomeDestinationDir)
-	}
-}
-
-buildAlloyTheme {
+buildAlloyUITheme {
 	File alloyThemeDestinationDir = new File(themeDestinationDir, "images/aui")
-	File alloyZipFile = new File(thirdPartyDir, "alloy-${alloyVersion}.zip")
 
 	doFirst {
 		delete alloyThemeDestinationDir
 	}
 
-	filesMatching "build/aui-*/assets/skins/sam/**", new StripPathSegmentsAction(5)
-	filesMatching "build/aui-skin-deprecated/images/**", new StripPathSegmentsAction(3)
+	eachFile new StripPathSegmentsAction(6)
 
-	from zipTree(alloyZipFile)
+	filesMatching "build/aui-*/assets/skins/sam/", new StripPathSegmentsAction(5)
+	filesMatching "build/aui-skin-deprecated/images/", new StripPathSegmentsAction(3)
 
-	include "build/aui-*/assets/skins/sam/**.gif", "build/aui-*/assets/skins/sam/**.jpg", "build/aui-*/assets/skins/sam/**.png"
-	include "build/aui-skin-deprecated/images/**"
+	from {
+		zipTree(configurations.alloyUI.singleFile)
+	}
+
+	include "META-INF/resources/webjars/alloy-ui/${alloyUIVersion}/build/aui-*/assets/skins/sam/**.gif"
+	include "META-INF/resources/webjars/alloy-ui/${alloyUIVersion}/build/aui-*/assets/skins/sam/**.jpg"
+	include "META-INF/resources/webjars/alloy-ui/${alloyUIVersion}/build/aui-*/assets/skins/sam/**.png"
+	include "META-INF/resources/webjars/alloy-ui/${alloyUIVersion}/build/aui-skin-deprecated/images/"
 
 	includeEmptyDirs = false
 	into alloyThemeDestinationDir
-
-	onlyIf {
-		!FileUtil.isUpToDate(project, alloyZipFile, alloyThemeDestinationDir)
-	}
 }
 
 buildCSS {
@@ -102,18 +49,13 @@ buildCSS {
 
 buildLexicon {
 	File lexiconDestinationDir = new File(themeDestinationDir, "css/aui/lexicon")
-	File lexiconZipFile = new File(thirdPartyDir, "lexicon-${lexiconVersion}.zip")
-
-	dependsOn buildAlloyBootstrapTheme
 
 	doFirst {
 		delete lexiconDestinationDir
 	}
 
-	eachFile new StripPathSegmentsAction(1)
-
 	eachFile {
-		if (path in ["atlas.scss", "bootstrap.scss", "lexicon-base.scss"]) {
+		if (name in ["atlas.scss", "bootstrap.scss", "lexicon-base.scss"]) {
 			filter {
 				String line ->
 
@@ -127,23 +69,20 @@ buildLexicon {
 				else if (line == "// INSERT CUSTOM VARS") {
 					line = """\
 @import \"../../aui_variables\";
-@import \"../alloy-font-awesome/scss/font-awesome\";"""
+@import \"fonts/alloy-font-awesome/scss/font-awesome\";"""
 				}
 
 				return line
 			}
 		}
-	}
-
-	eachFile {
-		if (path in ["atlas-variables.scss", "lexicon-base-variables.scss"]) {
+		else if (name in ["atlas-variables.scss", "lexicon-base-variables.scss"]) {
 			filter {
 				String line ->
 
 				if (line == "// INSERT CUSTOM BASE VARS") {
 					line = """\
 @import \"../../aui_variables\";
-@import \"../alloy-font-awesome/scss/variables\";"""
+@import \"fonts/alloy-font-awesome/scss/variables\";"""
 				}
 				else if (line == "// INSERT CUSTOM VARS") {
 					line = """\
@@ -156,27 +95,81 @@ buildLexicon {
 		}
 	}
 
-	from zipTree(lexiconZipFile)
-	include "scss/**"
+	eachFile new StripPathSegmentsAction(7)
+
+	from {
+		zipTree(configurations.lexicon.singleFile)
+	}
+
+	include "META-INF/resources/webjars/lexicon/${lexiconVersion}/release/scss/"
 	includeEmptyDirs = false
 	into lexiconDestinationDir
+}
 
-	onlyIf {
-		!FileUtil.isUpToDate(project, lexiconZipFile, lexiconDestinationDir)
+buildLexiconFonts {
+	File lexiconFontsDestinationDir = new File(themeDestinationDir, "css/aui/lexicon/fonts")
+
+	dependsOn buildLexicon
+
+	doFirst {
+		delete lexiconFontsDestinationDir
 	}
+
+	eachFile new StripPathSegmentsAction(7)
+
+	from {
+		zipTree(configurations.lexicon.singleFile)
+	}
+
+	include "META-INF/resources/webjars/lexicon/${lexiconVersion}/release/fonts/"
+	includeEmptyDirs = false
+	into lexiconFontsDestinationDir
+}
+
+buildLexiconIcons {
+	File lexiconIconsDestinationDir = new File(themeDestinationDir, "images/lexicon")
+
+	doFirst {
+		delete lexiconIconsDestinationDir
+	}
+
+	eachFile new StripPathSegmentsAction(8)
+
+	from {
+		zipTree(configurations.lexicon.singleFile)
+	}
+
+	include "META-INF/resources/webjars/lexicon/${lexiconVersion}/release/images/icons/"
+	includeEmptyDirs = false
+	into lexiconIconsDestinationDir
 }
 
 buildTheme {
-	dependsOn buildAlloyBootstrapTheme
-	dependsOn buildAlloyFontAwesome
-	dependsOn buildAlloyTheme
-	dependsOn buildLexicon
+	dependsOn buildAlloyUITheme
+	dependsOn buildLexiconFonts
+	dependsOn buildLexiconIcons
 }
 
 classes {
 	dependsOn buildTheme
 }
 
+dependencies {
+	alloyUI group: "org.webjars.bower", name: "alloy-ui", transitive: false, version: alloyUIVersion
+
+	compile group: "com.liferay.portal", name: "portal-service", version: liferay.portalVersion
+	compile group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
+	compile group: "org.osgi", name: "org.osgi.compendium", version: "5.0.0"
+	compile group: "org.osgi", name: "org.osgi.core", version: "5.0.0"
+
+	lexicon group: "org.webjars.bower", name: "lexicon", transitive: false, version: lexiconVersion
+}
+
+liferay {
+	deployDir = file("${liferayHome}/osgi/modules")
+}
+
 publishNodeModule {
-	workingDir = "src/META-INF/resources/_unstyled"
+	dependsOn jar
+	workingDir = "src/main/resources/META-INF/resources/_unstyled"
 }

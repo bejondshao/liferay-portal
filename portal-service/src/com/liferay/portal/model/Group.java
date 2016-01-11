@@ -53,9 +53,6 @@ public interface Group extends GroupModel, PersistedModel, TreeModel {
 
 	public void clearStagingGroup();
 
-	public javax.portlet.PortletURL getAdministrationURL(
-		com.liferay.portal.theme.ThemeDisplay themeDisplay);
-
 	public java.util.List<com.liferay.portal.model.Group> getAncestors()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
@@ -109,6 +106,9 @@ public interface Group extends GroupModel, PersistedModel, TreeModel {
 
 	public java.lang.String getLiveParentTypeSettingsProperty(
 		java.lang.String key);
+
+	public java.lang.String getLogoURL(
+		com.liferay.portal.theme.ThemeDisplay themeDisplay, boolean useDefault);
 
 	public long getOrganizationId();
 

@@ -16,7 +16,7 @@ package com.liferay.portal.spring.hibernate;
 
 import com.liferay.portal.dao.orm.hibernate.event.MVCCSynchronizerPostUpdateEventListener;
 import com.liferay.portal.dao.orm.hibernate.event.NestableAutoFlushEventListener;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -104,10 +104,6 @@ public class PortalHibernateConfiguration extends LocalSessionFactoryBean {
 		}
 	}
 
-	protected Dialect determineDialect() {
-		return DialectDetector.getDialect(getDataSource());
-	}
-
 	protected ClassLoader getConfigurationClassLoader() {
 		Class<?> clazz = getClass();
 
@@ -134,9 +130,9 @@ public class PortalHibernateConfiguration extends LocalSessionFactoryBean {
 		}
 
 		if (Validator.isNull(PropsValues.HIBERNATE_DIALECT)) {
-			Dialect dialect = determineDialect();
+			Dialect dialect = DialectDetector.getDialect(getDataSource());
 
-			setDB(dialect);
+			DBManagerUtil.setDB(dialect, getDataSource());
 
 			Class<?> clazz = dialect.getClass();
 
@@ -253,10 +249,6 @@ public class PortalHibernateConfiguration extends LocalSessionFactoryBean {
 
 			readResource(configuration, inputStream);
 		}
-	}
-
-	protected void setDB(Dialect dialect) {
-		DBFactoryUtil.setDB(dialect);
 	}
 
 	private static final String[] _PRELOAD_CLASS_NAMES =

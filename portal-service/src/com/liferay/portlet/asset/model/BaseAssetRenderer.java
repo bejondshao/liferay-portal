@@ -67,6 +67,7 @@ public abstract class BaseAssetRenderer<T> implements AssetRenderer<T> {
 		return StringPool.BLANK;
 	}
 
+	@Override
 	public AssetRendererFactory<T> getAssetRendererFactory() {
 		if (_assetRendererFactory != null) {
 			return _assetRendererFactory;
@@ -230,8 +231,6 @@ public abstract class BaseAssetRenderer<T> implements AssetRenderer<T> {
 			return null;
 		}
 
-		editPortletURL.setDoAsGroupId(getGroupId());
-
 		editPortletURL.setParameter("redirect", redirectURL.toString());
 
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
@@ -326,6 +325,15 @@ public abstract class BaseAssetRenderer<T> implements AssetRenderer<T> {
 	}
 
 	@Override
+	public boolean isCommentable() {
+		if (Validator.isNull(getDiscussionPath())) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
 	public boolean isConvertible() {
 		return false;
 	}
@@ -348,6 +356,11 @@ public abstract class BaseAssetRenderer<T> implements AssetRenderer<T> {
 	@Override
 	public boolean isPrintable() {
 		return false;
+	}
+
+	@Override
+	public boolean isRatable() {
+		return true;
 	}
 
 	public String renderActions(

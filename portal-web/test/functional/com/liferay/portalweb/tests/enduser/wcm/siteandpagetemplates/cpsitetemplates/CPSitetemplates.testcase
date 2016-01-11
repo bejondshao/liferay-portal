@@ -2,20 +2,41 @@
 	<property name="testray.main.component.name" value="Site and Page Templates" />
 
 	<set-up>
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="SignIn#signInPortalInstanceSetUp" />
+			</then>
+		</if>
+
 		<execute macro="User#firstLoginPG" />
 	</set-up>
 
 	<tear-down>
-		<execute macro="Site#tearDownCP" />
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
 
-		<execute macro="SiteTemplates#tearDownCP" />
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Site#tearDownCP" />
+
+				<execute macro="SiteTemplates#tearDownCP" />
+			</else>
+		</if>
 	</tear-down>
 
 	<command name="AddSiteTemplate" priority="5">
+		<property name="portal.acceptance" value="true" />
+
 		<var name="siteTemplateActive" value="Yes" />
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Site Templates" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Site Templates" />
 		</execute>
 
 		<execute macro="SiteTemplates#addCP">
@@ -23,8 +44,8 @@
 			<var name="siteTemplateName" value="Site Template Name" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="Site#addSiteTemplateCP">
@@ -34,8 +55,10 @@
 	</command>
 
 	<command name="DeleteSiteTemplate" priority="5">
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Site Templates" />
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Site Templates" />
 		</execute>
 
 		<execute macro="SiteTemplates#addCP">
@@ -43,26 +66,28 @@
 			<var name="siteTemplateName" value="Site Template Name" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Site Templates" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Site Templates" />
 		</execute>
 
 		<execute macro="SiteTemplates#deleteCP">
 			<var name="siteTemplateName" value="Site Template Name" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Site Templates" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Site Templates" />
 		</execute>
 
 		<execute macro="SiteTemplates#viewDefaultCP">
-			<var name="pageTemplateName" value="${pageTemplateName}" />
+			<var name="siteTemplateNameList" value="Intranet Site,Community Site" />
 		</execute>
 	</command>
 
 	<command name="EditSiteTemplateStatus" priority="5">
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Site Templates" />
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Site Templates" />
 		</execute>
 
 		<execute macro="SiteTemplates#addCP">
@@ -70,8 +95,8 @@
 			<var name="siteTemplateName" value="Site Template Name" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="Site#addSiteTemplateCP">
@@ -79,8 +104,8 @@
 			<var name="siteTemplateName" value="Site Template Name" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Site Templates" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Site Templates" />
 		</execute>
 
 		<execute macro="SiteTemplates#editTemplateStatusCP">
@@ -88,8 +113,8 @@
 			<var name="siteTemplateName" value="Site Template Name" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Site Templates" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Site Templates" />
 		</execute>
 
 		<execute macro="SiteTemplates#viewTemplateStatusCP">
@@ -99,7 +124,7 @@
 	</command>
 
 	<command name="LocalizeDefaultSiteTemplates" priority="4">
-		<execute macro="ProductMenu#gotoSitesAdministration">
+		<execute macro="ProductMenu#gotoControlPanelSites">
 			<var name="portlet" value="Site Templates" />
 		</execute>
 
@@ -107,7 +132,7 @@
 			<var name="siteTemplateNameList" value="Community Site,Intranet Site" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoMySpaceMyAccount">
+		<execute macro="ProductMenu#gotoUserMyAccount">
 			<var name="portlet" value="Account Settings" />
 		</execute>
 
@@ -119,10 +144,10 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoLocalizedSitesAdministration">
-			<var name="category" value="Administración" />
+		<execute macro="ProductMenu#gotoLocalizedControlPanel">
+			<var name="category" value="Sitios web" />
 			<var name="portlet" value="Plantillas de sitio web" />
-			<var name="tab" value="Sitios Web" />
+			<var name="tab" value="Panel de control" />
 		</execute>
 
 		<execute macro="SiteTemplates#viewDefaultDataLocalizedCP">
@@ -132,10 +157,9 @@
 
 		<execute macro="Navigator#openURL" />
 
-		<execute macro="ProductMenu#gotoLocalizedMySpaceMyAccount">
+		<execute macro="ProductMenu#gotoLocalizedUserMyAccount">
 			<var name="category" value="Mi cuenta" />
 			<var name="portlet" value="Mi cuenta" />
-			<var name="tab" value="Mi espacio" />
 		</execute>
 
 		<execute macro="MyAccount#changeUserLanguage">
@@ -144,8 +168,8 @@
 			<var name="successMessage" value="Your request completed successfully." />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Site Templates" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Site Templates" />
 		</execute>
 
 		<execute macro="SiteTemplates#viewDefaultCP">
@@ -153,9 +177,9 @@
 		</execute>
 	</command>
 
-	<command known-issues="LPS-58054" name="ResetPageChanges" priority="4">
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+	<command name="ResetPageChanges" priority="4">
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="Site#addCommunityCP">
@@ -176,6 +200,11 @@
 		<execute macro="SiteTemplates#resetPageChanges">
 			<var name="columnNumberTo" value="1" />
 			<var name="portletName" value="User Statistics" />
+		</execute>
+
+		<execute macro="Page#openURL">
+			<var name="siteName" value="Site Name" />
+			<var name="siteURL" value="true" />
 		</execute>
 
 		<execute macro="SiteTemplates#viewResetPageChanges">

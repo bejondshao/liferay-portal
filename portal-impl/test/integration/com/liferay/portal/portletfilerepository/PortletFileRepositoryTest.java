@@ -28,9 +28,9 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
+import com.liferay.portal.test.randomizerbumpers.TikaSafeRandomizerBumper;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.test.rule.MainServletTestRule;
-import com.liferay.portlet.documentlibrary.DuplicateFileException;
+import com.liferay.portlet.documentlibrary.DuplicateFileEntryException;
 import com.liferay.portlet.documentlibrary.NoSuchFolderException;
 import com.liferay.portlet.documentlibrary.model.DLFileEntryConstants;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
@@ -49,8 +49,7 @@ public class PortletFileRepositoryTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new AggregateTestRule(
-			new LiferayIntegrationTestRule(), MainServletTestRule.INSTANCE);
+		new LiferayIntegrationTestRule();
 
 	@Before
 	public void setUp() throws Exception {
@@ -80,7 +79,7 @@ public class PortletFileRepositoryTest {
 			workflowCapability.getStatus(fileEntry));
 	}
 
-	@Test(expected = DuplicateFileException.class)
+	@Test(expected = DuplicateFileEntryException.class)
 	public void testFileEntryAddShouldFailIfDuplicateName() throws Exception {
 		String name = RandomTestUtil.randomString();
 
@@ -219,8 +218,9 @@ public class PortletFileRepositoryTest {
 		return PortletFileRepositoryUtil.addPortletFileEntry(
 			_group.getGroupId(), TestPropsValues.getUserId(),
 			User.class.getName(), TestPropsValues.getUserId(), _portletId,
-			_folder.getFolderId(), RandomTestUtil.randomInputStream(), name,
-			ContentTypes.APPLICATION_OCTET_STREAM, false);
+			_folder.getFolderId(),
+			RandomTestUtil.randomInputStream(TikaSafeRandomizerBumper.INSTANCE),
+			name, ContentTypes.APPLICATION_OCTET_STREAM, false);
 	}
 
 	private Folder _addPortletFolder(String name) throws PortalException {

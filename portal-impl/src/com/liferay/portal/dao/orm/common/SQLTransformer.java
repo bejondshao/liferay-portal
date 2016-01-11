@@ -15,7 +15,8 @@
 package com.liferay.portal.dao.orm.common;
 
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.CharPool;
@@ -63,54 +64,38 @@ public class SQLTransformer {
 		}
 
 		_vendorDB2 = false;
-		_vendorFirebird = false;
 		_vendorHypersonic = false;
-		_vendorInformix = false;
-		_vendorIngres = false;
-		_vendorInterbase = false;
 		_vendorMySQL = false;
 		_vendorOracle = false;
 		_vendorPostgreSQL = false;
 		_vendorSQLServer = false;
 		_vendorSybase = false;
 
-		DB db = DBFactoryUtil.getDB();
+		DB db = DBManagerUtil.getDB();
 
-		String dbType = db.getType();
+		DBType dbType = db.getDBType();
 
 		_db = db;
 
-		if (dbType.equals(DB.TYPE_DB2)) {
+		if (dbType == DBType.DB2) {
 			_vendorDB2 = true;
 		}
-		else if (dbType.equals(DB.TYPE_FIREBIRD)) {
-			_vendorFirebird = true;
-		}
-		else if (dbType.equals(DB.TYPE_HYPERSONIC)) {
+		else if (dbType == DBType.HYPERSONIC) {
 			_vendorHypersonic = true;
 		}
-		else if (dbType.equals(DB.TYPE_INFORMIX)) {
-			_vendorInformix = true;
-		}
-		else if (dbType.equals(DB.TYPE_INGRES)) {
-			_vendorIngres = true;
-		}
-		else if (dbType.equals(DB.TYPE_INTERBASE)) {
-			_vendorInterbase = true;
-		}
-		else if (dbType.equals(DB.TYPE_MYSQL)) {
+		else if (dbType == DBType.MYSQL) {
 			_vendorMySQL = true;
 		}
-		else if (db.getType().equals(DB.TYPE_ORACLE)) {
+		else if (dbType == DBType.ORACLE) {
 			_vendorOracle = true;
 		}
-		else if (dbType.equals(DB.TYPE_POSTGRESQL)) {
+		else if (dbType == DBType.POSTGRESQL) {
 			_vendorPostgreSQL = true;
 		}
-		else if (dbType.equals(DB.TYPE_SQLSERVER)) {
+		else if (dbType == DBType.SQLSERVER) {
 			_vendorSQLServer = true;
 		}
-		else if (dbType.equals(DB.TYPE_SYBASE)) {
+		else if (dbType == DBType.SYBASE) {
 			_vendorSybase = true;
 		}
 	}
@@ -158,14 +143,8 @@ public class SQLTransformer {
 	private String _replaceBitwiseCheck(String sql) {
 		Matcher matcher = _bitwiseCheckPattern.matcher(sql);
 
-		if (_vendorInformix || _vendorIngres) {
-			return matcher.replaceAll("BIT_AND($1, $2)");
-		}
-		else if (_vendorFirebird || _vendorInterbase) {
-			return matcher.replaceAll("BIN_AND($1, $2)");
-		}
-		else if (_vendorMySQL || _vendorPostgreSQL || _vendorSQLServer ||
-				 _vendorSybase) {
+		if (_vendorMySQL || _vendorPostgreSQL || _vendorSQLServer ||
+			_vendorSybase) {
 
 			return matcher.replaceAll("($1 & $2)");
 		}
@@ -184,7 +163,7 @@ public class SQLTransformer {
 		Matcher matcher = _castClobTextPattern.matcher(sql);
 
 		if (_vendorOracle) {
-			return matcher.replaceAll("DBMS_LOB.SUBSTR($1, 1, 4000)");
+			return matcher.replaceAll("DBMS_LOB.SUBSTR($1, 4000, 1)");
 		}
 
 		return _replaceCastText(matcher);
@@ -304,7 +283,7 @@ public class SQLTransformer {
 			newSQL = _replaceLike(newSQL);
 		}
 		else if (_vendorMySQL) {
-			DB db = DBFactoryUtil.getDB();
+			DB db = DBManagerUtil.getDB();
 
 			if (!db.isSupportsStringCaseSensitiveQuery()) {
 				newSQL = _removeLower(newSQL);
@@ -442,11 +421,7 @@ public class SQLTransformer {
 	private DB _db;
 	private Map<String, String> _transformedSqls;
 	private boolean _vendorDB2;
-	private boolean _vendorFirebird;
 	private boolean _vendorHypersonic;
-	private boolean _vendorInformix;
-	private boolean _vendorIngres;
-	private boolean _vendorInterbase;
 	private boolean _vendorMySQL;
 	private boolean _vendorOracle;
 	private boolean _vendorPostgreSQL;

@@ -14,7 +14,7 @@
 
 package com.liferay.portal.dao.db;
 
-import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
@@ -41,8 +41,8 @@ import java.util.Set;
  */
 public class DB2DB extends BaseDB {
 
-	public static DB getInstance() {
-		return _instance;
+	public DB2DB(int majorVersion, int minorVersion) {
+		super(DBType.DB2, majorVersion, minorVersion);
 	}
 
 	@Override
@@ -97,10 +97,6 @@ public class DB2DB extends BaseDB {
 		super.runSQL(templates);
 
 		reorgTables(templates);
-	}
-
-	protected DB2DB() {
-		super(TYPE_DB2);
 	}
 
 	@Override
@@ -173,7 +169,7 @@ public class DB2DB extends BaseDB {
 			}
 		}
 		finally {
-			DataAccess.cleanUp(null, ps, rs);
+			DataAccess.cleanUp(ps, rs);
 		}
 
 		return reorgTableRequired;
@@ -243,12 +239,10 @@ public class DB2DB extends BaseDB {
 					line = StringUtil.replace(
 						"alter table @table@ add column @new-column@ @type@;\n",
 						REWORD_TEMPLATE, template);
-
-					line = line + StringUtil.replace(
+					line += StringUtil.replace(
 						"update @table@ set @new-column@ = @old-column@;\n",
 						REWORD_TEMPLATE, template);
-
-					line = line + StringUtil.replace(
+					line += StringUtil.replace(
 						"alter table @table@ drop column @old-column@",
 						REWORD_TEMPLATE, template);
 				}
@@ -286,7 +280,5 @@ public class DB2DB extends BaseDB {
 	private static final boolean _SUPPORTS_INLINE_DISTINCT = false;
 
 	private static final boolean _SUPPORTS_SCROLLABLE_RESULTS = false;
-
-	private static final DB2DB _instance = new DB2DB();
 
 }

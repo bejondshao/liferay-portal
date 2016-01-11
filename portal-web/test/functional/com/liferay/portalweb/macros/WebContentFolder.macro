@@ -11,7 +11,7 @@
 
 		<execute function="AssertTextEquals" locator1="Message#SUCCESS" value1="Your request completed successfully." />
 
-		<execute macro="WebContent#changeDisplayStyle">
+		<execute macro="Portlet#changeDisplayStyle">
 			<var name="displayStyle" value="Descriptive" />
 		</execute>
 
@@ -22,7 +22,7 @@
 	<command name="addSubfolderCP">
 		<var name="key_webContentTitle" value="${folderName}" />
 
-		<execute macro="WebContent#changeDisplayStyle">
+		<execute macro="Portlet#changeDisplayStyle">
 			<var name="displayStyle" value="Descriptive" />
 		</execute>
 
@@ -49,6 +49,13 @@
 		</execute>
 
 		<if>
+			<condition function="IsElementNotPresent#isNotVisible" locator1="WCEditFolder#WORKFLOW_PARENT_FOLDER_RADIO" />
+			<then>
+				<execute function="Click" locator1="WCEditFolder#WORKFLOW_STRUCTURE_RESTRICTIONS_TOGGLE" />
+			</then>
+		</if>
+
+		<if>
 			<equals arg1="${workflowRestriction}" arg2="Parent Folder" />
 			<then>
 				<execute function="Click" locator1="WCEditFolder#WORKFLOW_PARENT_FOLDER_RADIO" />
@@ -66,6 +73,8 @@
 					<var name="key_ddlDataDefinitionName" value="${structureName}" />
 
 					<execute function="AssertClick" locator1="DDMSelectStructure#DDM_STRUCTURE_TABLE_CHOOSE_BUTTON" value1="Choose" />
+
+					<execute function="SelectFrame" value1="relative=top" />
 
 					<execute function="Select" locator1="WCEditFolder#WORKFLOW_SPECIFIC_RESTRICTIONS_STRUCTURE_WORKFLOW_SELECT" value1="${workflowDefinition}" />
 				</then>
@@ -85,7 +94,7 @@
 	</command>
 
 	<command name="gotoCP">
-		<execute macro="WebContent#changeDisplayStyle">
+		<execute macro="Portlet#changeDisplayStyle">
 			<var name="displayStyle" value="Descriptive" />
 		</execute>
 
@@ -98,7 +107,7 @@
 	<command name="gotoEditCP">
 		<var name="key_webContentTitle" value="${folderName}" />
 
-		<execute macro="WebContent#changeDisplayStyle">
+		<execute macro="Portlet#changeDisplayStyle">
 			<var name="displayStyle" value="Descriptive" />
 		</execute>
 
@@ -108,7 +117,7 @@
 	</command>
 
 	<command name="moveToRecycleBinCP">
-		<execute macro="WebContent#changeDisplayStyle">
+		<execute macro="Portlet#changeDisplayStyle">
 			<var name="displayStyle" value="Descriptive" />
 		</execute>
 
@@ -117,6 +126,6 @@
 		<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_DESCRIPTIVE_TITLE" value1="${folderName}" />
 		<execute function="Click" locator1="WC#ENTRY_DESCRIPTIVE_MENULIST_ICON" />
 		<execute function="AssertClick" locator1="MenuItem#MOVE_TO_THE_RECYCLE_BIN" value1="Move to the Recycle Bin" />
-		<execute function="AssertTextEquals#assertPartialText" locator1="Message#SUCCESS_RECYCLE_BIN" value1="The Web Content Folder ${folderName} was moved to the Recycle Bin. Undo" />
+		<execute function="AssertTextEquals#assertPartialText" locator1="Message#SUCCESS" value1="The ${assetType} ${folderName} was moved to the Recycle Bin. Undo" />
 	</command>
 </definition>

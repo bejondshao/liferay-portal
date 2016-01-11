@@ -1,6 +1,6 @@
 <definition>
 	<command name="addPollCP">
-		<execute function="Click" locator1="MenuItem#ADD_POLL" value1="Add Poll" />
+		<execute function="AssertClick" locator1="MenuItem#ADD_POLL" value1="Add Poll" />
 
 		<execute function="Type" locator1="CPPollsAddquestion#TITLE_FIELD" value1="${pollsQuestionTitle}" />
 		<execute function="Type" locator1="CPPollsAddquestion#POLLS_QUESTION_FIELD" value1="${pollsQuestion}" />
@@ -28,6 +28,13 @@
 			<then>
 				<execute function="AssertClick" locator1="CPPollsAddquestion#ADD_CHOICE_BUTTON" value1="Add Choice" />
 				<execute function="Type" locator1="CPPollsAddquestion#CHOICE_E_FIELD" value1="${pollsQuestionChoiceE}" />
+			</then>
+		</if>
+
+		<if>
+			<isset var="guestPermissions" />
+			<then>
+				<execute function="Select" locator1="Select#ANYONE" value1="Anyone (Guest Role)" />
 			</then>
 		</if>
 
@@ -62,8 +69,10 @@
 	</command>
 
 	<command name="tearDownCP">
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Polls" />
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Polls" />
 		</execute>
 
 		<while>

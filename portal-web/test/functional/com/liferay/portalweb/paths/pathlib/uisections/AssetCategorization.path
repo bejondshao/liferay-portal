@@ -15,7 +15,17 @@
 </tr>
 <tr>
 	<td>PANEL_TOGGLE</td>
-	<td>//div[contains(@class,'panel-toggle') and contains(.,'Categorization')]</td>
+	<td>//div[contains(@class,'panel-default') and contains(.,'Categorization')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORIZATION_PANEL_COLLAPSED</td>
+	<td>//div[contains(@id,'categorizationTitle')]/a[contains(@class,'collapse-icon') and @data-toggle='collapse']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATEGORIZATION_PANEL_EXPANDED</td>
+	<td>//div[contains(@id,'categorizationTitle')]/a[contains(@class,'collapse-icon') and @aria-expanded='true']</td>
 	<td></td>
 </tr>
 <tr>
@@ -41,6 +51,11 @@
 <tr>
 	<td>VOCABULARY</td>
 	<td>//span[@class='field-content']/label</td>
+	<td></td>
+</tr>
+<tr>
+	<td>VOCABULARY_LIST_ITEM</td>
+	<td>//span[@class='field-content'][${key_count}]/label</td>
 	<td></td>
 </tr>
 <tr>

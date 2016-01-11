@@ -1246,8 +1246,8 @@
 			<var name="userScreenName" value="${userScreenName1}" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Roles" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
 		</execute>
 
 		<execute macro="Role#assignRegRoleCP">
@@ -1263,8 +1263,8 @@
 			<var name="userScreenName" value="${userScreenName2}" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Roles" />
+		<execute macro="ProductMenu#gotoControlPanelUsers">
+			<var name="portlet" value="Roles" />
 		</execute>
 
 		<execute macro="Role#assignRegRoleCP">
@@ -1717,7 +1717,7 @@
 		<execute function="AssertTextNotPresent" value1="${userName3}" />
 	</command>
 
-	<command known-issues="SOS-2266,SOS-2267" name="ViewDeletedSiteActivities" priority="4">
+	<command name="ViewDeletedSiteActivities" priority="4">
 		<var name="bookmarksEntryDescription" value="Bookmarks Entry Description" />
 		<var name="bookmarksEntryName" value="Bookmarks Entry Name" />
 		<var name="bookmarksEntryUrl" value="http://www.google.com" />
@@ -1837,7 +1837,7 @@
 		<execute function="AssertTextNotPresent" value1="${wikiPageContentEdit}" />
 		<execute function="AssertTextNotPresent" value1="FrontPage" />
 
-		<execute macro="Page#gotoMyProfile" />
+		<execute macro="UserBar#gotoMyProfile" />
 
 		<execute function="AssertTextEquals" locator1="SOActivities#NO_ACTIVITIES" value1="There are no activities." />
 		<execute function="AssertTextNotPresent" value1="${bookmarksEntryDescription}" />
@@ -1859,7 +1859,7 @@
 		<execute function="AssertTextNotPresent" value1="FrontPage" />
 	</command>
 
-	<command known-issues="SOS-2370" name="ViewEditedSiteActivities" priority="4">
+	<command name="ViewEditedSiteActivities" priority="4">
 		<var name="bookmarksEntryDescription" value="Bookmarks Entry Description" />
 		<var name="bookmarksEntryDescriptionEdit" value="Bookmarks Entry Description Edit" />
 		<var name="bookmarksEntryName" value="Bookmarks Entry Name" />
@@ -2026,7 +2026,7 @@
 			<var name="wikiPageTitle" value="FrontPage" />
 		</execute>
 
-		<execute macro="Page#gotoMyProfile" />
+		<execute macro="UserBar#gotoMyProfile" />
 
 		<execute macro="SOActivities#viewSiteContentEdited">
 			<var name="blogsAction" value="Wrote a new blog entry." />
@@ -2059,7 +2059,7 @@
 		</execute>
 	</command>
 
-	<command known-issues="SOS-2179" name="ViewPrivateRestrictedSiteActivitiesProfileByNonMember" priority="4">
+	<command name="ViewPrivateRestrictedSiteActivitiesProfileByNonMember" priority="4">
 		<var name="adminEmailAddress" value="test@liferay.com" />
 		<var name="adminListName" value="Test, Test" />
 		<var name="adminName" value="Test Test" />
@@ -2175,7 +2175,7 @@
 		<execute function="AssertTextNotPresent" value1="${wikiPageContentEdit}" />
 	</command>
 
-	<command known-issues="SOS-2179" name="ViewPrivateSiteActivitiesProfileByNonMember" priority="4">
+	<command name="ViewPrivateSiteActivitiesProfileByNonMember" priority="4">
 		<var name="adminEmailAddress" value="test@liferay.com" />
 		<var name="adminListName" value="Test, Test" />
 		<var name="adminName" value="Test Test" />
@@ -2380,7 +2380,7 @@
 			<var name="siteURL" value="true" />
 		</execute>
 
-		<execute macro="BlogsEntry#addPG">
+		<execute macro="Blogs#addEntry">
 			<var name="categoryName" value="${categoryName}" />
 			<var name="entryContent" value="${entryContent}" />
 			<var name="entryTitle" value="${entryTitle}" />
@@ -2621,7 +2621,7 @@
 			<var name="userName" value="${adminName}" />
 		</execute>
 
-		<execute macro="Page#gotoMyProfile" />
+		<execute macro="UserBar#gotoMyProfile" />
 
 		<execute macro="SOActivities#viewBlogsActivityEntry">
 			<var name="action" value="Commented on a blog entry." />
@@ -2845,7 +2845,7 @@
 			<var name="userName" value="${adminFirstName}" />
 		</execute>
 
-		<execute macro="Page#gotoMyProfile" />
+		<execute macro="UserBar#gotoMyProfile" />
 
 		<execute macro="SOActivities#viewBlogsActivityEntry">
 			<var name="action" value="Wrote a new blog entry." />
@@ -3221,7 +3221,7 @@
 			<var name="userLoginFullName" value="${userName}" />
 		</execute>
 
-		<execute macro="Page#gotoMyProfile" />
+		<execute macro="UserBar#gotoMyProfile" />
 
 		<execute function="AssertTextEquals" locator1="SOActivities#NO_ACTIVITIES" value1="There are no activities." />
 
@@ -3247,7 +3247,7 @@
 			<var name="wikiPageContentEdit" value="${wikiPageContentEdit2}" />
 		</execute>
 
-		<execute macro="Page#gotoMyProfile" />
+		<execute macro="UserBar#gotoMyProfile" />
 
 		<execute macro="SOActivities#viewSiteContent">
 			<var name="blogsAction" value="Wrote a new blog entry." />
@@ -3279,7 +3279,7 @@
 			<var name="userLoginFullName" value="${adminName}" />
 		</execute>
 
-		<execute macro="Page#gotoMyProfile" />
+		<execute macro="UserBar#gotoMyProfile" />
 
 		<execute macro="SOActivities#viewSiteContent">
 			<var name="blogsAction" value="Wrote a new blog entry." />

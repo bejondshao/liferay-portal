@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashRenderer;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
@@ -113,7 +114,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	@Override
 	public void delete(long companyId, String uid) throws SearchException {
 		try {
-			SearchEngineUtil.deleteDocument(
+			IndexWriterHelperUtil.deleteDocument(
 				getSearchEngineId(), companyId, uid, _commitImmediately);
 		}
 		catch (SearchException se) {
@@ -139,6 +140,21 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		catch (Exception e) {
 			throw new SearchException(e);
 		}
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object == this) {
+			return true;
+		}
+
+		if (!(object instanceof Indexer<?>)) {
+			return false;
+		}
+
+		Indexer<?> indexer = (Indexer<?>)object;
+
+		return Validator.equals(getClassName(), indexer.getClassName());
 	}
 
 	/**
@@ -196,7 +212,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 
 		if (searchContext.getUserId() > 0) {
 			SearchPermissionChecker searchPermissionChecker =
-				SearchEngineUtil.getSearchPermissionChecker();
+				SearchEngineHelperUtil.getSearchPermissionChecker();
 
 			long[] groupIds = searchContext.getGroupIds();
 
@@ -298,7 +314,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 					clazz.getName())));
 
 		if (Validator.isNotNull(searchEngineId)) {
-			SearchEngine searchEngine = SearchEngineUtil.getSearchEngine(
+			SearchEngine searchEngine = SearchEngineHelperUtil.getSearchEngine(
 				searchEngineId);
 
 			if (searchEngine != null) {
@@ -307,7 +323,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		}
 
 		if (_searchEngineId == null) {
-			_searchEngineId = SearchEngineUtil.getDefaultSearchEngineId();
+			_searchEngineId = SearchEngineHelperUtil.getDefaultSearchEngineId();
 		}
 
 		if (_log.isDebugEnabled()) {
@@ -383,6 +399,11 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	}
 
 	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, getClassName());
+	}
+
+	@Override
 	public boolean hasPermission(
 			PermissionChecker permissionChecker, String entryClassName,
 			long entryClassPK, String actionId)
@@ -401,7 +422,20 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		return _filterSearch;
 	}
 
+	@Override
 	public boolean isIndexerEnabled() {
+		String className = getClassName();
+
+		if (_indexerEnabled == null) {
+			String indexerEnabled = PropsUtil.get(
+				PropsKeys.INDEXER_ENABLED,
+				new com.liferay.portal.kernel.configuration.Filter(className));
+
+			_indexerEnabled = GetterUtil.getBoolean(indexerEnabled, true);
+
+			return _indexerEnabled;
+		}
+
 		return _indexerEnabled;
 	}
 
@@ -491,7 +525,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 
 	@Override
 	public void reindex(Collection<T> collection) {
-		if (SearchEngineUtil.isIndexReadOnly() || !isIndexerEnabled() ||
+		if (IndexWriterHelperUtil.isIndexReadOnly() || !isIndexerEnabled() ||
 			collection.isEmpty()) {
 
 			return;
@@ -512,8 +546,8 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	@Override
 	public void reindex(String className, long classPK) throws SearchException {
 		try {
-			if (SearchEngineUtil.isIndexReadOnly() || !isIndexerEnabled() ||
-				(classPK <= 0)) {
+			if (IndexWriterHelperUtil.isIndexReadOnly() ||
+				!isIndexerEnabled() || (classPK <= 0)) {
 
 				return;
 			}
@@ -536,7 +570,9 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	@Override
 	public void reindex(String[] ids) throws SearchException {
 		try {
-			if (SearchEngineUtil.isIndexReadOnly() || !isIndexerEnabled()) {
+			if (IndexWriterHelperUtil.isIndexReadOnly() ||
+				!isIndexerEnabled()) {
+
 				return;
 			}
 
@@ -553,7 +589,9 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	@Override
 	public void reindex(T object) throws SearchException {
 		try {
-			if (SearchEngineUtil.isIndexReadOnly() || !isIndexerEnabled()) {
+			if (IndexWriterHelperUtil.isIndexReadOnly() ||
+				!isIndexerEnabled()) {
+
 				return;
 			}
 
@@ -655,11 +693,16 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 
 		fullQuery.setQueryConfig(queryConfig);
 
-		return SearchEngineUtil.searchCount(searchContext, fullQuery);
+		return IndexSearcherHelperUtil.searchCount(searchContext, fullQuery);
 	}
 
 	public void setCommitImmediately(boolean commitImmediately) {
 		_commitImmediately = commitImmediately;
+	}
+
+	@Override
+	public void setIndexerEnabled(boolean indexerEnabled) {
+		_indexerEnabled = indexerEnabled;
 	}
 
 	public void setSelectAllLocales(boolean selectAllLocales) {
@@ -1182,12 +1225,24 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 			BooleanFilter contextBooleanFilter, SearchContext searchContext)
 		throws Exception {
 
-		int status = GetterUtil.getInteger(
-			searchContext.getAttribute(Field.STATUS),
-			WorkflowConstants.STATUS_APPROVED);
+		int[] statuses = GetterUtil.getIntegerValues(
+			searchContext.getAttribute(Field.STATUS), null);
 
-		if (status != WorkflowConstants.STATUS_ANY) {
-			contextBooleanFilter.addRequiredTerm(Field.STATUS, status);
+		if (ArrayUtil.isEmpty(statuses)) {
+			int status = GetterUtil.getInteger(
+				searchContext.getAttribute(Field.STATUS),
+				WorkflowConstants.STATUS_APPROVED);
+
+			statuses = new int[] {status};
+		}
+
+		if (!ArrayUtil.contains(statuses, WorkflowConstants.STATUS_ANY)) {
+			TermsFilter statusesTermsFilter = new TermsFilter(Field.STATUS);
+
+			statusesTermsFilter.addValues(ArrayUtil.toStringArray(statuses));
+
+			contextBooleanFilter.add(
+				statusesTermsFilter, BooleanClauseOccur.MUST);
 		}
 		else {
 			contextBooleanFilter.addTerm(
@@ -1380,7 +1435,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 
 		document.addUID(getClassName(), field1);
 
-		SearchEngineUtil.deleteDocument(
+		IndexWriterHelperUtil.deleteDocument(
 			getSearchEngineId(), companyId, document.get(Field.UID),
 			_commitImmediately);
 	}
@@ -1392,7 +1447,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 
 		document.addUID(getClassName(), field1, field2);
 
-		SearchEngineUtil.deleteDocument(
+		IndexWriterHelperUtil.deleteDocument(
 			getSearchEngineId(), companyId, document.get(Field.UID),
 			_commitImmediately);
 	}
@@ -1457,7 +1512,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 
 		fullQuery.setQueryConfig(queryConfig);
 
-		return SearchEngineUtil.search(searchContext, fullQuery);
+		return IndexSearcherHelperUtil.search(searchContext, fullQuery);
 	}
 
 	protected Document getBaseModelDocument(
@@ -1844,10 +1899,6 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		_filterSearch = filterSearch;
 	}
 
-	protected void setIndexerEnabled(boolean indexerEnabled) {
-		_indexerEnabled = indexerEnabled;
-	}
-
 	protected void setPermissionAware(boolean permissionAware) {
 		_permissionAware = permissionAware;
 	}
@@ -1865,7 +1916,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	private String[] _defaultSelectedLocalizedFieldNames;
 	private final Document _document = new DocumentImpl();
 	private boolean _filterSearch;
-	private boolean _indexerEnabled = true;
+	private Boolean _indexerEnabled;
 	private IndexerPostProcessor[] _indexerPostProcessors =
 		new IndexerPostProcessor[0];
 	private boolean _permissionAware;
