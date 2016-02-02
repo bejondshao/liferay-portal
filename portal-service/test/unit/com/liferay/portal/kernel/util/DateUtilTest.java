@@ -48,9 +48,6 @@ public class DateUtilTest extends PowerMockito {
 		Assert.assertEquals(
 			DateUtil.equals(null, new Date()),
 			DateUtil.equals(new Date(), null));
-		Assert.assertEquals(
-			DateUtil.equals(null, new Date(), false),
-			DateUtil.equals(null, new Date(), true));
 	}
 
 	@Test
@@ -198,7 +195,7 @@ public class DateUtilTest extends PowerMockito {
 	@Mock
 	private TimeZone _timeZone;
 
-	private class TestSimpleDateFormat extends SimpleDateFormat {
+	private static class TestSimpleDateFormat extends SimpleDateFormat {
 
 		public TestSimpleDateFormat(String pattern) {
 			super(pattern);

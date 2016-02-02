@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchRepositoryException;
 import com.liferay.portal.model.Repository;
 
 /**
@@ -79,6 +80,25 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the repositories where uuid = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link RepositoryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param start the lower bound of the range of repositories
+	* @param end the upper bound of the range of repositories (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching repositories
+	*/
+	public java.util.List<Repository> findByUuid(java.lang.String uuid,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first repository in the ordered set where uuid = &#63;.
 	*
 	* @param uuid the uuid
@@ -88,7 +108,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	*/
 	public Repository findByUuid_First(java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Returns the first repository in the ordered set where uuid = &#63;.
@@ -110,7 +130,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	*/
 	public Repository findByUuid_Last(java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Returns the last repository in the ordered set where uuid = &#63;.
@@ -134,7 +154,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	public Repository[] findByUuid_PrevAndNext(long repositoryId,
 		java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Removes all the repositories where uuid = &#63; from the database.
@@ -160,7 +180,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	* @throws NoSuchRepositoryException if a matching repository could not be found
 	*/
 	public Repository findByUUID_G(java.lang.String uuid, long groupId)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Returns the repository where uuid = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -176,7 +196,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	*
 	* @param uuid the uuid
 	* @param groupId the group ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching repository, or <code>null</code> if a matching repository could not be found
 	*/
 	public Repository fetchByUUID_G(java.lang.String uuid, long groupId,
@@ -190,7 +210,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	* @return the repository that was removed
 	*/
 	public Repository removeByUUID_G(java.lang.String uuid, long groupId)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Returns the number of repositories where uuid = &#63; and groupId = &#63;.
@@ -246,6 +266,26 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the repositories where uuid = &#63; and companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link RepositoryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param companyId the company ID
+	* @param start the lower bound of the range of repositories
+	* @param end the upper bound of the range of repositories (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching repositories
+	*/
+	public java.util.List<Repository> findByUuid_C(java.lang.String uuid,
+		long companyId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first repository in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
 	* @param uuid the uuid
@@ -256,7 +296,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	*/
 	public Repository findByUuid_C_First(java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Returns the first repository in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -281,7 +321,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	*/
 	public Repository findByUuid_C_Last(java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Returns the last repository in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -307,7 +347,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	public Repository[] findByUuid_C_PrevAndNext(long repositoryId,
 		java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Removes all the repositories where uuid = &#63; and companyId = &#63; from the database.
@@ -367,6 +407,25 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the repositories where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link RepositoryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of repositories
+	* @param end the upper bound of the range of repositories (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching repositories
+	*/
+	public java.util.List<Repository> findByGroupId(long groupId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first repository in the ordered set where groupId = &#63;.
 	*
 	* @param groupId the group ID
@@ -376,7 +435,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	*/
 	public Repository findByGroupId_First(long groupId,
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Returns the first repository in the ordered set where groupId = &#63;.
@@ -398,7 +457,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	*/
 	public Repository findByGroupId_Last(long groupId,
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Returns the last repository in the ordered set where groupId = &#63;.
@@ -422,7 +481,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	public Repository[] findByGroupId_PrevAndNext(long repositoryId,
 		long groupId,
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Removes all the repositories where groupId = &#63; from the database.
@@ -449,8 +508,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	* @throws NoSuchRepositoryException if a matching repository could not be found
 	*/
 	public Repository findByG_N_P(long groupId, java.lang.String name,
-		java.lang.String portletId)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		java.lang.String portletId) throws NoSuchRepositoryException;
 
 	/**
 	* Returns the repository where groupId = &#63; and name = &#63; and portletId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -469,7 +527,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	* @param groupId the group ID
 	* @param name the name
 	* @param portletId the portlet ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching repository, or <code>null</code> if a matching repository could not be found
 	*/
 	public Repository fetchByG_N_P(long groupId, java.lang.String name,
@@ -484,8 +542,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	* @return the repository that was removed
 	*/
 	public Repository removeByG_N_P(long groupId, java.lang.String name,
-		java.lang.String portletId)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		java.lang.String portletId) throws NoSuchRepositoryException;
 
 	/**
 	* Returns the number of repositories where groupId = &#63; and name = &#63; and portletId = &#63;.
@@ -528,7 +585,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	* @throws NoSuchRepositoryException if a repository with the primary key could not be found
 	*/
 	public Repository remove(long repositoryId)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	public Repository updateImpl(Repository repository);
 
@@ -540,7 +597,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	* @throws NoSuchRepositoryException if a repository with the primary key could not be found
 	*/
 	public Repository findByPrimaryKey(long repositoryId)
-		throws com.liferay.portal.NoSuchRepositoryException;
+		throws NoSuchRepositoryException;
 
 	/**
 	* Returns the repository with the primary key or returns <code>null</code> if it could not be found.
@@ -590,6 +647,23 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the repositories.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link RepositoryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of repositories
+	* @param end the upper bound of the range of repositories (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of repositories
+	*/
+	public java.util.List<Repository> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Repository> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the repositories from the database.
 	*/
 	public void removeAll();
@@ -600,4 +674,7 @@ public interface RepositoryPersistence extends BasePersistence<Repository> {
 	* @return the number of repositories
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

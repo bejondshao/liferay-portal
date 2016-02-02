@@ -18,7 +18,10 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.service.persistence.BasePersistence;
 
+import com.liferay.portlet.messageboards.exception.NoSuchThreadException;
 import com.liferay.portlet.messageboards.model.MBThread;
+
+import java.util.Date;
 
 /**
  * The persistence interface for the message boards thread service.
@@ -81,6 +84,25 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where uuid = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByUuid(java.lang.String uuid,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where uuid = &#63;.
 	*
 	* @param uuid the uuid
@@ -90,7 +112,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByUuid_First(java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where uuid = &#63;.
@@ -112,7 +134,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByUuid_Last(java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where uuid = &#63;.
@@ -136,7 +158,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] findByUuid_PrevAndNext(long threadId,
 		java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Removes all the message boards threads where uuid = &#63; from the database.
@@ -162,7 +184,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @throws NoSuchThreadException if a matching message boards thread could not be found
 	*/
 	public MBThread findByUUID_G(java.lang.String uuid, long groupId)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the message boards thread where uuid = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -178,7 +200,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*
 	* @param uuid the uuid
 	* @param groupId the group ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching message boards thread, or <code>null</code> if a matching message boards thread could not be found
 	*/
 	public MBThread fetchByUUID_G(java.lang.String uuid, long groupId,
@@ -192,7 +214,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the message boards thread that was removed
 	*/
 	public MBThread removeByUUID_G(java.lang.String uuid, long groupId)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the number of message boards threads where uuid = &#63; and groupId = &#63;.
@@ -248,6 +270,26 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where uuid = &#63; and companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param companyId the company ID
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByUuid_C(java.lang.String uuid,
+		long companyId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
 	* @param uuid the uuid
@@ -258,7 +300,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByUuid_C_First(java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -282,7 +324,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByUuid_C_Last(java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -308,7 +350,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] findByUuid_C_PrevAndNext(long threadId,
 		java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Removes all the message boards threads where uuid = &#63; and companyId = &#63; from the database.
@@ -368,6 +410,25 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByGroupId(long groupId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63;.
 	*
 	* @param groupId the group ID
@@ -377,7 +438,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByGroupId_First(long groupId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63;.
@@ -399,7 +460,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByGroupId_Last(long groupId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where groupId = &#63;.
@@ -422,7 +483,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread[] findByGroupId_PrevAndNext(long threadId, long groupId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63;.
@@ -476,7 +537,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] filterFindByGroupId_PrevAndNext(long threadId,
 		long groupId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Removes all the message boards threads where groupId = &#63; from the database.
@@ -509,7 +570,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @throws NoSuchThreadException if a matching message boards thread could not be found
 	*/
 	public MBThread findByRootMessageId(long rootMessageId)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the message boards thread where rootMessageId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -523,7 +584,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* Returns the message boards thread where rootMessageId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param rootMessageId the root message ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching message boards thread, or <code>null</code> if a matching message boards thread could not be found
 	*/
 	public MBThread fetchByRootMessageId(long rootMessageId,
@@ -536,7 +597,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the message boards thread that was removed
 	*/
 	public MBThread removeByRootMessageId(long rootMessageId)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the number of message boards threads where rootMessageId = &#63;.
@@ -590,6 +651,26 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param categoryId the category ID
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_C(long groupId, long categoryId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId = &#63;.
 	*
 	* @param groupId the group ID
@@ -600,7 +681,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByG_C_First(long groupId, long categoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId = &#63;.
@@ -624,7 +705,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByG_C_Last(long groupId, long categoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where groupId = &#63; and categoryId = &#63;.
@@ -650,7 +731,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] findByG_C_PrevAndNext(long threadId, long groupId,
 		long categoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and categoryId = &#63;.
@@ -709,7 +790,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] filterFindByG_C_PrevAndNext(long threadId, long groupId,
 		long categoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and categoryId = any &#63;.
@@ -803,6 +884,26 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param categoryId the category ID
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_C(long groupId, long[] categoryIds,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the message boards threads where groupId = &#63; and categoryId = &#63; from the database.
 	*
 	* @param groupId the group ID
@@ -890,6 +991,26 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param categoryId the category ID
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_NotC(long groupId, long categoryId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId &ne; &#63;.
 	*
 	* @param groupId the group ID
@@ -900,7 +1021,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByG_NotC_First(long groupId, long categoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId &ne; &#63;.
@@ -924,7 +1045,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByG_NotC_Last(long groupId, long categoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where groupId = &#63; and categoryId &ne; &#63;.
@@ -950,7 +1071,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] findByG_NotC_PrevAndNext(long threadId, long groupId,
 		long categoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and categoryId &ne; &#63;.
@@ -1009,7 +1130,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] filterFindByG_NotC_PrevAndNext(long threadId,
 		long groupId, long categoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Removes all the message boards threads where groupId = &#63; and categoryId &ne; &#63; from the database.
@@ -1081,6 +1202,26 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param status the status
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_S(long groupId, int status,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and status = &#63;.
 	*
 	* @param groupId the group ID
@@ -1091,7 +1232,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByG_S_First(long groupId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and status = &#63;.
@@ -1115,7 +1256,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByG_S_Last(long groupId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where groupId = &#63; and status = &#63;.
@@ -1141,7 +1282,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] findByG_S_PrevAndNext(long threadId, long groupId,
 		int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and status = &#63;.
@@ -1199,7 +1340,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] filterFindByG_S_PrevAndNext(long threadId, long groupId,
 		int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Removes all the message boards threads where groupId = &#63; and status = &#63; from the database.
@@ -1271,6 +1412,26 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where categoryId = &#63; and priority = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param categoryId the category ID
+	* @param priority the priority
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByC_P(long categoryId, double priority,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where categoryId = &#63; and priority = &#63;.
 	*
 	* @param categoryId the category ID
@@ -1281,7 +1442,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByC_P_First(long categoryId, double priority,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where categoryId = &#63; and priority = &#63;.
@@ -1305,7 +1466,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByC_P_Last(long categoryId, double priority,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where categoryId = &#63; and priority = &#63;.
@@ -1331,7 +1492,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] findByC_P_PrevAndNext(long threadId, long categoryId,
 		double priority,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Removes all the message boards threads where categoryId = &#63; and priority = &#63; from the database.
@@ -1357,8 +1518,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @param priority the priority
 	* @return the matching message boards threads
 	*/
-	public java.util.List<MBThread> findByL_P(java.util.Date lastPostDate,
-		double priority);
+	public java.util.List<MBThread> findByL_P(Date lastPostDate, double priority);
 
 	/**
 	* Returns a range of all the message boards threads where lastPostDate = &#63; and priority = &#63;.
@@ -1373,7 +1533,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @param end the upper bound of the range of message boards threads (not inclusive)
 	* @return the range of matching message boards threads
 	*/
-	public java.util.List<MBThread> findByL_P(java.util.Date lastPostDate,
+	public java.util.List<MBThread> findByL_P(Date lastPostDate,
 		double priority, int start, int end);
 
 	/**
@@ -1390,9 +1550,29 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching message boards threads
 	*/
-	public java.util.List<MBThread> findByL_P(java.util.Date lastPostDate,
+	public java.util.List<MBThread> findByL_P(Date lastPostDate,
 		double priority, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the message boards threads where lastPostDate = &#63; and priority = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param lastPostDate the last post date
+	* @param priority the priority
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByL_P(Date lastPostDate,
+		double priority, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
 
 	/**
 	* Returns the first message boards thread in the ordered set where lastPostDate = &#63; and priority = &#63;.
@@ -1403,10 +1583,9 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the first matching message boards thread
 	* @throws NoSuchThreadException if a matching message boards thread could not be found
 	*/
-	public MBThread findByL_P_First(java.util.Date lastPostDate,
-		double priority,
+	public MBThread findByL_P_First(Date lastPostDate, double priority,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where lastPostDate = &#63; and priority = &#63;.
@@ -1416,8 +1595,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching message boards thread, or <code>null</code> if a matching message boards thread could not be found
 	*/
-	public MBThread fetchByL_P_First(java.util.Date lastPostDate,
-		double priority,
+	public MBThread fetchByL_P_First(Date lastPostDate, double priority,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
@@ -1429,10 +1607,9 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the last matching message boards thread
 	* @throws NoSuchThreadException if a matching message boards thread could not be found
 	*/
-	public MBThread findByL_P_Last(java.util.Date lastPostDate,
-		double priority,
+	public MBThread findByL_P_Last(Date lastPostDate, double priority,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where lastPostDate = &#63; and priority = &#63;.
@@ -1442,8 +1619,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching message boards thread, or <code>null</code> if a matching message boards thread could not be found
 	*/
-	public MBThread fetchByL_P_Last(java.util.Date lastPostDate,
-		double priority,
+	public MBThread fetchByL_P_Last(Date lastPostDate, double priority,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
@@ -1456,10 +1632,10 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the previous, current, and next message boards thread
 	* @throws NoSuchThreadException if a message boards thread with the primary key could not be found
 	*/
-	public MBThread[] findByL_P_PrevAndNext(long threadId,
-		java.util.Date lastPostDate, double priority,
+	public MBThread[] findByL_P_PrevAndNext(long threadId, Date lastPostDate,
+		double priority,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Removes all the message boards threads where lastPostDate = &#63; and priority = &#63; from the database.
@@ -1467,7 +1643,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @param lastPostDate the last post date
 	* @param priority the priority
 	*/
-	public void removeByL_P(java.util.Date lastPostDate, double priority);
+	public void removeByL_P(Date lastPostDate, double priority);
 
 	/**
 	* Returns the number of message boards threads where lastPostDate = &#63; and priority = &#63;.
@@ -1476,7 +1652,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @param priority the priority
 	* @return the number of matching message boards threads
 	*/
-	public int countByL_P(java.util.Date lastPostDate, double priority);
+	public int countByL_P(Date lastPostDate, double priority);
 
 	/**
 	* Returns all the message boards threads where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1487,7 +1663,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the matching message boards threads
 	*/
 	public java.util.List<MBThread> findByG_C_L(long groupId, long categoryId,
-		java.util.Date lastPostDate);
+		Date lastPostDate);
 
 	/**
 	* Returns a range of all the message boards threads where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1504,7 +1680,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the range of matching message boards threads
 	*/
 	public java.util.List<MBThread> findByG_C_L(long groupId, long categoryId,
-		java.util.Date lastPostDate, int start, int end);
+		Date lastPostDate, int start, int end);
 
 	/**
 	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1522,8 +1698,29 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the ordered range of matching message boards threads
 	*/
 	public java.util.List<MBThread> findByG_C_L(long groupId, long categoryId,
-		java.util.Date lastPostDate, int start, int end,
+		Date lastPostDate, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param categoryId the category ID
+	* @param lastPostDate the last post date
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_C_L(long groupId, long categoryId,
+		Date lastPostDate, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
 
 	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1536,9 +1733,9 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @throws NoSuchThreadException if a matching message boards thread could not be found
 	*/
 	public MBThread findByG_C_L_First(long groupId, long categoryId,
-		java.util.Date lastPostDate,
+		Date lastPostDate,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1550,7 +1747,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the first matching message boards thread, or <code>null</code> if a matching message boards thread could not be found
 	*/
 	public MBThread fetchByG_C_L_First(long groupId, long categoryId,
-		java.util.Date lastPostDate,
+		Date lastPostDate,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
@@ -1564,9 +1761,9 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @throws NoSuchThreadException if a matching message boards thread could not be found
 	*/
 	public MBThread findByG_C_L_Last(long groupId, long categoryId,
-		java.util.Date lastPostDate,
+		Date lastPostDate,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1578,7 +1775,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the last matching message boards thread, or <code>null</code> if a matching message boards thread could not be found
 	*/
 	public MBThread fetchByG_C_L_Last(long groupId, long categoryId,
-		java.util.Date lastPostDate,
+		Date lastPostDate,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
@@ -1593,9 +1790,9 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @throws NoSuchThreadException if a message boards thread with the primary key could not be found
 	*/
 	public MBThread[] findByG_C_L_PrevAndNext(long threadId, long groupId,
-		long categoryId, java.util.Date lastPostDate,
+		long categoryId, Date lastPostDate,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1606,7 +1803,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the matching message boards threads that the user has permission to view
 	*/
 	public java.util.List<MBThread> filterFindByG_C_L(long groupId,
-		long categoryId, java.util.Date lastPostDate);
+		long categoryId, Date lastPostDate);
 
 	/**
 	* Returns a range of all the message boards threads that the user has permission to view where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1623,7 +1820,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the range of matching message boards threads that the user has permission to view
 	*/
 	public java.util.List<MBThread> filterFindByG_C_L(long groupId,
-		long categoryId, java.util.Date lastPostDate, int start, int end);
+		long categoryId, Date lastPostDate, int start, int end);
 
 	/**
 	* Returns an ordered range of all the message boards threads that the user has permissions to view where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1641,7 +1838,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the ordered range of matching message boards threads that the user has permission to view
 	*/
 	public java.util.List<MBThread> filterFindByG_C_L(long groupId,
-		long categoryId, java.util.Date lastPostDate, int start, int end,
+		long categoryId, Date lastPostDate, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
@@ -1656,9 +1853,9 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @throws NoSuchThreadException if a message boards thread with the primary key could not be found
 	*/
 	public MBThread[] filterFindByG_C_L_PrevAndNext(long threadId,
-		long groupId, long categoryId, java.util.Date lastPostDate,
+		long groupId, long categoryId, Date lastPostDate,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Removes all the message boards threads where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63; from the database.
@@ -1667,8 +1864,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @param categoryId the category ID
 	* @param lastPostDate the last post date
 	*/
-	public void removeByG_C_L(long groupId, long categoryId,
-		java.util.Date lastPostDate);
+	public void removeByG_C_L(long groupId, long categoryId, Date lastPostDate);
 
 	/**
 	* Returns the number of message boards threads where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1678,8 +1874,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @param lastPostDate the last post date
 	* @return the number of matching message boards threads
 	*/
-	public int countByG_C_L(long groupId, long categoryId,
-		java.util.Date lastPostDate);
+	public int countByG_C_L(long groupId, long categoryId, Date lastPostDate);
 
 	/**
 	* Returns the number of message boards threads that the user has permission to view where groupId = &#63; and categoryId = &#63; and lastPostDate = &#63;.
@@ -1690,7 +1885,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the number of matching message boards threads that the user has permission to view
 	*/
 	public int filterCountByG_C_L(long groupId, long categoryId,
-		java.util.Date lastPostDate);
+		Date lastPostDate);
 
 	/**
 	* Returns all the message boards threads where groupId = &#63; and categoryId = &#63; and status = &#63;.
@@ -1740,6 +1935,27 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param categoryId the category ID
+	* @param status the status
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_C_S(long groupId, long categoryId,
+		int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId = &#63; and status = &#63;.
 	*
 	* @param groupId the group ID
@@ -1752,7 +1968,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread findByG_C_S_First(long groupId, long categoryId,
 		int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId = &#63; and status = &#63;.
@@ -1779,7 +1995,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	*/
 	public MBThread findByG_C_S_Last(long groupId, long categoryId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where groupId = &#63; and categoryId = &#63; and status = &#63;.
@@ -1808,7 +2024,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] findByG_C_S_PrevAndNext(long threadId, long groupId,
 		long categoryId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and categoryId = &#63; and status = &#63;.
@@ -1871,7 +2087,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] filterFindByG_C_S_PrevAndNext(long threadId,
 		long groupId, long categoryId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and categoryId = any &#63; and status = &#63;.
@@ -1972,6 +2188,27 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId = &#63; and status = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param categoryId the category ID
+	* @param status the status
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_C_S(long groupId,
+		long[] categoryIds, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the message boards threads where groupId = &#63; and categoryId = &#63; and status = &#63; from the database.
 	*
 	* @param groupId the group ID
@@ -2068,6 +2305,27 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId = &#63; and status &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param categoryId the category ID
+	* @param status the status
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_C_NotS(long groupId,
+		long categoryId, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId = &#63; and status &ne; &#63;.
 	*
 	* @param groupId the group ID
@@ -2080,7 +2338,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread findByG_C_NotS_First(long groupId, long categoryId,
 		int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId = &#63; and status &ne; &#63;.
@@ -2108,7 +2366,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread findByG_C_NotS_Last(long groupId, long categoryId,
 		int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where groupId = &#63; and categoryId = &#63; and status &ne; &#63;.
@@ -2137,7 +2395,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] findByG_C_NotS_PrevAndNext(long threadId, long groupId,
 		long categoryId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and categoryId = &#63; and status &ne; &#63;.
@@ -2200,7 +2458,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] filterFindByG_C_NotS_PrevAndNext(long threadId,
 		long groupId, long categoryId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and categoryId = any &#63; and status &ne; &#63;.
@@ -2301,6 +2559,27 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId = &#63; and status &ne; &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param categoryId the category ID
+	* @param status the status
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_C_NotS(long groupId,
+		long[] categoryIds, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the message boards threads where groupId = &#63; and categoryId = &#63; and status &ne; &#63; from the database.
 	*
 	* @param groupId the group ID
@@ -2398,6 +2677,27 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId &ne; &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param categoryId the category ID
+	* @param status the status
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_NotC_S(long groupId,
+		long categoryId, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId &ne; &#63; and status = &#63;.
 	*
 	* @param groupId the group ID
@@ -2410,7 +2710,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread findByG_NotC_S_First(long groupId, long categoryId,
 		int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId &ne; &#63; and status = &#63;.
@@ -2438,7 +2738,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread findByG_NotC_S_Last(long groupId, long categoryId,
 		int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where groupId = &#63; and categoryId &ne; &#63; and status = &#63;.
@@ -2467,7 +2767,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] findByG_NotC_S_PrevAndNext(long threadId, long groupId,
 		long categoryId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and categoryId &ne; &#63; and status = &#63;.
@@ -2530,7 +2830,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] filterFindByG_NotC_S_PrevAndNext(long threadId,
 		long groupId, long categoryId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Removes all the message boards threads where groupId = &#63; and categoryId &ne; &#63; and status = &#63; from the database.
@@ -2609,6 +2909,27 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads where groupId = &#63; and categoryId &ne; &#63; and status &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param categoryId the category ID
+	* @param status the status
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching message boards threads
+	*/
+	public java.util.List<MBThread> findByG_NotC_NotS(long groupId,
+		long categoryId, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId &ne; &#63; and status &ne; &#63;.
 	*
 	* @param groupId the group ID
@@ -2621,7 +2942,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread findByG_NotC_NotS_First(long groupId, long categoryId,
 		int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the first message boards thread in the ordered set where groupId = &#63; and categoryId &ne; &#63; and status &ne; &#63;.
@@ -2649,7 +2970,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread findByG_NotC_NotS_Last(long groupId, long categoryId,
 		int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the last message boards thread in the ordered set where groupId = &#63; and categoryId &ne; &#63; and status &ne; &#63;.
@@ -2678,7 +2999,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] findByG_NotC_NotS_PrevAndNext(long threadId,
 		long groupId, long categoryId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns all the message boards threads that the user has permission to view where groupId = &#63; and categoryId &ne; &#63; and status &ne; &#63;.
@@ -2741,7 +3062,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	public MBThread[] filterFindByG_NotC_NotS_PrevAndNext(long threadId,
 		long groupId, long categoryId, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Removes all the message boards threads where groupId = &#63; and categoryId &ne; &#63; and status &ne; &#63; from the database.
@@ -2802,8 +3123,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the message boards thread that was removed
 	* @throws NoSuchThreadException if a message boards thread with the primary key could not be found
 	*/
-	public MBThread remove(long threadId)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+	public MBThread remove(long threadId) throws NoSuchThreadException;
 
 	public MBThread updateImpl(MBThread mbThread);
 
@@ -2815,7 +3135,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @throws NoSuchThreadException if a message boards thread with the primary key could not be found
 	*/
 	public MBThread findByPrimaryKey(long threadId)
-		throws com.liferay.portlet.messageboards.NoSuchThreadException;
+		throws NoSuchThreadException;
 
 	/**
 	* Returns the message boards thread with the primary key or returns <code>null</code> if it could not be found.
@@ -2865,6 +3185,23 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the message boards threads.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link MBThreadModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of message boards threads
+	* @param end the upper bound of the range of message boards threads (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of message boards threads
+	*/
+	public java.util.List<MBThread> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<MBThread> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the message boards threads from the database.
 	*/
 	public void removeAll();
@@ -2875,4 +3212,7 @@ public interface MBThreadPersistence extends BasePersistence<MBThread> {
 	* @return the number of message boards threads
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

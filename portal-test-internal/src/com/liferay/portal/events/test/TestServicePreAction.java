@@ -16,9 +16,9 @@ package com.liferay.portal.events.test;
 
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.User;
-import com.liferay.portal.security.permission.PermissionChecker;
 
 import java.io.File;
 
@@ -100,12 +100,11 @@ public class TestServicePreAction extends ServicePreAction {
 	public LayoutComposite getDefaultViewableLayoutComposite(
 			HttpServletRequest request, User user,
 			PermissionChecker permissionChecker, long doAsGroupId,
-			String controlPanelCategory, boolean signedIn)
+			boolean signedIn)
 		throws PortalException {
 
 		return super.getDefaultViewableLayoutComposite(
-			request, user, permissionChecker, doAsGroupId, controlPanelCategory,
-			signedIn);
+			request, user, permissionChecker, doAsGroupId, signedIn);
 	}
 
 	@Override
@@ -127,24 +126,21 @@ public class TestServicePreAction extends ServicePreAction {
 	public LayoutComposite getViewableLayoutComposite(
 			HttpServletRequest request, User user,
 			PermissionChecker permissionChecker, Layout layout,
-			List<Layout> layouts, long doAsGroupId, String controlPanelCategory)
+			List<Layout> layouts, long doAsGroupId)
 		throws PortalException {
 
 		return super.getViewableLayoutComposite(
-			request, user, permissionChecker, layout, layouts, doAsGroupId,
-			controlPanelCategory);
+			request, user, permissionChecker, layout, layouts, doAsGroupId);
 	}
 
 	@Override
 	public boolean hasAccessPermission(
 			PermissionChecker permissionChecker, Layout layout,
-			long doAsGroupId, String controlPanelCategory,
-			boolean checkViewableGroup)
+			long doAsGroupId, boolean checkViewableGroup)
 		throws PortalException {
 
 		return super.hasAccessPermission(
-			permissionChecker, layout, doAsGroupId, controlPanelCategory,
-			checkViewableGroup);
+			permissionChecker, layout, doAsGroupId, checkViewableGroup);
 	}
 
 	@Override
@@ -161,20 +157,11 @@ public class TestServicePreAction extends ServicePreAction {
 	public List<Layout> mergeAdditionalLayouts(
 			HttpServletRequest request, User user,
 			PermissionChecker permissionChecker, Layout layout,
-			List<Layout> layouts, long doAsGroupId, String controlPanelCategory)
+			List<Layout> layouts, long doAsGroupId)
 		throws PortalException {
 
 		return super.mergeAdditionalLayouts(
-			request, user, permissionChecker, layout, layouts, doAsGroupId,
-			controlPanelCategory);
-	}
-
-	@Override
-	public void processControlPanelRedirects(
-			HttpServletRequest request, HttpServletResponse response)
-		throws Exception {
-
-		super.processControlPanelRedirects(request, response);
+			request, user, permissionChecker, layout, layouts, doAsGroupId);
 	}
 
 	@Override

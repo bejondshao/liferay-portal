@@ -33,7 +33,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 
-import com.liferay.portlet.social.NoSuchActivityLimitException;
+import com.liferay.portlet.social.exception.NoSuchActivityLimitException;
 import com.liferay.portlet.social.model.SocialActivityLimit;
 import com.liferay.portlet.social.service.SocialActivityLimitLocalServiceUtil;
 import com.liferay.portlet.social.service.persistence.SocialActivityLimitPersistence;
@@ -42,6 +42,7 @@ import com.liferay.portlet.social.service.persistence.SocialActivityLimitUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -58,8 +59,9 @@ import java.util.Set;
  * @generated
  */
 public class SocialActivityLimitPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -325,11 +327,10 @@ public class SocialActivityLimitPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = SocialActivityLimitLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<SocialActivityLimit>() {
 				@Override
-				public void performAction(Object object) {
-					SocialActivityLimit socialActivityLimit = (SocialActivityLimit)object;
-
+				public void performAction(
+					SocialActivityLimit socialActivityLimit) {
 					Assert.assertNotNull(socialActivityLimit);
 
 					count.increment();

@@ -117,7 +117,7 @@ public class PortalPreferencesUtil {
 	* @throws NoSuchPreferencesException if a matching portal preferences could not be found
 	*/
 	public static PortalPreferences findByO_O(long ownerId, int ownerType)
-		throws com.liferay.portal.NoSuchPreferencesException {
+		throws com.liferay.portal.exception.NoSuchPreferencesException {
 		return getPersistence().findByO_O(ownerId, ownerType);
 	}
 
@@ -137,7 +137,7 @@ public class PortalPreferencesUtil {
 	*
 	* @param ownerId the owner ID
 	* @param ownerType the owner type
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching portal preferences, or <code>null</code> if a matching portal preferences could not be found
 	*/
 	public static PortalPreferences fetchByO_O(long ownerId, int ownerType,
@@ -153,7 +153,7 @@ public class PortalPreferencesUtil {
 	* @return the portal preferences that was removed
 	*/
 	public static PortalPreferences removeByO_O(long ownerId, int ownerType)
-		throws com.liferay.portal.NoSuchPreferencesException {
+		throws com.liferay.portal.exception.NoSuchPreferencesException {
 		return getPersistence().removeByO_O(ownerId, ownerType);
 	}
 
@@ -204,7 +204,7 @@ public class PortalPreferencesUtil {
 	* @throws NoSuchPreferencesException if a portal preferences with the primary key could not be found
 	*/
 	public static PortalPreferences remove(long portalPreferencesId)
-		throws com.liferay.portal.NoSuchPreferencesException {
+		throws com.liferay.portal.exception.NoSuchPreferencesException {
 		return getPersistence().remove(portalPreferencesId);
 	}
 
@@ -221,7 +221,7 @@ public class PortalPreferencesUtil {
 	* @throws NoSuchPreferencesException if a portal preferences with the primary key could not be found
 	*/
 	public static PortalPreferences findByPrimaryKey(long portalPreferencesId)
-		throws com.liferay.portal.NoSuchPreferencesException {
+		throws com.liferay.portal.exception.NoSuchPreferencesException {
 		return getPersistence().findByPrimaryKey(portalPreferencesId);
 	}
 
@@ -282,6 +282,26 @@ public class PortalPreferencesUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the portal preferenceses.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PortalPreferencesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of portal preferenceses
+	* @param end the upper bound of the range of portal preferenceses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of portal preferenceses
+	*/
+	public static List<PortalPreferences> findAll(int start, int end,
+		OrderByComparator<PortalPreferences> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the portal preferenceses from the database.
 	*/
 	public static void removeAll() {
@@ -306,13 +326,6 @@ public class PortalPreferencesUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(PortalPreferencesPersistence persistence) {
 	}
 
 	private static PortalPreferencesPersistence _persistence;

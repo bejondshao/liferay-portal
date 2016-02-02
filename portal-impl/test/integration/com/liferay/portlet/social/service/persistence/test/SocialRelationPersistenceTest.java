@@ -32,7 +32,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 
-import com.liferay.portlet.social.NoSuchRelationException;
+import com.liferay.portlet.social.exception.NoSuchRelationException;
 import com.liferay.portlet.social.model.SocialRelation;
 import com.liferay.portlet.social.service.SocialRelationLocalServiceUtil;
 import com.liferay.portlet.social.service.persistence.SocialRelationPersistence;
@@ -41,6 +41,7 @@ import com.liferay.portlet.social.service.persistence.SocialRelationUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -57,8 +58,9 @@ import java.util.Set;
  * @generated
  */
 public class SocialRelationPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -367,11 +369,9 @@ public class SocialRelationPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = SocialRelationLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<SocialRelation>() {
 				@Override
-				public void performAction(Object object) {
-					SocialRelation socialRelation = (SocialRelation)object;
-
+				public void performAction(SocialRelation socialRelation) {
 					Assert.assertNotNull(socialRelation);
 
 					count.increment();

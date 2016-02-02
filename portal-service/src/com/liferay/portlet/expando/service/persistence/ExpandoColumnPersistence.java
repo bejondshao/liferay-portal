@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.service.persistence.BasePersistence;
 
+import com.liferay.portlet.expando.exception.NoSuchColumnException;
 import com.liferay.portlet.expando.model.ExpandoColumn;
 
 /**
@@ -81,6 +82,25 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoColumn> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando columns where tableId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoColumnModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param tableId the table ID
+	* @param start the lower bound of the range of expando columns
+	* @param end the upper bound of the range of expando columns (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching expando columns
+	*/
+	public java.util.List<ExpandoColumn> findByTableId(long tableId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoColumn> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first expando column in the ordered set where tableId = &#63;.
 	*
 	* @param tableId the table ID
@@ -90,7 +110,7 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 	*/
 	public ExpandoColumn findByTableId_First(long tableId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoColumn> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchColumnException;
+		throws NoSuchColumnException;
 
 	/**
 	* Returns the first expando column in the ordered set where tableId = &#63;.
@@ -112,7 +132,7 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 	*/
 	public ExpandoColumn findByTableId_Last(long tableId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoColumn> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchColumnException;
+		throws NoSuchColumnException;
 
 	/**
 	* Returns the last expando column in the ordered set where tableId = &#63;.
@@ -136,7 +156,7 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 	public ExpandoColumn[] findByTableId_PrevAndNext(long columnId,
 		long tableId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoColumn> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchColumnException;
+		throws NoSuchColumnException;
 
 	/**
 	* Returns all the expando columns that the user has permission to view where tableId = &#63;.
@@ -190,7 +210,7 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 	public ExpandoColumn[] filterFindByTableId_PrevAndNext(long columnId,
 		long tableId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoColumn> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchColumnException;
+		throws NoSuchColumnException;
 
 	/**
 	* Removes all the expando columns where tableId = &#63; from the database.
@@ -264,6 +284,26 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoColumn> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando columns where tableId = &#63; and name = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoColumnModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param tableId the table ID
+	* @param name the name
+	* @param start the lower bound of the range of expando columns
+	* @param end the upper bound of the range of expando columns (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching expando columns
+	*/
+	public java.util.List<ExpandoColumn> findByT_N(long tableId,
+		java.lang.String[] names, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoColumn> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the expando column where tableId = &#63; and name = &#63; or throws a {@link NoSuchColumnException} if it could not be found.
 	*
 	* @param tableId the table ID
@@ -272,7 +312,7 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 	* @throws NoSuchColumnException if a matching expando column could not be found
 	*/
 	public ExpandoColumn findByT_N(long tableId, java.lang.String name)
-		throws com.liferay.portlet.expando.NoSuchColumnException;
+		throws NoSuchColumnException;
 
 	/**
 	* Returns the expando column where tableId = &#63; and name = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -288,7 +328,7 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 	*
 	* @param tableId the table ID
 	* @param name the name
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching expando column, or <code>null</code> if a matching expando column could not be found
 	*/
 	public ExpandoColumn fetchByT_N(long tableId, java.lang.String name,
@@ -302,7 +342,7 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 	* @return the expando column that was removed
 	*/
 	public ExpandoColumn removeByT_N(long tableId, java.lang.String name)
-		throws com.liferay.portlet.expando.NoSuchColumnException;
+		throws NoSuchColumnException;
 
 	/**
 	* Returns the number of expando columns where tableId = &#63; and name = &#63;.
@@ -369,8 +409,7 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 	* @return the expando column that was removed
 	* @throws NoSuchColumnException if a expando column with the primary key could not be found
 	*/
-	public ExpandoColumn remove(long columnId)
-		throws com.liferay.portlet.expando.NoSuchColumnException;
+	public ExpandoColumn remove(long columnId) throws NoSuchColumnException;
 
 	public ExpandoColumn updateImpl(ExpandoColumn expandoColumn);
 
@@ -382,7 +421,7 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 	* @throws NoSuchColumnException if a expando column with the primary key could not be found
 	*/
 	public ExpandoColumn findByPrimaryKey(long columnId)
-		throws com.liferay.portlet.expando.NoSuchColumnException;
+		throws NoSuchColumnException;
 
 	/**
 	* Returns the expando column with the primary key or returns <code>null</code> if it could not be found.
@@ -432,6 +471,23 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoColumn> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando columns.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoColumnModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of expando columns
+	* @param end the upper bound of the range of expando columns (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of expando columns
+	*/
+	public java.util.List<ExpandoColumn> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoColumn> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the expando columns from the database.
 	*/
 	public void removeAll();
@@ -442,4 +498,7 @@ public interface ExpandoColumnPersistence extends BasePersistence<ExpandoColumn>
 	* @return the number of expando columns
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

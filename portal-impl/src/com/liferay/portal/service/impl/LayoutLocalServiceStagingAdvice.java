@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.systemevent.SystemEventHierarchyEntry;
 import com.liferay.portal.kernel.systemevent.SystemEventHierarchyEntryThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -34,7 +35,6 @@ import com.liferay.portal.model.LayoutSet;
 import com.liferay.portal.model.LayoutStagingHandler;
 import com.liferay.portal.model.SystemEventConstants;
 import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.service.LayoutFriendlyURLLocalServiceUtil;
 import com.liferay.portal.service.LayoutLocalService;
 import com.liferay.portal.service.LayoutRevisionLocalServiceUtil;
@@ -252,7 +252,7 @@ public class LayoutLocalServiceStagingAdvice implements MethodInterceptor {
 
 		layoutLocalServiceHelper.validate(
 			groupId, privateLayout, layoutId, parentLayoutId, name, type,
-			hidden, friendlyURLMap);
+			hidden, friendlyURLMap, serviceContext);
 
 		layoutLocalServiceHelper.validateParentLayoutId(
 			groupId, privateLayout, layoutId, parentLayoutId);

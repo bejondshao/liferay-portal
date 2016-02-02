@@ -155,6 +155,28 @@ public class UserIdMapperUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the user ID mappers where userId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link UserIdMapperModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param start the lower bound of the range of user ID mappers
+	* @param end the upper bound of the range of user ID mappers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching user ID mappers
+	*/
+	public static List<UserIdMapper> findByUserId(long userId, int start,
+		int end, OrderByComparator<UserIdMapper> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByUserId(userId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first user ID mapper in the ordered set where userId = &#63;.
 	*
 	* @param userId the user ID
@@ -164,7 +186,7 @@ public class UserIdMapperUtil {
 	*/
 	public static UserIdMapper findByUserId_First(long userId,
 		OrderByComparator<UserIdMapper> orderByComparator)
-		throws com.liferay.portal.NoSuchUserIdMapperException {
+		throws com.liferay.portal.exception.NoSuchUserIdMapperException {
 		return getPersistence().findByUserId_First(userId, orderByComparator);
 	}
 
@@ -190,7 +212,7 @@ public class UserIdMapperUtil {
 	*/
 	public static UserIdMapper findByUserId_Last(long userId,
 		OrderByComparator<UserIdMapper> orderByComparator)
-		throws com.liferay.portal.NoSuchUserIdMapperException {
+		throws com.liferay.portal.exception.NoSuchUserIdMapperException {
 		return getPersistence().findByUserId_Last(userId, orderByComparator);
 	}
 
@@ -217,7 +239,7 @@ public class UserIdMapperUtil {
 	*/
 	public static UserIdMapper[] findByUserId_PrevAndNext(long userIdMapperId,
 		long userId, OrderByComparator<UserIdMapper> orderByComparator)
-		throws com.liferay.portal.NoSuchUserIdMapperException {
+		throws com.liferay.portal.exception.NoSuchUserIdMapperException {
 		return getPersistence()
 				   .findByUserId_PrevAndNext(userIdMapperId, userId,
 			orderByComparator);
@@ -251,7 +273,7 @@ public class UserIdMapperUtil {
 	* @throws NoSuchUserIdMapperException if a matching user ID mapper could not be found
 	*/
 	public static UserIdMapper findByU_T(long userId, java.lang.String type)
-		throws com.liferay.portal.NoSuchUserIdMapperException {
+		throws com.liferay.portal.exception.NoSuchUserIdMapperException {
 		return getPersistence().findByU_T(userId, type);
 	}
 
@@ -271,7 +293,7 @@ public class UserIdMapperUtil {
 	*
 	* @param userId the user ID
 	* @param type the type
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching user ID mapper, or <code>null</code> if a matching user ID mapper could not be found
 	*/
 	public static UserIdMapper fetchByU_T(long userId, java.lang.String type,
@@ -287,7 +309,7 @@ public class UserIdMapperUtil {
 	* @return the user ID mapper that was removed
 	*/
 	public static UserIdMapper removeByU_T(long userId, java.lang.String type)
-		throws com.liferay.portal.NoSuchUserIdMapperException {
+		throws com.liferay.portal.exception.NoSuchUserIdMapperException {
 		return getPersistence().removeByU_T(userId, type);
 	}
 
@@ -312,7 +334,7 @@ public class UserIdMapperUtil {
 	*/
 	public static UserIdMapper findByT_E(java.lang.String type,
 		java.lang.String externalUserId)
-		throws com.liferay.portal.NoSuchUserIdMapperException {
+		throws com.liferay.portal.exception.NoSuchUserIdMapperException {
 		return getPersistence().findByT_E(type, externalUserId);
 	}
 
@@ -333,7 +355,7 @@ public class UserIdMapperUtil {
 	*
 	* @param type the type
 	* @param externalUserId the external user ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching user ID mapper, or <code>null</code> if a matching user ID mapper could not be found
 	*/
 	public static UserIdMapper fetchByT_E(java.lang.String type,
@@ -351,7 +373,7 @@ public class UserIdMapperUtil {
 	*/
 	public static UserIdMapper removeByT_E(java.lang.String type,
 		java.lang.String externalUserId)
-		throws com.liferay.portal.NoSuchUserIdMapperException {
+		throws com.liferay.portal.exception.NoSuchUserIdMapperException {
 		return getPersistence().removeByT_E(type, externalUserId);
 	}
 
@@ -403,7 +425,7 @@ public class UserIdMapperUtil {
 	* @throws NoSuchUserIdMapperException if a user ID mapper with the primary key could not be found
 	*/
 	public static UserIdMapper remove(long userIdMapperId)
-		throws com.liferay.portal.NoSuchUserIdMapperException {
+		throws com.liferay.portal.exception.NoSuchUserIdMapperException {
 		return getPersistence().remove(userIdMapperId);
 	}
 
@@ -419,7 +441,7 @@ public class UserIdMapperUtil {
 	* @throws NoSuchUserIdMapperException if a user ID mapper with the primary key could not be found
 	*/
 	public static UserIdMapper findByPrimaryKey(long userIdMapperId)
-		throws com.liferay.portal.NoSuchUserIdMapperException {
+		throws com.liferay.portal.exception.NoSuchUserIdMapperException {
 		return getPersistence().findByPrimaryKey(userIdMapperId);
 	}
 
@@ -480,6 +502,26 @@ public class UserIdMapperUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the user ID mappers.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link UserIdMapperModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of user ID mappers
+	* @param end the upper bound of the range of user ID mappers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of user ID mappers
+	*/
+	public static List<UserIdMapper> findAll(int start, int end,
+		OrderByComparator<UserIdMapper> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the user ID mappers from the database.
 	*/
 	public static void removeAll() {
@@ -495,6 +537,10 @@ public class UserIdMapperUtil {
 		return getPersistence().countAll();
 	}
 
+	public static java.util.Set<java.lang.String> getBadColumnNames() {
+		return getPersistence().getBadColumnNames();
+	}
+
 	public static UserIdMapperPersistence getPersistence() {
 		if (_persistence == null) {
 			_persistence = (UserIdMapperPersistence)PortalBeanLocatorUtil.locate(UserIdMapperPersistence.class.getName());
@@ -504,13 +550,6 @@ public class UserIdMapperUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(UserIdMapperPersistence persistence) {
 	}
 
 	private static UserIdMapperPersistence _persistence;

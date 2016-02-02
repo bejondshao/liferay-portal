@@ -16,7 +16,10 @@ package com.liferay.portlet.documentlibrary.service.persistence.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
+import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Query;
@@ -26,6 +29,7 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -35,12 +39,13 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.model.CacheModel;
-import com.liferay.portal.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextThreadLocal;
+import com.liferay.portal.service.persistence.CompanyProvider;
+import com.liferay.portal.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
-import com.liferay.portlet.documentlibrary.NoSuchFileEntryException;
+import com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.model.impl.DLFileEntryImpl;
 import com.liferay.portlet.documentlibrary.model.impl.DLFileEntryModelImpl;
@@ -48,6 +53,7 @@ import com.liferay.portlet.documentlibrary.service.persistence.DLFileEntryPersis
 
 import java.io.Serializable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -156,6 +162,27 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByUuid(String uuid, int start, int end,
 		OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByUuid(uuid, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where uuid = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param uuid the uuid
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByUuid(String uuid, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -171,15 +198,19 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 			finderArgs = new Object[] { uuid, start, end, orderByComparator };
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if (!Validator.equals(uuid, dlFileEntry.getUuid())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if (!Validator.equals(uuid, dlFileEntry.getUuid())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -189,7 +220,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -250,10 +281,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -416,8 +447,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -554,8 +586,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { uuid };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -593,10 +624,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -675,7 +706,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 *
 	 * @param uuid the uuid
 	 * @param groupId the group ID
-	 * @param retrieveFromCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the matching document library file entry, or <code>null</code> if a matching document library file entry could not be found
 	 */
 	@Override
@@ -686,7 +717,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		Object result = null;
 
 		if (retrieveFromCache) {
-			result = FinderCacheUtil.getResult(FINDER_PATH_FETCH_BY_UUID_G,
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_UUID_G,
 					finderArgs, this);
 		}
 
@@ -740,7 +771,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				List<DLFileEntry> list = q.list();
 
 				if (list.isEmpty()) {
-					FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G,
+					finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 						finderArgs, list);
 				}
 				else {
@@ -753,14 +784,13 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 					if ((dlFileEntry.getUuid() == null) ||
 							!dlFileEntry.getUuid().equals(uuid) ||
 							(dlFileEntry.getGroupId() != groupId)) {
-						FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G,
+						finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 							finderArgs, dlFileEntry);
 					}
 				}
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_UUID_G,
-					finderArgs);
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, finderArgs);
 
 				throw processException(e);
 			}
@@ -805,8 +835,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { uuid, groupId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(3);
@@ -848,10 +877,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -939,6 +968,28 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByUuid_C(String uuid, long companyId,
 		int start, int end, OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByUuid_C(uuid, companyId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where uuid = &#63; and companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param uuid the uuid
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByUuid_C(String uuid, long companyId,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -958,16 +1009,20 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if (!Validator.equals(uuid, dlFileEntry.getUuid()) ||
-						(companyId != dlFileEntry.getCompanyId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if (!Validator.equals(uuid, dlFileEntry.getUuid()) ||
+							(companyId != dlFileEntry.getCompanyId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -977,7 +1032,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -1042,10 +1097,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1223,11 +1278,12 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		query.append(_SQL_SELECT_DLFILEENTRY_WHERE);
@@ -1367,8 +1423,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { uuid, companyId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(3);
@@ -1410,10 +1465,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1495,6 +1550,27 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByGroupId(long groupId, int start, int end,
 		OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByGroupId(groupId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByGroupId(long groupId, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -1510,15 +1586,19 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 			finderArgs = new Object[] { groupId, start, end, orderByComparator };
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((groupId != dlFileEntry.getGroupId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((groupId != dlFileEntry.getGroupId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -1528,7 +1608,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -1575,10 +1655,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1742,8 +1822,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -1895,10 +1976,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		if (orderByComparator != null) {
 			query = new StringBundler(3 +
-					(orderByComparator.getOrderByFields().length * 3));
+					(orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -2016,11 +2097,12 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -2175,8 +2257,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { groupId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -2200,10 +2281,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -2332,6 +2413,27 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByCompanyId(long companyId, int start,
 		int end, OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByCompanyId(companyId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByCompanyId(long companyId, int start,
+		int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -2347,15 +2449,19 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 			finderArgs = new Object[] { companyId, start, end, orderByComparator };
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((companyId != dlFileEntry.getCompanyId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((companyId != dlFileEntry.getCompanyId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -2365,7 +2471,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -2412,10 +2518,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -2581,8 +2687,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -2705,8 +2812,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { companyId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -2730,10 +2836,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -2815,6 +2921,28 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByRepositoryId(long repositoryId, int start,
 		int end, OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByRepositoryId(repositoryId, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where repositoryId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param repositoryId the repository ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByRepositoryId(long repositoryId, int start,
+		int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -2834,15 +2962,19 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((repositoryId != dlFileEntry.getRepositoryId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((repositoryId != dlFileEntry.getRepositoryId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -2852,7 +2984,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -2899,10 +3031,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -3068,8 +3200,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -3192,8 +3325,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { repositoryId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -3217,10 +3349,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -3300,6 +3432,27 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByMimeType(String mimeType, int start,
 		int end, OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByMimeType(mimeType, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where mimeType = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param mimeType the mime type
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByMimeType(String mimeType, int start,
+		int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -3315,15 +3468,19 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 			finderArgs = new Object[] { mimeType, start, end, orderByComparator };
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if (!Validator.equals(mimeType, dlFileEntry.getMimeType())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if (!Validator.equals(mimeType, dlFileEntry.getMimeType())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -3333,7 +3490,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -3394,10 +3551,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -3563,8 +3720,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -3701,8 +3859,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { mimeType };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -3740,10 +3897,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -3827,6 +3984,28 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByFileEntryTypeId(long fileEntryTypeId,
 		int start, int end, OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByFileEntryTypeId(fileEntryTypeId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where fileEntryTypeId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param fileEntryTypeId the file entry type ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByFileEntryTypeId(long fileEntryTypeId,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -3846,15 +4025,19 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((fileEntryTypeId != dlFileEntry.getFileEntryTypeId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((fileEntryTypeId != dlFileEntry.getFileEntryTypeId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -3864,7 +4047,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -3911,10 +4094,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -4080,8 +4263,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -4204,8 +4388,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { fileEntryTypeId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -4229,10 +4412,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -4317,6 +4500,28 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByG_U(long groupId, long userId, int start,
 		int end, OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByG_U(groupId, userId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where groupId = &#63; and userId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param userId the user ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByG_U(long groupId, long userId, int start,
+		int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -4336,16 +4541,20 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((groupId != dlFileEntry.getGroupId()) ||
-						(userId != dlFileEntry.getUserId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((groupId != dlFileEntry.getGroupId()) ||
+							(userId != dlFileEntry.getUserId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -4355,7 +4564,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -4406,10 +4615,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -4586,11 +4795,12 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		query.append(_SQL_SELECT_DLFILEENTRY_WHERE);
@@ -4746,10 +4956,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		if (orderByComparator != null) {
 			query = new StringBundler(4 +
-					(orderByComparator.getOrderByFields().length * 3));
+					(orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
-			query = new StringBundler(4);
+			query = new StringBundler(5);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -4874,10 +5084,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		if (orderByComparator != null) {
 			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(5);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -5038,8 +5249,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { groupId, userId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(3);
@@ -5067,10 +5277,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -5211,6 +5421,28 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByG_F(long groupId, long folderId, int start,
 		int end, OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByG_F(groupId, folderId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where groupId = &#63; and folderId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param folderId the folder ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByG_F(long groupId, long folderId, int start,
+		int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -5230,16 +5462,20 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((groupId != dlFileEntry.getGroupId()) ||
-						(folderId != dlFileEntry.getFolderId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((groupId != dlFileEntry.getGroupId()) ||
+							(folderId != dlFileEntry.getFolderId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -5249,7 +5485,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -5300,10 +5536,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -5480,11 +5716,12 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		query.append(_SQL_SELECT_DLFILEENTRY_WHERE);
@@ -5640,10 +5877,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		if (orderByComparator != null) {
 			query = new StringBundler(4 +
-					(orderByComparator.getOrderByFields().length * 3));
+					(orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
-			query = new StringBundler(4);
+			query = new StringBundler(5);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -5768,10 +6005,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		if (orderByComparator != null) {
 			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(5);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -5961,8 +6199,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		StringBundler query = new StringBundler();
@@ -6099,11 +6339,35 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByG_F(long groupId, long[] folderIds,
 		int start, int end, OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByG_F(groupId, folderIds, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where groupId = &#63; and folderId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param folderId the folder ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByG_F(long groupId, long[] folderIds,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		if (folderIds.length == 1) {
@@ -6127,16 +6391,21 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((groupId != dlFileEntry.getGroupId()) ||
-						!ArrayUtil.contains(folderIds, dlFileEntry.getFolderId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((groupId != dlFileEntry.getGroupId()) ||
+							!ArrayUtil.contains(folderIds,
+								dlFileEntry.getFolderId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -6200,11 +6469,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F,
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F,
 					finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F,
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F,
 					finderArgs);
 
 				throw processException(e);
@@ -6244,8 +6513,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { groupId, folderId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(3);
@@ -6273,10 +6541,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -6300,13 +6568,15 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		Object[] finderArgs = new Object[] { groupId, StringUtil.merge(folderIds) };
 
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F,
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F,
 				finderArgs, this);
 
 		if (count == null) {
@@ -6346,11 +6616,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F,
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F,
 					finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F,
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F,
 					finderArgs);
 
 				throw processException(e);
@@ -6432,8 +6702,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		StringBundler query = new StringBundler();
@@ -6560,6 +6832,29 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByR_F(long repositoryId, long folderId,
 		int start, int end, OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByR_F(repositoryId, folderId, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where repositoryId = &#63; and folderId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param repositoryId the repository ID
+	 * @param folderId the folder ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByR_F(long repositoryId, long folderId,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -6579,16 +6874,20 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((repositoryId != dlFileEntry.getRepositoryId()) ||
-						(folderId != dlFileEntry.getFolderId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((repositoryId != dlFileEntry.getRepositoryId()) ||
+							(folderId != dlFileEntry.getFolderId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -6598,7 +6897,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -6649,10 +6948,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -6830,11 +7129,12 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		query.append(_SQL_SELECT_DLFILEENTRY_WHERE);
@@ -6960,8 +7260,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { repositoryId, folderId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(3);
@@ -6989,10 +7288,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -7075,6 +7374,28 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findByF_N(long folderId, String name, int start,
 		int end, OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByF_N(folderId, name, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where folderId = &#63; and name = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param folderId the folder ID
+	 * @param name the name
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByF_N(long folderId, String name, int start,
+		int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -7094,16 +7415,20 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((folderId != dlFileEntry.getFolderId()) ||
-						!Validator.equals(name, dlFileEntry.getName())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((folderId != dlFileEntry.getFolderId()) ||
+							!Validator.equals(name, dlFileEntry.getName())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -7113,7 +7438,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -7178,10 +7503,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -7358,11 +7683,12 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		query.append(_SQL_SELECT_DLFILEENTRY_WHERE);
@@ -7502,8 +7828,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { folderId, name };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(3);
@@ -7545,10 +7870,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -7650,6 +7975,31 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	public List<DLFileEntry> findByG_U_F(long groupId, long userId,
 		long folderId, int start, int end,
 		OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByG_U_F(groupId, userId, folderId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where groupId = &#63; and userId = &#63; and folderId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param userId the user ID
+	 * @param folderId the folder ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByG_U_F(long groupId, long userId,
+		long folderId, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -7669,17 +8019,21 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((groupId != dlFileEntry.getGroupId()) ||
-						(userId != dlFileEntry.getUserId()) ||
-						(folderId != dlFileEntry.getFolderId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((groupId != dlFileEntry.getGroupId()) ||
+							(userId != dlFileEntry.getUserId()) ||
+							(folderId != dlFileEntry.getFolderId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -7689,7 +8043,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(5 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(5);
@@ -7744,10 +8098,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -7937,10 +8291,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		if (orderByComparator != null) {
 			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(5);
 		}
 
 		query.append(_SQL_SELECT_DLFILEENTRY_WHERE);
@@ -8106,10 +8461,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		if (orderByComparator != null) {
 			query = new StringBundler(5 +
-					(orderByComparator.getOrderByFields().length * 3));
+					(orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
-			query = new StringBundler(5);
+			query = new StringBundler(6);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -8238,11 +8593,12 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(7 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(6);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -8442,8 +8798,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		StringBundler query = new StringBundler();
@@ -8589,11 +8947,38 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	public List<DLFileEntry> findByG_U_F(long groupId, long userId,
 		long[] folderIds, int start, int end,
 		OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByG_U_F(groupId, userId, folderIds, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where groupId = &#63; and userId = &#63; and folderId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param userId the user ID
+	 * @param folderId the folder ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByG_U_F(long groupId, long userId,
+		long[] folderIds, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		if (folderIds.length == 1) {
@@ -8619,17 +9004,22 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_U_F,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((groupId != dlFileEntry.getGroupId()) ||
-						(userId != dlFileEntry.getUserId()) ||
-						!ArrayUtil.contains(folderIds, dlFileEntry.getFolderId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_U_F,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((groupId != dlFileEntry.getGroupId()) ||
+							(userId != dlFileEntry.getUserId()) ||
+							!ArrayUtil.contains(folderIds,
+								dlFileEntry.getFolderId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -8697,11 +9087,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_U_F,
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_U_F,
 					finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_U_F,
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_U_F,
 					finderArgs);
 
 				throw processException(e);
@@ -8743,8 +9133,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { groupId, userId, folderId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(4);
@@ -8776,10 +9165,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -8804,15 +9193,17 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		Object[] finderArgs = new Object[] {
 				groupId, userId, StringUtil.merge(folderIds)
 			};
 
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_U_F,
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_U_F,
 				finderArgs, this);
 
 		if (count == null) {
@@ -8856,11 +9247,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_U_F,
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_U_F,
 					finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_U_F,
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_U_F,
 					finderArgs);
 
 				throw processException(e);
@@ -8948,8 +9339,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		StringBundler query = new StringBundler();
@@ -9088,7 +9481,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 * @param groupId the group ID
 	 * @param folderId the folder ID
 	 * @param name the name
-	 * @param retrieveFromCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the matching document library file entry, or <code>null</code> if a matching document library file entry could not be found
 	 */
 	@Override
@@ -9099,7 +9492,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		Object result = null;
 
 		if (retrieveFromCache) {
-			result = FinderCacheUtil.getResult(FINDER_PATH_FETCH_BY_G_F_N,
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_F_N,
 					finderArgs, this);
 		}
 
@@ -9158,7 +9551,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				List<DLFileEntry> list = q.list();
 
 				if (list.isEmpty()) {
-					FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_N,
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_N,
 						finderArgs, list);
 				}
 				else {
@@ -9172,14 +9565,13 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 							(dlFileEntry.getFolderId() != folderId) ||
 							(dlFileEntry.getName() == null) ||
 							!dlFileEntry.getName().equals(name)) {
-						FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_N,
+						finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_N,
 							finderArgs, dlFileEntry);
 					}
 				}
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_F_N,
-					finderArgs);
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_F_N, finderArgs);
 
 				throw processException(e);
 			}
@@ -9226,8 +9618,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { groupId, folderId, name };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(4);
@@ -9273,10 +9664,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -9371,7 +9762,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 * @param groupId the group ID
 	 * @param folderId the folder ID
 	 * @param fileName the file name
-	 * @param retrieveFromCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the matching document library file entry, or <code>null</code> if a matching document library file entry could not be found
 	 */
 	@Override
@@ -9382,7 +9773,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		Object result = null;
 
 		if (retrieveFromCache) {
-			result = FinderCacheUtil.getResult(FINDER_PATH_FETCH_BY_G_F_FN,
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_F_FN,
 					finderArgs, this);
 		}
 
@@ -9441,7 +9832,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				List<DLFileEntry> list = q.list();
 
 				if (list.isEmpty()) {
-					FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_FN,
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_FN,
 						finderArgs, list);
 				}
 				else {
@@ -9455,14 +9846,13 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 							(dlFileEntry.getFolderId() != folderId) ||
 							(dlFileEntry.getFileName() == null) ||
 							!dlFileEntry.getFileName().equals(fileName)) {
-						FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_FN,
+						finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_FN,
 							finderArgs, dlFileEntry);
 					}
 				}
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_F_FN,
-					finderArgs);
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_F_FN, finderArgs);
 
 				throw processException(e);
 			}
@@ -9509,8 +9899,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { groupId, folderId, fileName };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(4);
@@ -9556,10 +9945,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -9653,7 +10042,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 * @param groupId the group ID
 	 * @param folderId the folder ID
 	 * @param title the title
-	 * @param retrieveFromCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the matching document library file entry, or <code>null</code> if a matching document library file entry could not be found
 	 */
 	@Override
@@ -9664,7 +10053,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		Object result = null;
 
 		if (retrieveFromCache) {
-			result = FinderCacheUtil.getResult(FINDER_PATH_FETCH_BY_G_F_T,
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_F_T,
 					finderArgs, this);
 		}
 
@@ -9723,7 +10112,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				List<DLFileEntry> list = q.list();
 
 				if (list.isEmpty()) {
-					FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_T,
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_T,
 						finderArgs, list);
 				}
 				else {
@@ -9737,14 +10126,13 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 							(dlFileEntry.getFolderId() != folderId) ||
 							(dlFileEntry.getTitle() == null) ||
 							!dlFileEntry.getTitle().equals(title)) {
-						FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_T,
+						finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_T,
 							finderArgs, dlFileEntry);
 					}
 				}
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_F_T,
-					finderArgs);
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_F_T, finderArgs);
 
 				throw processException(e);
 			}
@@ -9791,8 +10179,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { groupId, folderId, title };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(4);
@@ -9838,10 +10225,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -9944,6 +10331,31 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	public List<DLFileEntry> findByG_F_F(long groupId, long folderId,
 		long fileEntryTypeId, int start, int end,
 		OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByG_F_F(groupId, folderId, fileEntryTypeId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where groupId = &#63; and folderId = &#63; and fileEntryTypeId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param folderId the folder ID
+	 * @param fileEntryTypeId the file entry type ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByG_F_F(long groupId, long folderId,
+		long fileEntryTypeId, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -9963,17 +10375,21 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((groupId != dlFileEntry.getGroupId()) ||
-						(folderId != dlFileEntry.getFolderId()) ||
-						(fileEntryTypeId != dlFileEntry.getFileEntryTypeId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((groupId != dlFileEntry.getGroupId()) ||
+							(folderId != dlFileEntry.getFolderId()) ||
+							(fileEntryTypeId != dlFileEntry.getFileEntryTypeId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -9983,7 +10399,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(5 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(5);
@@ -10038,10 +10454,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -10232,10 +10648,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		if (orderByComparator != null) {
 			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(5);
 		}
 
 		query.append(_SQL_SELECT_DLFILEENTRY_WHERE);
@@ -10402,10 +10819,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		if (orderByComparator != null) {
 			query = new StringBundler(5 +
-					(orderByComparator.getOrderByFields().length * 3));
+					(orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
-			query = new StringBundler(5);
+			query = new StringBundler(6);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -10535,11 +10952,12 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(7 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(6);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -10740,8 +11158,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		StringBundler query = new StringBundler();
@@ -10889,11 +11309,38 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	public List<DLFileEntry> findByG_F_F(long groupId, long[] folderIds,
 		long fileEntryTypeId, int start, int end,
 		OrderByComparator<DLFileEntry> orderByComparator) {
+		return findByG_F_F(groupId, folderIds, fileEntryTypeId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries where groupId = &#63; and folderId = &#63; and fileEntryTypeId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param folderId the folder ID
+	 * @param fileEntryTypeId the file entry type ID
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findByG_F_F(long groupId, long[] folderIds,
+		long fileEntryTypeId, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		if (folderIds.length == 1) {
@@ -10919,17 +11366,22 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				};
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F_F,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (DLFileEntry dlFileEntry : list) {
-				if ((groupId != dlFileEntry.getGroupId()) ||
-						!ArrayUtil.contains(folderIds, dlFileEntry.getFolderId()) ||
-						(fileEntryTypeId != dlFileEntry.getFileEntryTypeId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F_F,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (DLFileEntry dlFileEntry : list) {
+					if ((groupId != dlFileEntry.getGroupId()) ||
+							!ArrayUtil.contains(folderIds,
+								dlFileEntry.getFolderId()) ||
+							(fileEntryTypeId != dlFileEntry.getFileEntryTypeId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -10999,11 +11451,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F_F,
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F_F,
 					finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F_F,
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_F_F,
 					finderArgs);
 
 				throw processException(e);
@@ -11045,8 +11497,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 		Object[] finderArgs = new Object[] { groupId, folderId, fileEntryTypeId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(4);
@@ -11078,10 +11529,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -11106,15 +11557,17 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		Object[] finderArgs = new Object[] {
 				groupId, StringUtil.merge(folderIds), fileEntryTypeId
 			};
 
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F_F,
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F_F,
 				finderArgs, this);
 
 		if (count == null) {
@@ -11160,11 +11613,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F_F,
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F_F,
 					finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F_F,
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_F_F,
 					finderArgs);
 
 				throw processException(e);
@@ -11254,8 +11707,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		if (folderIds == null) {
 			folderIds = new long[0];
 		}
-		else {
+		else if (folderIds.length > 1) {
 			folderIds = ArrayUtil.unique(folderIds);
+
+			Arrays.sort(folderIds);
 		}
 
 		StringBundler query = new StringBundler();
@@ -11331,26 +11786,26 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void cacheResult(DLFileEntry dlFileEntry) {
-		EntityCacheUtil.putResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.putResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
 			DLFileEntryImpl.class, dlFileEntry.getPrimaryKey(), dlFileEntry);
 
-		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G,
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 			new Object[] { dlFileEntry.getUuid(), dlFileEntry.getGroupId() },
 			dlFileEntry);
 
-		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_N,
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_N,
 			new Object[] {
 				dlFileEntry.getGroupId(), dlFileEntry.getFolderId(),
 				dlFileEntry.getName()
 			}, dlFileEntry);
 
-		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_FN,
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_FN,
 			new Object[] {
 				dlFileEntry.getGroupId(), dlFileEntry.getFolderId(),
 				dlFileEntry.getFileName()
 			}, dlFileEntry);
 
-		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_T,
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_T,
 			new Object[] {
 				dlFileEntry.getGroupId(), dlFileEntry.getFolderId(),
 				dlFileEntry.getTitle()
@@ -11367,7 +11822,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public void cacheResult(List<DLFileEntry> dlFileEntries) {
 		for (DLFileEntry dlFileEntry : dlFileEntries) {
-			if (EntityCacheUtil.getResult(
+			if (entityCache.getResult(
 						DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
 						DLFileEntryImpl.class, dlFileEntry.getPrimaryKey()) == null) {
 				cacheResult(dlFileEntry);
@@ -11382,43 +11837,43 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 * Clears the cache for all document library file entries.
 	 *
 	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache() {
-		EntityCacheUtil.clearCache(DLFileEntryImpl.class);
+		entityCache.clearCache(DLFileEntryImpl.class);
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
 	/**
 	 * Clears the cache for the document library file entry.
 	 *
 	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache(DLFileEntry dlFileEntry) {
-		EntityCacheUtil.removeResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.removeResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
 			DLFileEntryImpl.class, dlFileEntry.getPrimaryKey());
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
 		clearUniqueFindersCache((DLFileEntryModelImpl)dlFileEntry);
 	}
 
 	@Override
 	public void clearCache(List<DLFileEntry> dlFileEntries) {
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
 		for (DLFileEntry dlFileEntry : dlFileEntries) {
-			EntityCacheUtil.removeResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
+			entityCache.removeResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
 				DLFileEntryImpl.class, dlFileEntry.getPrimaryKey());
 
 			clearUniqueFindersCache((DLFileEntryModelImpl)dlFileEntry);
@@ -11433,9 +11888,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 					dlFileEntryModelImpl.getGroupId()
 				};
 
-			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
 				Long.valueOf(1));
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 				dlFileEntryModelImpl);
 
 			args = new Object[] {
@@ -11444,9 +11899,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 					dlFileEntryModelImpl.getName()
 				};
 
-			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_G_F_N, args,
+			finderCache.putResult(FINDER_PATH_COUNT_BY_G_F_N, args,
 				Long.valueOf(1));
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_N, args,
+			finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_N, args,
 				dlFileEntryModelImpl);
 
 			args = new Object[] {
@@ -11455,9 +11910,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 					dlFileEntryModelImpl.getFileName()
 				};
 
-			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_G_F_FN, args,
+			finderCache.putResult(FINDER_PATH_COUNT_BY_G_F_FN, args,
 				Long.valueOf(1));
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_FN, args,
+			finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_FN, args,
 				dlFileEntryModelImpl);
 
 			args = new Object[] {
@@ -11466,9 +11921,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 					dlFileEntryModelImpl.getTitle()
 				};
 
-			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_G_F_T, args,
+			finderCache.putResult(FINDER_PATH_COUNT_BY_G_F_T, args,
 				Long.valueOf(1));
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_T, args,
+			finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_T, args,
 				dlFileEntryModelImpl);
 		}
 		else {
@@ -11479,9 +11934,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getGroupId()
 					};
 
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
 					Long.valueOf(1));
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 					dlFileEntryModelImpl);
 			}
 
@@ -11493,9 +11948,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getName()
 					};
 
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_G_F_N, args,
+				finderCache.putResult(FINDER_PATH_COUNT_BY_G_F_N, args,
 					Long.valueOf(1));
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_N, args,
+				finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_N, args,
 					dlFileEntryModelImpl);
 			}
 
@@ -11507,9 +11962,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getFileName()
 					};
 
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_G_F_FN, args,
+				finderCache.putResult(FINDER_PATH_COUNT_BY_G_F_FN, args,
 					Long.valueOf(1));
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_FN, args,
+				finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_FN, args,
 					dlFileEntryModelImpl);
 			}
 
@@ -11521,9 +11976,9 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getTitle()
 					};
 
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_G_F_T, args,
+				finderCache.putResult(FINDER_PATH_COUNT_BY_G_F_T, args,
 					Long.valueOf(1));
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_G_F_T, args,
+				finderCache.putResult(FINDER_PATH_FETCH_BY_G_F_T, args,
 					dlFileEntryModelImpl);
 			}
 		}
@@ -11536,8 +11991,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				dlFileEntryModelImpl.getGroupId()
 			};
 
-		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+		finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
 
 		if ((dlFileEntryModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
@@ -11546,8 +12001,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 					dlFileEntryModelImpl.getOriginalGroupId()
 				};
 
-			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
 		}
 
 		args = new Object[] {
@@ -11556,8 +12011,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				dlFileEntryModelImpl.getName()
 			};
 
-		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_F_N, args);
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_F_N, args);
+		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_F_N, args);
+		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_F_N, args);
 
 		if ((dlFileEntryModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_F_N.getColumnBitmask()) != 0) {
@@ -11567,8 +12022,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 					dlFileEntryModelImpl.getOriginalName()
 				};
 
-			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_F_N, args);
-			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_F_N, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_F_N, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_F_N, args);
 		}
 
 		args = new Object[] {
@@ -11577,8 +12032,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				dlFileEntryModelImpl.getFileName()
 			};
 
-		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_F_FN, args);
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_F_FN, args);
+		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_F_FN, args);
+		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_F_FN, args);
 
 		if ((dlFileEntryModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_F_FN.getColumnBitmask()) != 0) {
@@ -11588,8 +12043,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 					dlFileEntryModelImpl.getOriginalFileName()
 				};
 
-			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_F_FN, args);
-			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_F_FN, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_F_FN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_F_FN, args);
 		}
 
 		args = new Object[] {
@@ -11598,8 +12053,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 				dlFileEntryModelImpl.getTitle()
 			};
 
-		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_F_T, args);
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_F_T, args);
+		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_F_T, args);
+		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_F_T, args);
 
 		if ((dlFileEntryModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_F_T.getColumnBitmask()) != 0) {
@@ -11609,8 +12064,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 					dlFileEntryModelImpl.getOriginalTitle()
 				};
 
-			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_F_T, args);
-			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_G_F_T, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_F_T, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_F_T, args);
 		}
 	}
 
@@ -11630,6 +12085,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		String uuid = PortalUUIDUtil.generate();
 
 		dlFileEntry.setUuid(uuid);
+
+		dlFileEntry.setCompanyId(companyProvider.getCompanyId());
 
 		return dlFileEntry;
 	}
@@ -11775,10 +12232,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 			closeSession(session);
 		}
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 
 		if (isNew || !DLFileEntryModelImpl.COLUMN_BITMASK_ENABLED) {
-			FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 		}
 
 		else {
@@ -11788,14 +12245,14 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalUuid()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
 					args);
 
 				args = new Object[] { dlFileEntryModelImpl.getUuid() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
 					args);
 			}
 
@@ -11806,8 +12263,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalCompanyId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 					args);
 
 				args = new Object[] {
@@ -11815,8 +12272,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getCompanyId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 					args);
 			}
 
@@ -11826,14 +12283,14 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalGroupId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
 					args);
 
 				args = new Object[] { dlFileEntryModelImpl.getGroupId() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
 					args);
 			}
 
@@ -11843,16 +12300,14 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalCompanyId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
-					args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_COMPANYID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
 					args);
 
 				args = new Object[] { dlFileEntryModelImpl.getCompanyId() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
-					args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_COMPANYID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
 					args);
 			}
 
@@ -11862,16 +12317,14 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalRepositoryId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_REPOSITORYID,
-					args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_REPOSITORYID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_REPOSITORYID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_REPOSITORYID,
 					args);
 
 				args = new Object[] { dlFileEntryModelImpl.getRepositoryId() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_REPOSITORYID,
-					args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_REPOSITORYID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_REPOSITORYID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_REPOSITORYID,
 					args);
 			}
 
@@ -11881,14 +12334,14 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalMimeType()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_MIMETYPE, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_MIMETYPE,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_MIMETYPE, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_MIMETYPE,
 					args);
 
 				args = new Object[] { dlFileEntryModelImpl.getMimeType() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_MIMETYPE, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_MIMETYPE,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_MIMETYPE, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_MIMETYPE,
 					args);
 			}
 
@@ -11898,16 +12351,16 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalFileEntryTypeId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_FILEENTRYTYPEID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_FILEENTRYTYPEID,
 					args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FILEENTRYTYPEID,
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FILEENTRYTYPEID,
 					args);
 
 				args = new Object[] { dlFileEntryModelImpl.getFileEntryTypeId() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_FILEENTRYTYPEID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_FILEENTRYTYPEID,
 					args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FILEENTRYTYPEID,
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FILEENTRYTYPEID,
 					args);
 			}
 
@@ -11918,8 +12371,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalUserId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_U, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_U, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U,
 					args);
 
 				args = new Object[] {
@@ -11927,8 +12380,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getUserId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_U, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_U, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U,
 					args);
 			}
 
@@ -11939,8 +12392,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalFolderId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_F, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_F,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_F, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_F,
 					args);
 
 				args = new Object[] {
@@ -11948,8 +12401,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getFolderId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_F, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_F,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_F, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_F,
 					args);
 			}
 
@@ -11960,8 +12413,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalFolderId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_R_F, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_R_F,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_R_F, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_R_F,
 					args);
 
 				args = new Object[] {
@@ -11969,8 +12422,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getFolderId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_R_F, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_R_F,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_R_F, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_R_F,
 					args);
 			}
 
@@ -11981,8 +12434,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalName()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_F_N, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_N,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_N, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_N,
 					args);
 
 				args = new Object[] {
@@ -11990,8 +12443,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getName()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_F_N, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_N,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_N, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_N,
 					args);
 			}
 
@@ -12003,8 +12456,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalFolderId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_U_F, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U_F,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_U_F, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U_F,
 					args);
 
 				args = new Object[] {
@@ -12013,8 +12466,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getFolderId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_U_F, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U_F,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_U_F, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U_F,
 					args);
 			}
 
@@ -12026,8 +12479,8 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getOriginalFileEntryTypeId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_F_F, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_F_F,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_F_F, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_F_F,
 					args);
 
 				args = new Object[] {
@@ -12036,13 +12489,13 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 						dlFileEntryModelImpl.getFileEntryTypeId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_F_F, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_F_F,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_F_F, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_F_F,
 					args);
 			}
 		}
 
-		EntityCacheUtil.putResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.putResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
 			DLFileEntryImpl.class, dlFileEntry.getPrimaryKey(), dlFileEntry,
 			false);
 
@@ -12099,7 +12552,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	}
 
 	/**
-	 * Returns the document library file entry with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
+	 * Returns the document library file entry with the primary key or throws a {@link com.liferay.portal.exception.NoSuchModelException} if it could not be found.
 	 *
 	 * @param primaryKey the primary key of the document library file entry
 	 * @return the document library file entry
@@ -12143,7 +12596,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public DLFileEntry fetchByPrimaryKey(Serializable primaryKey) {
-		DLFileEntry dlFileEntry = (DLFileEntry)EntityCacheUtil.getResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
+		DLFileEntry dlFileEntry = (DLFileEntry)entityCache.getResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
 				DLFileEntryImpl.class, primaryKey);
 
 		if (dlFileEntry == _nullDLFileEntry) {
@@ -12163,12 +12616,12 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 					cacheResult(dlFileEntry);
 				}
 				else {
-					EntityCacheUtil.putResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
+					entityCache.putResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
 						DLFileEntryImpl.class, primaryKey, _nullDLFileEntry);
 				}
 			}
 			catch (Exception e) {
-				EntityCacheUtil.removeResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
+				entityCache.removeResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
 					DLFileEntryImpl.class, primaryKey);
 
 				throw processException(e);
@@ -12218,7 +12671,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			DLFileEntry dlFileEntry = (DLFileEntry)EntityCacheUtil.getResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
+			DLFileEntry dlFileEntry = (DLFileEntry)entityCache.getResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
 					DLFileEntryImpl.class, primaryKey);
 
 			if (dlFileEntry == null) {
@@ -12270,7 +12723,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 			}
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
-				EntityCacheUtil.putResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
+				entityCache.putResult(DLFileEntryModelImpl.ENTITY_CACHE_ENABLED,
 					DLFileEntryImpl.class, primaryKey, _nullDLFileEntry);
 			}
 		}
@@ -12325,6 +12778,26 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public List<DLFileEntry> findAll(int start, int end,
 		OrderByComparator<DLFileEntry> orderByComparator) {
+		return findAll(start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the document library file entries.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param start the lower bound of the range of document library file entries
+	 * @param end the upper bound of the range of document library file entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of document library file entries
+	 */
+	@Override
+	public List<DLFileEntry> findAll(int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -12340,8 +12813,12 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 			finderArgs = new Object[] { start, end, orderByComparator };
 		}
 
-		List<DLFileEntry> list = (List<DLFileEntry>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<DLFileEntry> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<DLFileEntry>)finderCache.getResult(finderPath,
+					finderArgs, this);
+		}
 
 		if (list == null) {
 			StringBundler query = null;
@@ -12349,7 +12826,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 			if (orderByComparator != null) {
 				query = new StringBundler(2 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 
 				query.append(_SQL_SELECT_DLFILEENTRY);
 
@@ -12388,10 +12865,10 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -12421,7 +12898,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public int countAll() {
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
+		Long count = (Long)finderCache.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
@@ -12434,11 +12911,11 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL,
-					FINDER_ARGS_EMPTY, count);
+				finderCache.putResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY,
+					count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_ALL,
+				finderCache.removeResult(FINDER_PATH_COUNT_ALL,
 					FINDER_ARGS_EMPTY);
 
 				throw processException(e);
@@ -12452,7 +12929,7 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
 	}
 
@@ -12468,12 +12945,16 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	}
 
 	public void destroy() {
-		EntityCacheUtil.removeCache(DLFileEntryImpl.class.getName());
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		entityCache.removeCache(DLFileEntryImpl.class.getName());
+		finderCache.removeCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	@BeanReference(type = CompanyProviderWrapper.class)
+	protected CompanyProvider companyProvider;
+	protected EntityCache entityCache = EntityCacheUtil.getEntityCache();
+	protected FinderCache finderCache = FinderCacheUtil.getFinderCache();
 	private static final String _SQL_SELECT_DLFILEENTRY = "SELECT dlFileEntry FROM DLFileEntry dlFileEntry";
 	private static final String _SQL_SELECT_DLFILEENTRY_WHERE_PKS_IN = "SELECT dlFileEntry FROM DLFileEntry dlFileEntry WHERE fileEntryId IN (";
 	private static final String _SQL_SELECT_DLFILEENTRY_WHERE = "SELECT dlFileEntry FROM DLFileEntry dlFileEntry WHERE ";

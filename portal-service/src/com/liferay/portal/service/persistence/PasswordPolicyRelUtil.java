@@ -159,6 +159,29 @@ public class PasswordPolicyRelUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the password policy rels where passwordPolicyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PasswordPolicyRelModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param passwordPolicyId the password policy ID
+	* @param start the lower bound of the range of password policy rels
+	* @param end the upper bound of the range of password policy rels (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching password policy rels
+	*/
+	public static List<PasswordPolicyRel> findByPasswordPolicyId(
+		long passwordPolicyId, int start, int end,
+		OrderByComparator<PasswordPolicyRel> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByPasswordPolicyId(passwordPolicyId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first password policy rel in the ordered set where passwordPolicyId = &#63;.
 	*
 	* @param passwordPolicyId the password policy ID
@@ -169,7 +192,7 @@ public class PasswordPolicyRelUtil {
 	public static PasswordPolicyRel findByPasswordPolicyId_First(
 		long passwordPolicyId,
 		OrderByComparator<PasswordPolicyRel> orderByComparator)
-		throws com.liferay.portal.NoSuchPasswordPolicyRelException {
+		throws com.liferay.portal.exception.NoSuchPasswordPolicyRelException {
 		return getPersistence()
 				   .findByPasswordPolicyId_First(passwordPolicyId,
 			orderByComparator);
@@ -201,7 +224,7 @@ public class PasswordPolicyRelUtil {
 	public static PasswordPolicyRel findByPasswordPolicyId_Last(
 		long passwordPolicyId,
 		OrderByComparator<PasswordPolicyRel> orderByComparator)
-		throws com.liferay.portal.NoSuchPasswordPolicyRelException {
+		throws com.liferay.portal.exception.NoSuchPasswordPolicyRelException {
 		return getPersistence()
 				   .findByPasswordPolicyId_Last(passwordPolicyId,
 			orderByComparator);
@@ -234,7 +257,7 @@ public class PasswordPolicyRelUtil {
 	public static PasswordPolicyRel[] findByPasswordPolicyId_PrevAndNext(
 		long passwordPolicyRelId, long passwordPolicyId,
 		OrderByComparator<PasswordPolicyRel> orderByComparator)
-		throws com.liferay.portal.NoSuchPasswordPolicyRelException {
+		throws com.liferay.portal.exception.NoSuchPasswordPolicyRelException {
 		return getPersistence()
 				   .findByPasswordPolicyId_PrevAndNext(passwordPolicyRelId,
 			passwordPolicyId, orderByComparator);
@@ -268,7 +291,7 @@ public class PasswordPolicyRelUtil {
 	* @throws NoSuchPasswordPolicyRelException if a matching password policy rel could not be found
 	*/
 	public static PasswordPolicyRel findByC_C(long classNameId, long classPK)
-		throws com.liferay.portal.NoSuchPasswordPolicyRelException {
+		throws com.liferay.portal.exception.NoSuchPasswordPolicyRelException {
 		return getPersistence().findByC_C(classNameId, classPK);
 	}
 
@@ -288,7 +311,7 @@ public class PasswordPolicyRelUtil {
 	*
 	* @param classNameId the class name ID
 	* @param classPK the class p k
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching password policy rel, or <code>null</code> if a matching password policy rel could not be found
 	*/
 	public static PasswordPolicyRel fetchByC_C(long classNameId, long classPK,
@@ -305,7 +328,7 @@ public class PasswordPolicyRelUtil {
 	* @return the password policy rel that was removed
 	*/
 	public static PasswordPolicyRel removeByC_C(long classNameId, long classPK)
-		throws com.liferay.portal.NoSuchPasswordPolicyRelException {
+		throws com.liferay.portal.exception.NoSuchPasswordPolicyRelException {
 		return getPersistence().removeByC_C(classNameId, classPK);
 	}
 
@@ -356,7 +379,7 @@ public class PasswordPolicyRelUtil {
 	* @throws NoSuchPasswordPolicyRelException if a password policy rel with the primary key could not be found
 	*/
 	public static PasswordPolicyRel remove(long passwordPolicyRelId)
-		throws com.liferay.portal.NoSuchPasswordPolicyRelException {
+		throws com.liferay.portal.exception.NoSuchPasswordPolicyRelException {
 		return getPersistence().remove(passwordPolicyRelId);
 	}
 
@@ -373,7 +396,7 @@ public class PasswordPolicyRelUtil {
 	* @throws NoSuchPasswordPolicyRelException if a password policy rel with the primary key could not be found
 	*/
 	public static PasswordPolicyRel findByPrimaryKey(long passwordPolicyRelId)
-		throws com.liferay.portal.NoSuchPasswordPolicyRelException {
+		throws com.liferay.portal.exception.NoSuchPasswordPolicyRelException {
 		return getPersistence().findByPrimaryKey(passwordPolicyRelId);
 	}
 
@@ -434,6 +457,26 @@ public class PasswordPolicyRelUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the password policy rels.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PasswordPolicyRelModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of password policy rels
+	* @param end the upper bound of the range of password policy rels (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of password policy rels
+	*/
+	public static List<PasswordPolicyRel> findAll(int start, int end,
+		OrderByComparator<PasswordPolicyRel> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the password policy rels from the database.
 	*/
 	public static void removeAll() {
@@ -458,13 +501,6 @@ public class PasswordPolicyRelUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(PasswordPolicyRelPersistence persistence) {
 	}
 
 	private static PasswordPolicyRelPersistence _persistence;

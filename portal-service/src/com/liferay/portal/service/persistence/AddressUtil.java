@@ -152,6 +152,28 @@ public class AddressUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the addresses where uuid = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param start the lower bound of the range of addresses
+	* @param end the upper bound of the range of addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching addresses
+	*/
+	public static List<Address> findByUuid(java.lang.String uuid, int start,
+		int end, OrderByComparator<Address> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByUuid(uuid, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first address in the ordered set where uuid = &#63;.
 	*
 	* @param uuid the uuid
@@ -161,7 +183,7 @@ public class AddressUtil {
 	*/
 	public static Address findByUuid_First(java.lang.String uuid,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence().findByUuid_First(uuid, orderByComparator);
 	}
 
@@ -187,7 +209,7 @@ public class AddressUtil {
 	*/
 	public static Address findByUuid_Last(java.lang.String uuid,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence().findByUuid_Last(uuid, orderByComparator);
 	}
 
@@ -214,7 +236,7 @@ public class AddressUtil {
 	*/
 	public static Address[] findByUuid_PrevAndNext(long addressId,
 		java.lang.String uuid, OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByUuid_PrevAndNext(addressId, uuid, orderByComparator);
 	}
@@ -290,6 +312,29 @@ public class AddressUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the addresses where uuid = &#63; and companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param companyId the company ID
+	* @param start the lower bound of the range of addresses
+	* @param end the upper bound of the range of addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching addresses
+	*/
+	public static List<Address> findByUuid_C(java.lang.String uuid,
+		long companyId, int start, int end,
+		OrderByComparator<Address> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByUuid_C(uuid, companyId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first address in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
 	* @param uuid the uuid
@@ -300,7 +345,7 @@ public class AddressUtil {
 	*/
 	public static Address findByUuid_C_First(java.lang.String uuid,
 		long companyId, OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByUuid_C_First(uuid, companyId, orderByComparator);
 	}
@@ -330,7 +375,7 @@ public class AddressUtil {
 	*/
 	public static Address findByUuid_C_Last(java.lang.String uuid,
 		long companyId, OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByUuid_C_Last(uuid, companyId, orderByComparator);
 	}
@@ -362,7 +407,7 @@ public class AddressUtil {
 	public static Address[] findByUuid_C_PrevAndNext(long addressId,
 		java.lang.String uuid, long companyId,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByUuid_C_PrevAndNext(addressId, uuid, companyId,
 			orderByComparator);
@@ -436,6 +481,28 @@ public class AddressUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the addresses where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of addresses
+	* @param end the upper bound of the range of addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching addresses
+	*/
+	public static List<Address> findByCompanyId(long companyId, int start,
+		int end, OrderByComparator<Address> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByCompanyId(companyId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first address in the ordered set where companyId = &#63;.
 	*
 	* @param companyId the company ID
@@ -445,7 +512,7 @@ public class AddressUtil {
 	*/
 	public static Address findByCompanyId_First(long companyId,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByCompanyId_First(companyId, orderByComparator);
 	}
@@ -473,7 +540,7 @@ public class AddressUtil {
 	*/
 	public static Address findByCompanyId_Last(long companyId,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByCompanyId_Last(companyId, orderByComparator);
 	}
@@ -502,7 +569,7 @@ public class AddressUtil {
 	*/
 	public static Address[] findByCompanyId_PrevAndNext(long addressId,
 		long companyId, OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByCompanyId_PrevAndNext(addressId, companyId,
 			orderByComparator);
@@ -573,6 +640,27 @@ public class AddressUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the addresses where userId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param start the lower bound of the range of addresses
+	* @param end the upper bound of the range of addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching addresses
+	*/
+	public static List<Address> findByUserId(long userId, int start, int end,
+		OrderByComparator<Address> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByUserId(userId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first address in the ordered set where userId = &#63;.
 	*
 	* @param userId the user ID
@@ -582,7 +670,7 @@ public class AddressUtil {
 	*/
 	public static Address findByUserId_First(long userId,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence().findByUserId_First(userId, orderByComparator);
 	}
 
@@ -608,7 +696,7 @@ public class AddressUtil {
 	*/
 	public static Address findByUserId_Last(long userId,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence().findByUserId_Last(userId, orderByComparator);
 	}
 
@@ -635,7 +723,7 @@ public class AddressUtil {
 	*/
 	public static Address[] findByUserId_PrevAndNext(long addressId,
 		long userId, OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByUserId_PrevAndNext(addressId, userId,
 			orderByComparator);
@@ -711,6 +799,29 @@ public class AddressUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the addresses where companyId = &#63; and classNameId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param classNameId the class name ID
+	* @param start the lower bound of the range of addresses
+	* @param end the upper bound of the range of addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching addresses
+	*/
+	public static List<Address> findByC_C(long companyId, long classNameId,
+		int start, int end, OrderByComparator<Address> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByC_C(companyId, classNameId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first address in the ordered set where companyId = &#63; and classNameId = &#63;.
 	*
 	* @param companyId the company ID
@@ -721,7 +832,7 @@ public class AddressUtil {
 	*/
 	public static Address findByC_C_First(long companyId, long classNameId,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_First(companyId, classNameId, orderByComparator);
 	}
@@ -751,7 +862,7 @@ public class AddressUtil {
 	*/
 	public static Address findByC_C_Last(long companyId, long classNameId,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_Last(companyId, classNameId, orderByComparator);
 	}
@@ -783,7 +894,7 @@ public class AddressUtil {
 	public static Address[] findByC_C_PrevAndNext(long addressId,
 		long companyId, long classNameId,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_PrevAndNext(addressId, companyId, classNameId,
 			orderByComparator);
@@ -867,6 +978,30 @@ public class AddressUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the addresses where companyId = &#63; and classNameId = &#63; and classPK = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param classNameId the class name ID
+	* @param classPK the class p k
+	* @param start the lower bound of the range of addresses
+	* @param end the upper bound of the range of addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching addresses
+	*/
+	public static List<Address> findByC_C_C(long companyId, long classNameId,
+		long classPK, int start, int end,
+		OrderByComparator<Address> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByC_C_C(companyId, classNameId, classPK, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first address in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63;.
 	*
 	* @param companyId the company ID
@@ -878,7 +1013,7 @@ public class AddressUtil {
 	*/
 	public static Address findByC_C_C_First(long companyId, long classNameId,
 		long classPK, OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_C_First(companyId, classNameId, classPK,
 			orderByComparator);
@@ -912,7 +1047,7 @@ public class AddressUtil {
 	*/
 	public static Address findByC_C_C_Last(long companyId, long classNameId,
 		long classPK, OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_C_Last(companyId, classNameId, classPK,
 			orderByComparator);
@@ -948,7 +1083,7 @@ public class AddressUtil {
 	public static Address[] findByC_C_C_PrevAndNext(long addressId,
 		long companyId, long classNameId, long classPK,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_C_PrevAndNext(addressId, companyId, classNameId,
 			classPK, orderByComparator);
@@ -1041,6 +1176,31 @@ public class AddressUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the addresses where companyId = &#63; and classNameId = &#63; and classPK = &#63; and mailing = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param classNameId the class name ID
+	* @param classPK the class p k
+	* @param mailing the mailing
+	* @param start the lower bound of the range of addresses
+	* @param end the upper bound of the range of addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching addresses
+	*/
+	public static List<Address> findByC_C_C_M(long companyId, long classNameId,
+		long classPK, boolean mailing, int start, int end,
+		OrderByComparator<Address> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByC_C_C_M(companyId, classNameId, classPK, mailing,
+			start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first address in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63; and mailing = &#63;.
 	*
 	* @param companyId the company ID
@@ -1054,7 +1214,7 @@ public class AddressUtil {
 	public static Address findByC_C_C_M_First(long companyId, long classNameId,
 		long classPK, boolean mailing,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_C_M_First(companyId, classNameId, classPK,
 			mailing, orderByComparator);
@@ -1092,7 +1252,7 @@ public class AddressUtil {
 	public static Address findByC_C_C_M_Last(long companyId, long classNameId,
 		long classPK, boolean mailing,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_C_M_Last(companyId, classNameId, classPK,
 			mailing, orderByComparator);
@@ -1131,7 +1291,7 @@ public class AddressUtil {
 	public static Address[] findByC_C_C_M_PrevAndNext(long addressId,
 		long companyId, long classNameId, long classPK, boolean mailing,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_C_M_PrevAndNext(addressId, companyId,
 			classNameId, classPK, mailing, orderByComparator);
@@ -1228,6 +1388,31 @@ public class AddressUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the addresses where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param classNameId the class name ID
+	* @param classPK the class p k
+	* @param primary the primary
+	* @param start the lower bound of the range of addresses
+	* @param end the upper bound of the range of addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching addresses
+	*/
+	public static List<Address> findByC_C_C_P(long companyId, long classNameId,
+		long classPK, boolean primary, int start, int end,
+		OrderByComparator<Address> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByC_C_C_P(companyId, classNameId, classPK, primary,
+			start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first address in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63;.
 	*
 	* @param companyId the company ID
@@ -1241,7 +1426,7 @@ public class AddressUtil {
 	public static Address findByC_C_C_P_First(long companyId, long classNameId,
 		long classPK, boolean primary,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_C_P_First(companyId, classNameId, classPK,
 			primary, orderByComparator);
@@ -1279,7 +1464,7 @@ public class AddressUtil {
 	public static Address findByC_C_C_P_Last(long companyId, long classNameId,
 		long classPK, boolean primary,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_C_P_Last(companyId, classNameId, classPK,
 			primary, orderByComparator);
@@ -1318,7 +1503,7 @@ public class AddressUtil {
 	public static Address[] findByC_C_C_P_PrevAndNext(long addressId,
 		long companyId, long classNameId, long classPK, boolean primary,
 		OrderByComparator<Address> orderByComparator)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence()
 				   .findByC_C_C_P_PrevAndNext(addressId, companyId,
 			classNameId, classPK, primary, orderByComparator);
@@ -1389,7 +1574,7 @@ public class AddressUtil {
 	* @throws NoSuchAddressException if a address with the primary key could not be found
 	*/
 	public static Address remove(long addressId)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence().remove(addressId);
 	}
 
@@ -1405,7 +1590,7 @@ public class AddressUtil {
 	* @throws NoSuchAddressException if a address with the primary key could not be found
 	*/
 	public static Address findByPrimaryKey(long addressId)
-		throws com.liferay.portal.NoSuchAddressException {
+		throws com.liferay.portal.exception.NoSuchAddressException {
 		return getPersistence().findByPrimaryKey(addressId);
 	}
 
@@ -1466,6 +1651,25 @@ public class AddressUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the addresses.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of addresses
+	* @param end the upper bound of the range of addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of addresses
+	*/
+	public static List<Address> findAll(int start, int end,
+		OrderByComparator<Address> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the addresses from the database.
 	*/
 	public static void removeAll() {
@@ -1481,6 +1685,10 @@ public class AddressUtil {
 		return getPersistence().countAll();
 	}
 
+	public static java.util.Set<java.lang.String> getBadColumnNames() {
+		return getPersistence().getBadColumnNames();
+	}
+
 	public static AddressPersistence getPersistence() {
 		if (_persistence == null) {
 			_persistence = (AddressPersistence)PortalBeanLocatorUtil.locate(AddressPersistence.class.getName());
@@ -1490,13 +1698,6 @@ public class AddressUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(AddressPersistence persistence) {
 	}
 
 	private static AddressPersistence _persistence;

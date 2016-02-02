@@ -116,7 +116,7 @@ public class BrowserTrackerUtil {
 	* @throws NoSuchBrowserTrackerException if a matching browser tracker could not be found
 	*/
 	public static BrowserTracker findByUserId(long userId)
-		throws com.liferay.portal.NoSuchBrowserTrackerException {
+		throws com.liferay.portal.exception.NoSuchBrowserTrackerException {
 		return getPersistence().findByUserId(userId);
 	}
 
@@ -134,7 +134,7 @@ public class BrowserTrackerUtil {
 	* Returns the browser tracker where userId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param userId the user ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching browser tracker, or <code>null</code> if a matching browser tracker could not be found
 	*/
 	public static BrowserTracker fetchByUserId(long userId,
@@ -149,7 +149,7 @@ public class BrowserTrackerUtil {
 	* @return the browser tracker that was removed
 	*/
 	public static BrowserTracker removeByUserId(long userId)
-		throws com.liferay.portal.NoSuchBrowserTrackerException {
+		throws com.liferay.portal.exception.NoSuchBrowserTrackerException {
 		return getPersistence().removeByUserId(userId);
 	}
 
@@ -199,7 +199,7 @@ public class BrowserTrackerUtil {
 	* @throws NoSuchBrowserTrackerException if a browser tracker with the primary key could not be found
 	*/
 	public static BrowserTracker remove(long browserTrackerId)
-		throws com.liferay.portal.NoSuchBrowserTrackerException {
+		throws com.liferay.portal.exception.NoSuchBrowserTrackerException {
 		return getPersistence().remove(browserTrackerId);
 	}
 
@@ -215,7 +215,7 @@ public class BrowserTrackerUtil {
 	* @throws NoSuchBrowserTrackerException if a browser tracker with the primary key could not be found
 	*/
 	public static BrowserTracker findByPrimaryKey(long browserTrackerId)
-		throws com.liferay.portal.NoSuchBrowserTrackerException {
+		throws com.liferay.portal.exception.NoSuchBrowserTrackerException {
 		return getPersistence().findByPrimaryKey(browserTrackerId);
 	}
 
@@ -276,6 +276,26 @@ public class BrowserTrackerUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the browser trackers.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link BrowserTrackerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of browser trackers
+	* @param end the upper bound of the range of browser trackers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of browser trackers
+	*/
+	public static List<BrowserTracker> findAll(int start, int end,
+		OrderByComparator<BrowserTracker> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the browser trackers from the database.
 	*/
 	public static void removeAll() {
@@ -300,13 +320,6 @@ public class BrowserTrackerUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(BrowserTrackerPersistence persistence) {
 	}
 
 	private static BrowserTrackerPersistence _persistence;

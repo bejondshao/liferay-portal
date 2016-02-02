@@ -14,7 +14,7 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.NoSuchUserGroupRoleException;
+import com.liferay.portal.exception.NoSuchUserGroupRoleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.Group;
@@ -89,6 +89,19 @@ public class UserGroupRoleLocalServiceImpl
 		PermissionCacheUtil.clearCache(userGroupRole.getUserId());
 
 		return userGroupRole;
+	}
+
+	@Override
+	public void deleteUserGroupRoles(long groupId, int roleType) {
+		List<UserGroupRole> userGroupRoles =
+			userGroupRoleFinder.findByGroupRoleType(groupId, roleType);
+
+		for (UserGroupRole userGroupRole : userGroupRoles) {
+			userGroupRolePersistence.removeByG_R(
+				groupId, userGroupRole.getRoleId());
+		}
+
+		PermissionCacheUtil.clearCache();
 	}
 
 	@Override

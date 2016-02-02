@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchCompanyException;
 import com.liferay.portal.model.Company;
 
 /**
@@ -46,7 +47,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* @throws NoSuchCompanyException if a matching company could not be found
 	*/
 	public Company findByWebId(java.lang.String webId)
-		throws com.liferay.portal.NoSuchCompanyException;
+		throws NoSuchCompanyException;
 
 	/**
 	* Returns the company where webId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -60,7 +61,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* Returns the company where webId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param webId the web ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching company, or <code>null</code> if a matching company could not be found
 	*/
 	public Company fetchByWebId(java.lang.String webId,
@@ -73,7 +74,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* @return the company that was removed
 	*/
 	public Company removeByWebId(java.lang.String webId)
-		throws com.liferay.portal.NoSuchCompanyException;
+		throws NoSuchCompanyException;
 
 	/**
 	* Returns the number of companies where webId = &#63;.
@@ -90,8 +91,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* @return the matching company
 	* @throws NoSuchCompanyException if a matching company could not be found
 	*/
-	public Company findByMx(java.lang.String mx)
-		throws com.liferay.portal.NoSuchCompanyException;
+	public Company findByMx(java.lang.String mx) throws NoSuchCompanyException;
 
 	/**
 	* Returns the company where mx = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -105,7 +105,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* Returns the company where mx = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param mx the mx
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching company, or <code>null</code> if a matching company could not be found
 	*/
 	public Company fetchByMx(java.lang.String mx, boolean retrieveFromCache);
@@ -117,7 +117,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* @return the company that was removed
 	*/
 	public Company removeByMx(java.lang.String mx)
-		throws com.liferay.portal.NoSuchCompanyException;
+		throws NoSuchCompanyException;
 
 	/**
 	* Returns the number of companies where mx = &#63;.
@@ -134,8 +134,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* @return the matching company
 	* @throws NoSuchCompanyException if a matching company could not be found
 	*/
-	public Company findByLogoId(long logoId)
-		throws com.liferay.portal.NoSuchCompanyException;
+	public Company findByLogoId(long logoId) throws NoSuchCompanyException;
 
 	/**
 	* Returns the company where logoId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -149,7 +148,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* Returns the company where logoId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param logoId the logo ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching company, or <code>null</code> if a matching company could not be found
 	*/
 	public Company fetchByLogoId(long logoId, boolean retrieveFromCache);
@@ -160,8 +159,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* @param logoId the logo ID
 	* @return the company that was removed
 	*/
-	public Company removeByLogoId(long logoId)
-		throws com.liferay.portal.NoSuchCompanyException;
+	public Company removeByLogoId(long logoId) throws NoSuchCompanyException;
 
 	/**
 	* Returns the number of companies where logoId = &#63;.
@@ -212,6 +210,25 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 		com.liferay.portal.kernel.util.OrderByComparator<Company> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the companies where system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CompanyModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param system the system
+	* @param start the lower bound of the range of companies
+	* @param end the upper bound of the range of companies (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching companies
+	*/
+	public java.util.List<Company> findBySystem(boolean system, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Company> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first company in the ordered set where system = &#63;.
 	*
 	* @param system the system
@@ -221,7 +238,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	*/
 	public Company findBySystem_First(boolean system,
 		com.liferay.portal.kernel.util.OrderByComparator<Company> orderByComparator)
-		throws com.liferay.portal.NoSuchCompanyException;
+		throws NoSuchCompanyException;
 
 	/**
 	* Returns the first company in the ordered set where system = &#63;.
@@ -243,7 +260,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	*/
 	public Company findBySystem_Last(boolean system,
 		com.liferay.portal.kernel.util.OrderByComparator<Company> orderByComparator)
-		throws com.liferay.portal.NoSuchCompanyException;
+		throws NoSuchCompanyException;
 
 	/**
 	* Returns the last company in the ordered set where system = &#63;.
@@ -266,7 +283,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	*/
 	public Company[] findBySystem_PrevAndNext(long companyId, boolean system,
 		com.liferay.portal.kernel.util.OrderByComparator<Company> orderByComparator)
-		throws com.liferay.portal.NoSuchCompanyException;
+		throws NoSuchCompanyException;
 
 	/**
 	* Removes all the companies where system = &#63; from the database.
@@ -312,8 +329,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* @return the company that was removed
 	* @throws NoSuchCompanyException if a company with the primary key could not be found
 	*/
-	public Company remove(long companyId)
-		throws com.liferay.portal.NoSuchCompanyException;
+	public Company remove(long companyId) throws NoSuchCompanyException;
 
 	public Company updateImpl(Company company);
 
@@ -325,7 +341,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* @throws NoSuchCompanyException if a company with the primary key could not be found
 	*/
 	public Company findByPrimaryKey(long companyId)
-		throws com.liferay.portal.NoSuchCompanyException;
+		throws NoSuchCompanyException;
 
 	/**
 	* Returns the company with the primary key or returns <code>null</code> if it could not be found.
@@ -375,6 +391,23 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 		com.liferay.portal.kernel.util.OrderByComparator<Company> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the companies.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CompanyModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of companies
+	* @param end the upper bound of the range of companies (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of companies
+	*/
+	public java.util.List<Company> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Company> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the companies from the database.
 	*/
 	public void removeAll();
@@ -385,4 +418,7 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	* @return the number of companies
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

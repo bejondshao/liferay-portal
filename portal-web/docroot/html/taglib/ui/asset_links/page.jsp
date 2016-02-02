@@ -98,14 +98,9 @@ if (assetEntryId > 0) {
 			%>
 
 					<li class="asset-links-list-item">
-						<liferay-ui:icon
-							iconCssClass="<%= assetRenderer.getIconCssClass() %>"
-							label="<%= true %>"
-							message="<%= asseLinktEntryTitle %>"
-							method="get"
-							target='<%= themeDisplay.isStatePopUp() ? "_blank" : "_self" %>'
-							url="<%= urlViewInContext %>"
-						/>
+						<aui:a href="<%= urlViewInContext %>" target='<%= themeDisplay.isStatePopUp() ? "_blank" : "_self" %>'>
+							<%= asseLinktEntryTitle %>
+						</aui:a>
 					</li>
 
 			<%
@@ -118,5 +113,5 @@ if (assetEntryId > 0) {
 </c:if>
 
 <%!
-private static Log _log = LogFactoryUtil.getLog("portal-web.docroot.html.taglib.ui.asset_links.page_jsp");
+private static Log _log = LogFactoryUtil.getLog("portal_web.docroot.html.taglib.ui.asset_links.page_jsp");
 %>

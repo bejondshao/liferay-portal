@@ -159,6 +159,29 @@ public class UserNotificationDeliveryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the user notification deliveries where userId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link UserNotificationDeliveryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param start the lower bound of the range of user notification deliveries
+	* @param end the upper bound of the range of user notification deliveries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching user notification deliveries
+	*/
+	public static List<UserNotificationDelivery> findByUserId(long userId,
+		int start, int end,
+		OrderByComparator<UserNotificationDelivery> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByUserId(userId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first user notification delivery in the ordered set where userId = &#63;.
 	*
 	* @param userId the user ID
@@ -168,7 +191,7 @@ public class UserNotificationDeliveryUtil {
 	*/
 	public static UserNotificationDelivery findByUserId_First(long userId,
 		OrderByComparator<UserNotificationDelivery> orderByComparator)
-		throws com.liferay.portal.NoSuchUserNotificationDeliveryException {
+		throws com.liferay.portal.exception.NoSuchUserNotificationDeliveryException {
 		return getPersistence().findByUserId_First(userId, orderByComparator);
 	}
 
@@ -194,7 +217,7 @@ public class UserNotificationDeliveryUtil {
 	*/
 	public static UserNotificationDelivery findByUserId_Last(long userId,
 		OrderByComparator<UserNotificationDelivery> orderByComparator)
-		throws com.liferay.portal.NoSuchUserNotificationDeliveryException {
+		throws com.liferay.portal.exception.NoSuchUserNotificationDeliveryException {
 		return getPersistence().findByUserId_Last(userId, orderByComparator);
 	}
 
@@ -222,7 +245,7 @@ public class UserNotificationDeliveryUtil {
 	public static UserNotificationDelivery[] findByUserId_PrevAndNext(
 		long userNotificationDeliveryId, long userId,
 		OrderByComparator<UserNotificationDelivery> orderByComparator)
-		throws com.liferay.portal.NoSuchUserNotificationDeliveryException {
+		throws com.liferay.portal.exception.NoSuchUserNotificationDeliveryException {
 		return getPersistence()
 				   .findByUserId_PrevAndNext(userNotificationDeliveryId,
 			userId, orderByComparator);
@@ -261,7 +284,7 @@ public class UserNotificationDeliveryUtil {
 	public static UserNotificationDelivery findByU_P_C_N_D(long userId,
 		java.lang.String portletId, long classNameId, int notificationType,
 		int deliveryType)
-		throws com.liferay.portal.NoSuchUserNotificationDeliveryException {
+		throws com.liferay.portal.exception.NoSuchUserNotificationDeliveryException {
 		return getPersistence()
 				   .findByU_P_C_N_D(userId, portletId, classNameId,
 			notificationType, deliveryType);
@@ -293,7 +316,7 @@ public class UserNotificationDeliveryUtil {
 	* @param classNameId the class name ID
 	* @param notificationType the notification type
 	* @param deliveryType the delivery type
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching user notification delivery, or <code>null</code> if a matching user notification delivery could not be found
 	*/
 	public static UserNotificationDelivery fetchByU_P_C_N_D(long userId,
@@ -317,7 +340,7 @@ public class UserNotificationDeliveryUtil {
 	public static UserNotificationDelivery removeByU_P_C_N_D(long userId,
 		java.lang.String portletId, long classNameId, int notificationType,
 		int deliveryType)
-		throws com.liferay.portal.NoSuchUserNotificationDeliveryException {
+		throws com.liferay.portal.exception.NoSuchUserNotificationDeliveryException {
 		return getPersistence()
 				   .removeByU_P_C_N_D(userId, portletId, classNameId,
 			notificationType, deliveryType);
@@ -380,7 +403,7 @@ public class UserNotificationDeliveryUtil {
 	*/
 	public static UserNotificationDelivery remove(
 		long userNotificationDeliveryId)
-		throws com.liferay.portal.NoSuchUserNotificationDeliveryException {
+		throws com.liferay.portal.exception.NoSuchUserNotificationDeliveryException {
 		return getPersistence().remove(userNotificationDeliveryId);
 	}
 
@@ -398,7 +421,7 @@ public class UserNotificationDeliveryUtil {
 	*/
 	public static UserNotificationDelivery findByPrimaryKey(
 		long userNotificationDeliveryId)
-		throws com.liferay.portal.NoSuchUserNotificationDeliveryException {
+		throws com.liferay.portal.exception.NoSuchUserNotificationDeliveryException {
 		return getPersistence().findByPrimaryKey(userNotificationDeliveryId);
 	}
 
@@ -460,6 +483,26 @@ public class UserNotificationDeliveryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the user notification deliveries.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link UserNotificationDeliveryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of user notification deliveries
+	* @param end the upper bound of the range of user notification deliveries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of user notification deliveries
+	*/
+	public static List<UserNotificationDelivery> findAll(int start, int end,
+		OrderByComparator<UserNotificationDelivery> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the user notification deliveries from the database.
 	*/
 	public static void removeAll() {
@@ -484,13 +527,6 @@ public class UserNotificationDeliveryUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(UserNotificationDeliveryPersistence persistence) {
 	}
 
 	private static UserNotificationDeliveryPersistence _persistence;

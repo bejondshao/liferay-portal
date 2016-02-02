@@ -34,7 +34,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 
-import com.liferay.portlet.messageboards.NoSuchBanException;
+import com.liferay.portlet.messageboards.exception.NoSuchBanException;
 import com.liferay.portlet.messageboards.model.MBBan;
 import com.liferay.portlet.messageboards.service.MBBanLocalServiceUtil;
 import com.liferay.portlet.messageboards.service.persistence.MBBanPersistence;
@@ -43,6 +43,7 @@ import com.liferay.portlet.messageboards.service.persistence.MBBanUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,8 +60,9 @@ import java.util.Set;
  * @generated
  */
 public class MBBanPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -346,11 +348,9 @@ public class MBBanPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = MBBanLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<MBBan>() {
 				@Override
-				public void performAction(Object object) {
-					MBBan mbBan = (MBBan)object;
-
+				public void performAction(MBBan mbBan) {
 					Assert.assertNotNull(mbBan);
 
 					count.increment();

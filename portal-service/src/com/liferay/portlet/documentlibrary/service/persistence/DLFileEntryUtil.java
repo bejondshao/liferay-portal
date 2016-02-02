@@ -155,6 +155,28 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where uuid = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByUuid(java.lang.String uuid,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByUuid(uuid, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where uuid = &#63;.
 	*
 	* @param uuid the uuid
@@ -164,7 +186,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByUuid_First(java.lang.String uuid,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByUuid_First(uuid, orderByComparator);
 	}
 
@@ -190,7 +212,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByUuid_Last(java.lang.String uuid,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByUuid_Last(uuid, orderByComparator);
 	}
 
@@ -217,7 +239,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry[] findByUuid_PrevAndNext(long fileEntryId,
 		java.lang.String uuid, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByUuid_PrevAndNext(fileEntryId, uuid, orderByComparator);
 	}
@@ -250,7 +272,7 @@ public class DLFileEntryUtil {
 	* @throws NoSuchFileEntryException if a matching document library file entry could not be found
 	*/
 	public static DLFileEntry findByUUID_G(java.lang.String uuid, long groupId)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByUUID_G(uuid, groupId);
 	}
 
@@ -270,7 +292,7 @@ public class DLFileEntryUtil {
 	*
 	* @param uuid the uuid
 	* @param groupId the group ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching document library file entry, or <code>null</code> if a matching document library file entry could not be found
 	*/
 	public static DLFileEntry fetchByUUID_G(java.lang.String uuid,
@@ -286,7 +308,7 @@ public class DLFileEntryUtil {
 	* @return the document library file entry that was removed
 	*/
 	public static DLFileEntry removeByUUID_G(java.lang.String uuid, long groupId)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().removeByUUID_G(uuid, groupId);
 	}
 
@@ -353,6 +375,30 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where uuid = &#63; and companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param companyId the company ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByUuid_C(java.lang.String uuid,
+		long companyId, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByUuid_C(uuid, companyId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
 	* @param uuid the uuid
@@ -363,7 +409,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByUuid_C_First(java.lang.String uuid,
 		long companyId, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByUuid_C_First(uuid, companyId, orderByComparator);
 	}
@@ -393,7 +439,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByUuid_C_Last(java.lang.String uuid,
 		long companyId, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByUuid_C_Last(uuid, companyId, orderByComparator);
 	}
@@ -425,7 +471,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] findByUuid_C_PrevAndNext(long fileEntryId,
 		java.lang.String uuid, long companyId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByUuid_C_PrevAndNext(fileEntryId, uuid, companyId,
 			orderByComparator);
@@ -499,6 +545,28 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByGroupId(long groupId, int start,
+		int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByGroupId(groupId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where groupId = &#63;.
 	*
 	* @param groupId the group ID
@@ -508,7 +576,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByGroupId_First(long groupId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByGroupId_First(groupId, orderByComparator);
 	}
 
@@ -534,7 +602,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByGroupId_Last(long groupId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByGroupId_Last(groupId, orderByComparator);
 	}
 
@@ -561,7 +629,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry[] findByGroupId_PrevAndNext(long fileEntryId,
 		long groupId, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByGroupId_PrevAndNext(fileEntryId, groupId,
 			orderByComparator);
@@ -625,7 +693,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] filterFindByGroupId_PrevAndNext(
 		long fileEntryId, long groupId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .filterFindByGroupId_PrevAndNext(fileEntryId, groupId,
 			orderByComparator);
@@ -707,6 +775,28 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByCompanyId(long companyId, int start,
+		int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByCompanyId(companyId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where companyId = &#63;.
 	*
 	* @param companyId the company ID
@@ -716,7 +806,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByCompanyId_First(long companyId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByCompanyId_First(companyId, orderByComparator);
 	}
@@ -744,7 +834,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByCompanyId_Last(long companyId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByCompanyId_Last(companyId, orderByComparator);
 	}
@@ -773,7 +863,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry[] findByCompanyId_PrevAndNext(long fileEntryId,
 		long companyId, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByCompanyId_PrevAndNext(fileEntryId, companyId,
 			orderByComparator);
@@ -846,6 +936,28 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where repositoryId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param repositoryId the repository ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByRepositoryId(long repositoryId,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByRepositoryId(repositoryId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where repositoryId = &#63;.
 	*
 	* @param repositoryId the repository ID
@@ -855,7 +967,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByRepositoryId_First(long repositoryId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByRepositoryId_First(repositoryId, orderByComparator);
 	}
@@ -883,7 +995,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByRepositoryId_Last(long repositoryId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByRepositoryId_Last(repositoryId, orderByComparator);
 	}
@@ -913,7 +1025,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] findByRepositoryId_PrevAndNext(
 		long fileEntryId, long repositoryId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByRepositoryId_PrevAndNext(fileEntryId, repositoryId,
 			orderByComparator);
@@ -985,6 +1097,28 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where mimeType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param mimeType the mime type
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByMimeType(java.lang.String mimeType,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByMimeType(mimeType, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where mimeType = &#63;.
 	*
 	* @param mimeType the mime type
@@ -994,7 +1128,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByMimeType_First(java.lang.String mimeType,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByMimeType_First(mimeType, orderByComparator);
 	}
 
@@ -1021,7 +1155,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByMimeType_Last(java.lang.String mimeType,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByMimeType_Last(mimeType, orderByComparator);
 	}
 
@@ -1049,7 +1183,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] findByMimeType_PrevAndNext(long fileEntryId,
 		java.lang.String mimeType,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByMimeType_PrevAndNext(fileEntryId, mimeType,
 			orderByComparator);
@@ -1124,6 +1258,29 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where fileEntryTypeId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param fileEntryTypeId the file entry type ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByFileEntryTypeId(
+		long fileEntryTypeId, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByFileEntryTypeId(fileEntryTypeId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where fileEntryTypeId = &#63;.
 	*
 	* @param fileEntryTypeId the file entry type ID
@@ -1133,7 +1290,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByFileEntryTypeId_First(
 		long fileEntryTypeId, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByFileEntryTypeId_First(fileEntryTypeId,
 			orderByComparator);
@@ -1163,7 +1320,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByFileEntryTypeId_Last(long fileEntryTypeId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByFileEntryTypeId_Last(fileEntryTypeId,
 			orderByComparator);
@@ -1195,7 +1352,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] findByFileEntryTypeId_PrevAndNext(
 		long fileEntryId, long fileEntryTypeId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByFileEntryTypeId_PrevAndNext(fileEntryId,
 			fileEntryTypeId, orderByComparator);
@@ -1270,6 +1427,29 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where groupId = &#63; and userId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param userId the user ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByG_U(long groupId, long userId,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_U(groupId, userId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where groupId = &#63; and userId = &#63;.
 	*
 	* @param groupId the group ID
@@ -1280,7 +1460,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_U_First(long groupId, long userId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_U_First(groupId, userId, orderByComparator);
 	}
@@ -1310,7 +1490,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_U_Last(long groupId, long userId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_U_Last(groupId, userId, orderByComparator);
 	}
@@ -1342,7 +1522,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] findByG_U_PrevAndNext(long fileEntryId,
 		long groupId, long userId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_U_PrevAndNext(fileEntryId, groupId, userId,
 			orderByComparator);
@@ -1411,7 +1591,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] filterFindByG_U_PrevAndNext(long fileEntryId,
 		long groupId, long userId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .filterFindByG_U_PrevAndNext(fileEntryId, groupId, userId,
 			orderByComparator);
@@ -1499,6 +1679,29 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where groupId = &#63; and folderId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param folderId the folder ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByG_F(long groupId, long folderId,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_F(groupId, folderId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where groupId = &#63; and folderId = &#63;.
 	*
 	* @param groupId the group ID
@@ -1509,7 +1712,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_F_First(long groupId, long folderId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_F_First(groupId, folderId, orderByComparator);
 	}
@@ -1539,7 +1742,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_F_Last(long groupId, long folderId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_F_Last(groupId, folderId, orderByComparator);
 	}
@@ -1571,7 +1774,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] findByG_F_PrevAndNext(long fileEntryId,
 		long groupId, long folderId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_F_PrevAndNext(fileEntryId, groupId, folderId,
 			orderByComparator);
@@ -1641,7 +1844,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] filterFindByG_F_PrevAndNext(long fileEntryId,
 		long groupId, long folderId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .filterFindByG_F_PrevAndNext(fileEntryId, groupId, folderId,
 			orderByComparator);
@@ -1753,6 +1956,29 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where groupId = &#63; and folderId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param folderId the folder ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByG_F(long groupId, long[] folderIds,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_F(groupId, folderIds, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the document library file entries where groupId = &#63; and folderId = &#63; from the database.
 	*
 	* @param groupId the group ID
@@ -1857,6 +2083,29 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where repositoryId = &#63; and folderId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param repositoryId the repository ID
+	* @param folderId the folder ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByR_F(long repositoryId, long folderId,
+		int start, int end, OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByR_F(repositoryId, folderId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where repositoryId = &#63; and folderId = &#63;.
 	*
 	* @param repositoryId the repository ID
@@ -1867,7 +2116,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByR_F_First(long repositoryId, long folderId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByR_F_First(repositoryId, folderId, orderByComparator);
 	}
@@ -1897,7 +2146,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByR_F_Last(long repositoryId, long folderId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByR_F_Last(repositoryId, folderId, orderByComparator);
 	}
@@ -1929,7 +2178,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] findByR_F_PrevAndNext(long fileEntryId,
 		long repositoryId, long folderId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByR_F_PrevAndNext(fileEntryId, repositoryId, folderId,
 			orderByComparator);
@@ -2008,6 +2257,30 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where folderId = &#63; and name = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param folderId the folder ID
+	* @param name the name
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByF_N(long folderId,
+		java.lang.String name, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_N(folderId, name, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where folderId = &#63; and name = &#63;.
 	*
 	* @param folderId the folder ID
@@ -2018,7 +2291,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByF_N_First(long folderId,
 		java.lang.String name, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByF_N_First(folderId, name, orderByComparator);
 	}
@@ -2048,7 +2321,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByF_N_Last(long folderId,
 		java.lang.String name, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByF_N_Last(folderId, name, orderByComparator);
 	}
 
@@ -2079,7 +2352,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] findByF_N_PrevAndNext(long fileEntryId,
 		long folderId, java.lang.String name,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByF_N_PrevAndNext(fileEntryId, folderId, name,
 			orderByComparator);
@@ -2163,6 +2436,31 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where groupId = &#63; and userId = &#63; and folderId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param userId the user ID
+	* @param folderId the folder ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByG_U_F(long groupId, long userId,
+		long folderId, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_U_F(groupId, userId, folderId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where groupId = &#63; and userId = &#63; and folderId = &#63;.
 	*
 	* @param groupId the group ID
@@ -2174,7 +2472,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_U_F_First(long groupId, long userId,
 		long folderId, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_U_F_First(groupId, userId, folderId,
 			orderByComparator);
@@ -2208,7 +2506,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_U_F_Last(long groupId, long userId,
 		long folderId, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_U_F_Last(groupId, userId, folderId,
 			orderByComparator);
@@ -2244,7 +2542,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] findByG_U_F_PrevAndNext(long fileEntryId,
 		long groupId, long userId, long folderId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_U_F_PrevAndNext(fileEntryId, groupId, userId,
 			folderId, orderByComparator);
@@ -2320,7 +2618,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] filterFindByG_U_F_PrevAndNext(
 		long fileEntryId, long groupId, long userId, long folderId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .filterFindByG_U_F_PrevAndNext(fileEntryId, groupId, userId,
 			folderId, orderByComparator);
@@ -2443,6 +2741,31 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where groupId = &#63; and userId = &#63; and folderId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param userId the user ID
+	* @param folderId the folder ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByG_U_F(long groupId, long userId,
+		long[] folderIds, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_U_F(groupId, userId, folderIds, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the document library file entries where groupId = &#63; and userId = &#63; and folderId = &#63; from the database.
 	*
 	* @param groupId the group ID
@@ -2514,7 +2837,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_F_N(long groupId, long folderId,
 		java.lang.String name)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByG_F_N(groupId, folderId, name);
 	}
 
@@ -2537,7 +2860,7 @@ public class DLFileEntryUtil {
 	* @param groupId the group ID
 	* @param folderId the folder ID
 	* @param name the name
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching document library file entry, or <code>null</code> if a matching document library file entry could not be found
 	*/
 	public static DLFileEntry fetchByG_F_N(long groupId, long folderId,
@@ -2556,7 +2879,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry removeByG_F_N(long groupId, long folderId,
 		java.lang.String name)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().removeByG_F_N(groupId, folderId, name);
 	}
 
@@ -2584,7 +2907,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_F_FN(long groupId, long folderId,
 		java.lang.String fileName)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByG_F_FN(groupId, folderId, fileName);
 	}
 
@@ -2607,7 +2930,7 @@ public class DLFileEntryUtil {
 	* @param groupId the group ID
 	* @param folderId the folder ID
 	* @param fileName the file name
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching document library file entry, or <code>null</code> if a matching document library file entry could not be found
 	*/
 	public static DLFileEntry fetchByG_F_FN(long groupId, long folderId,
@@ -2626,7 +2949,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry removeByG_F_FN(long groupId, long folderId,
 		java.lang.String fileName)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().removeByG_F_FN(groupId, folderId, fileName);
 	}
 
@@ -2654,7 +2977,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_F_T(long groupId, long folderId,
 		java.lang.String title)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByG_F_T(groupId, folderId, title);
 	}
 
@@ -2677,7 +3000,7 @@ public class DLFileEntryUtil {
 	* @param groupId the group ID
 	* @param folderId the folder ID
 	* @param title the title
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching document library file entry, or <code>null</code> if a matching document library file entry could not be found
 	*/
 	public static DLFileEntry fetchByG_F_T(long groupId, long folderId,
@@ -2696,7 +3019,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry removeByG_F_T(long groupId, long folderId,
 		java.lang.String title)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().removeByG_F_T(groupId, folderId, title);
 	}
 
@@ -2770,6 +3093,31 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where groupId = &#63; and folderId = &#63; and fileEntryTypeId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param folderId the folder ID
+	* @param fileEntryTypeId the file entry type ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByG_F_F(long groupId, long folderId,
+		long fileEntryTypeId, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_F_F(groupId, folderId, fileEntryTypeId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first document library file entry in the ordered set where groupId = &#63; and folderId = &#63; and fileEntryTypeId = &#63;.
 	*
 	* @param groupId the group ID
@@ -2781,7 +3129,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_F_F_First(long groupId, long folderId,
 		long fileEntryTypeId, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_F_F_First(groupId, folderId, fileEntryTypeId,
 			orderByComparator);
@@ -2815,7 +3163,7 @@ public class DLFileEntryUtil {
 	*/
 	public static DLFileEntry findByG_F_F_Last(long groupId, long folderId,
 		long fileEntryTypeId, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_F_F_Last(groupId, folderId, fileEntryTypeId,
 			orderByComparator);
@@ -2851,7 +3199,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] findByG_F_F_PrevAndNext(long fileEntryId,
 		long groupId, long folderId, long fileEntryTypeId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .findByG_F_F_PrevAndNext(fileEntryId, groupId, folderId,
 			fileEntryTypeId, orderByComparator);
@@ -2929,7 +3277,7 @@ public class DLFileEntryUtil {
 	public static DLFileEntry[] filterFindByG_F_F_PrevAndNext(
 		long fileEntryId, long groupId, long folderId, long fileEntryTypeId,
 		OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence()
 				   .filterFindByG_F_F_PrevAndNext(fileEntryId, groupId,
 			folderId, fileEntryTypeId, orderByComparator);
@@ -3054,6 +3402,31 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries where groupId = &#63; and folderId = &#63; and fileEntryTypeId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param folderId the folder ID
+	* @param fileEntryTypeId the file entry type ID
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library file entries
+	*/
+	public static List<DLFileEntry> findByG_F_F(long groupId, long[] folderIds,
+		long fileEntryTypeId, int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_F_F(groupId, folderIds, fileEntryTypeId, start,
+			end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the document library file entries where groupId = &#63; and folderId = &#63; and fileEntryTypeId = &#63; from the database.
 	*
 	* @param groupId the group ID
@@ -3155,7 +3528,7 @@ public class DLFileEntryUtil {
 	* @throws NoSuchFileEntryException if a document library file entry with the primary key could not be found
 	*/
 	public static DLFileEntry remove(long fileEntryId)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().remove(fileEntryId);
 	}
 
@@ -3171,7 +3544,7 @@ public class DLFileEntryUtil {
 	* @throws NoSuchFileEntryException if a document library file entry with the primary key could not be found
 	*/
 	public static DLFileEntry findByPrimaryKey(long fileEntryId)
-		throws com.liferay.portlet.documentlibrary.NoSuchFileEntryException {
+		throws com.liferay.portlet.documentlibrary.exception.NoSuchFileEntryException {
 		return getPersistence().findByPrimaryKey(fileEntryId);
 	}
 
@@ -3232,6 +3605,26 @@ public class DLFileEntryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the document library file entries.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLFileEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of document library file entries
+	* @param end the upper bound of the range of document library file entries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of document library file entries
+	*/
+	public static List<DLFileEntry> findAll(int start, int end,
+		OrderByComparator<DLFileEntry> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the document library file entries from the database.
 	*/
 	public static void removeAll() {
@@ -3247,6 +3640,10 @@ public class DLFileEntryUtil {
 		return getPersistence().countAll();
 	}
 
+	public static java.util.Set<java.lang.String> getBadColumnNames() {
+		return getPersistence().getBadColumnNames();
+	}
+
 	public static DLFileEntryPersistence getPersistence() {
 		if (_persistence == null) {
 			_persistence = (DLFileEntryPersistence)PortalBeanLocatorUtil.locate(DLFileEntryPersistence.class.getName());
@@ -3256,13 +3653,6 @@ public class DLFileEntryUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(DLFileEntryPersistence persistence) {
 	}
 
 	private static DLFileEntryPersistence _persistence;

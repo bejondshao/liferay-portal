@@ -154,6 +154,29 @@ public class LayoutPrototypeUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the layout prototypes where uuid = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link LayoutPrototypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param start the lower bound of the range of layout prototypes
+	* @param end the upper bound of the range of layout prototypes (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching layout prototypes
+	*/
+	public static List<LayoutPrototype> findByUuid(java.lang.String uuid,
+		int start, int end,
+		OrderByComparator<LayoutPrototype> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByUuid(uuid, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first layout prototype in the ordered set where uuid = &#63;.
 	*
 	* @param uuid the uuid
@@ -163,7 +186,7 @@ public class LayoutPrototypeUtil {
 	*/
 	public static LayoutPrototype findByUuid_First(java.lang.String uuid,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence().findByUuid_First(uuid, orderByComparator);
 	}
 
@@ -189,7 +212,7 @@ public class LayoutPrototypeUtil {
 	*/
 	public static LayoutPrototype findByUuid_Last(java.lang.String uuid,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence().findByUuid_Last(uuid, orderByComparator);
 	}
 
@@ -217,7 +240,7 @@ public class LayoutPrototypeUtil {
 	public static LayoutPrototype[] findByUuid_PrevAndNext(
 		long layoutPrototypeId, java.lang.String uuid,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .findByUuid_PrevAndNext(layoutPrototypeId, uuid,
 			orderByComparator);
@@ -282,7 +305,7 @@ public class LayoutPrototypeUtil {
 	public static LayoutPrototype[] filterFindByUuid_PrevAndNext(
 		long layoutPrototypeId, java.lang.String uuid,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .filterFindByUuid_PrevAndNext(layoutPrototypeId, uuid,
 			orderByComparator);
@@ -369,6 +392,30 @@ public class LayoutPrototypeUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the layout prototypes where uuid = &#63; and companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link LayoutPrototypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param companyId the company ID
+	* @param start the lower bound of the range of layout prototypes
+	* @param end the upper bound of the range of layout prototypes (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching layout prototypes
+	*/
+	public static List<LayoutPrototype> findByUuid_C(java.lang.String uuid,
+		long companyId, int start, int end,
+		OrderByComparator<LayoutPrototype> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByUuid_C(uuid, companyId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first layout prototype in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
 	* @param uuid the uuid
@@ -379,7 +426,7 @@ public class LayoutPrototypeUtil {
 	*/
 	public static LayoutPrototype findByUuid_C_First(java.lang.String uuid,
 		long companyId, OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .findByUuid_C_First(uuid, companyId, orderByComparator);
 	}
@@ -409,7 +456,7 @@ public class LayoutPrototypeUtil {
 	*/
 	public static LayoutPrototype findByUuid_C_Last(java.lang.String uuid,
 		long companyId, OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .findByUuid_C_Last(uuid, companyId, orderByComparator);
 	}
@@ -441,7 +488,7 @@ public class LayoutPrototypeUtil {
 	public static LayoutPrototype[] findByUuid_C_PrevAndNext(
 		long layoutPrototypeId, java.lang.String uuid, long companyId,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .findByUuid_C_PrevAndNext(layoutPrototypeId, uuid,
 			companyId, orderByComparator);
@@ -512,7 +559,7 @@ public class LayoutPrototypeUtil {
 	public static LayoutPrototype[] filterFindByUuid_C_PrevAndNext(
 		long layoutPrototypeId, java.lang.String uuid, long companyId,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .filterFindByUuid_C_PrevAndNext(layoutPrototypeId, uuid,
 			companyId, orderByComparator);
@@ -597,6 +644,29 @@ public class LayoutPrototypeUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the layout prototypes where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link LayoutPrototypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of layout prototypes
+	* @param end the upper bound of the range of layout prototypes (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching layout prototypes
+	*/
+	public static List<LayoutPrototype> findByCompanyId(long companyId,
+		int start, int end,
+		OrderByComparator<LayoutPrototype> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByCompanyId(companyId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first layout prototype in the ordered set where companyId = &#63;.
 	*
 	* @param companyId the company ID
@@ -606,7 +676,7 @@ public class LayoutPrototypeUtil {
 	*/
 	public static LayoutPrototype findByCompanyId_First(long companyId,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .findByCompanyId_First(companyId, orderByComparator);
 	}
@@ -634,7 +704,7 @@ public class LayoutPrototypeUtil {
 	*/
 	public static LayoutPrototype findByCompanyId_Last(long companyId,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .findByCompanyId_Last(companyId, orderByComparator);
 	}
@@ -664,7 +734,7 @@ public class LayoutPrototypeUtil {
 	public static LayoutPrototype[] findByCompanyId_PrevAndNext(
 		long layoutPrototypeId, long companyId,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .findByCompanyId_PrevAndNext(layoutPrototypeId, companyId,
 			orderByComparator);
@@ -729,7 +799,7 @@ public class LayoutPrototypeUtil {
 	public static LayoutPrototype[] filterFindByCompanyId_PrevAndNext(
 		long layoutPrototypeId, long companyId,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .filterFindByCompanyId_PrevAndNext(layoutPrototypeId,
 			companyId, orderByComparator);
@@ -815,6 +885,30 @@ public class LayoutPrototypeUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the layout prototypes where companyId = &#63; and active = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link LayoutPrototypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param active the active
+	* @param start the lower bound of the range of layout prototypes
+	* @param end the upper bound of the range of layout prototypes (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching layout prototypes
+	*/
+	public static List<LayoutPrototype> findByC_A(long companyId,
+		boolean active, int start, int end,
+		OrderByComparator<LayoutPrototype> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByC_A(companyId, active, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first layout prototype in the ordered set where companyId = &#63; and active = &#63;.
 	*
 	* @param companyId the company ID
@@ -825,7 +919,7 @@ public class LayoutPrototypeUtil {
 	*/
 	public static LayoutPrototype findByC_A_First(long companyId,
 		boolean active, OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .findByC_A_First(companyId, active, orderByComparator);
 	}
@@ -855,7 +949,7 @@ public class LayoutPrototypeUtil {
 	*/
 	public static LayoutPrototype findByC_A_Last(long companyId,
 		boolean active, OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .findByC_A_Last(companyId, active, orderByComparator);
 	}
@@ -887,7 +981,7 @@ public class LayoutPrototypeUtil {
 	public static LayoutPrototype[] findByC_A_PrevAndNext(
 		long layoutPrototypeId, long companyId, boolean active,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .findByC_A_PrevAndNext(layoutPrototypeId, companyId, active,
 			orderByComparator);
@@ -958,7 +1052,7 @@ public class LayoutPrototypeUtil {
 	public static LayoutPrototype[] filterFindByC_A_PrevAndNext(
 		long layoutPrototypeId, long companyId, boolean active,
 		OrderByComparator<LayoutPrototype> orderByComparator)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence()
 				   .filterFindByC_A_PrevAndNext(layoutPrototypeId, companyId,
 			active, orderByComparator);
@@ -1032,7 +1126,7 @@ public class LayoutPrototypeUtil {
 	* @throws NoSuchLayoutPrototypeException if a layout prototype with the primary key could not be found
 	*/
 	public static LayoutPrototype remove(long layoutPrototypeId)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence().remove(layoutPrototypeId);
 	}
 
@@ -1048,7 +1142,7 @@ public class LayoutPrototypeUtil {
 	* @throws NoSuchLayoutPrototypeException if a layout prototype with the primary key could not be found
 	*/
 	public static LayoutPrototype findByPrimaryKey(long layoutPrototypeId)
-		throws com.liferay.portal.NoSuchLayoutPrototypeException {
+		throws com.liferay.portal.exception.NoSuchLayoutPrototypeException {
 		return getPersistence().findByPrimaryKey(layoutPrototypeId);
 	}
 
@@ -1109,6 +1203,26 @@ public class LayoutPrototypeUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the layout prototypes.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link LayoutPrototypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of layout prototypes
+	* @param end the upper bound of the range of layout prototypes (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of layout prototypes
+	*/
+	public static List<LayoutPrototype> findAll(int start, int end,
+		OrderByComparator<LayoutPrototype> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the layout prototypes from the database.
 	*/
 	public static void removeAll() {
@@ -1124,6 +1238,10 @@ public class LayoutPrototypeUtil {
 		return getPersistence().countAll();
 	}
 
+	public static java.util.Set<java.lang.String> getBadColumnNames() {
+		return getPersistence().getBadColumnNames();
+	}
+
 	public static LayoutPrototypePersistence getPersistence() {
 		if (_persistence == null) {
 			_persistence = (LayoutPrototypePersistence)PortalBeanLocatorUtil.locate(LayoutPrototypePersistence.class.getName());
@@ -1133,13 +1251,6 @@ public class LayoutPrototypeUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(LayoutPrototypePersistence persistence) {
 	}
 
 	private static LayoutPrototypePersistence _persistence;

@@ -10,7 +10,17 @@
 <tbody>
 <tr>
 	<td>SAVE_BUTTON</td>
-	<td>//div[@class='button-holder ddl-form-builder-buttons']/button[contains(.,'Save')]</td>
+	<td>//div[@class='button-holder ddl-form-builder-buttons']//button[contains(.,'Save')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_BUTTON_DROPDOWN</td>
+	<td>//div[@class='button-holder ddl-form-builder-buttons']//button[contains(@id,'submitToggle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_BUTTON_DROPDOWN_SAVE_AND_PUBLISH_LIVE_PAGE</td>
+	<td>//div[@class='button-holder ddl-form-builder-buttons']//ul[@class='dropdown-menu']//a[@class='ddl-button publish save']</td>
 	<td></td>
 </tr>
 <tr>
@@ -40,13 +50,13 @@
 </tr>
 <!--PAGE_CONTROLS-->
 <tr>
-	<td>PAGE_CONTROLS_ICON</td>
-	<td>//div[@class='form-builder-page-controls']/a</td>
+	<td>PAGE_CONTROLS_ELLIPSIS_ICON</td>
+	<td>//a[@class='form-builder-controls-trigger']/span[contains(@class,'icon-ellipsis-vertical')]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>PAGE_CONTROLS_ADD_AFTER_LAST</td>
-	<td>//ul[@class='form-builder-pages-popover-content']/li[contains(text(),'Add new page after last')]</td>
+	<td>PAGE_CONTROLS_ADD_NEW_PAGE</td>
+	<td>//li[@class='form-builder-page-manager-add-last-position' and contains(text(),'Add new page')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -57,12 +67,17 @@
 <!--ADD_COLUMN-->
 <tr>
 	<td>ADD_COLUMN_LEFT</td>
-	<td>//span[@class='layout-builder-add-col layout-builder-add-col-left']</td>
+	<td>//div[@class='layout-row-container-row'][${key_rowNumber}]//div[contains(@class,'last-col')]/following-sibling::div[1]//div[contains(@class,'resize-col-draggable-handle')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ADD_COLUMN_RIGHT</td>
-	<td>//span[@class='layout-builder-add-col layout-builder-add-col-right']</td>
+	<td>//div[@class='layout-row-container-row'][${key_rowNumber}]//div[contains(@class,'last-col')]/following-sibling::div[2]//div[contains(@class,'resize-col-draggable-handle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_COLUMN_LINE</td>
+	<td>xpath=(//div[@class='layout-row-container-row'][${key_rowNumber}]//div[contains(@class,'layout-builder-resize-col') and contains(@class,'dd-drop')])[${key_columnLineNumber}]</td>
 	<td></td>
 </tr>
 <tr>
@@ -72,13 +87,39 @@
 </tr>
 <!--ADD_FIELD-->
 <tr>
-	<td>ADD_FIELD</td>
-	<td>//span[@class='form-builder-field-list-add-button-circle']</td>
+	<td>ADD_ADDITIONAL_FIELD</td>
+	<td>//div[contains(@class,'col col-md-${key_columnSize}')]//div[contains(@data-fieldname,'${key_previousFieldName}')]/../following-sibling::div//label[@class='form-builder-field-list-add-button-label']/label</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_FIRST_FIELD</td>
+	<td>//div[contains(@class,'col col-md-${key_columnSize}')]//div[contains(@class,'add-button-icon')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ADD_FIELD_TYPE</td>
 	<td>//div[@class='field-type']/div[contains(.,'${key_fieldType}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--PUBLISH-->
+<tr>
+	<td>PUBLISH_FORM_NAME_FIELD</td>
+	<td>//h1[contains(@class,'form-name') and contains(.,'${key_formName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PUBLISH_FORM_SWITCHER</td>
+	<td>//label[contains(@class,'publish-checkbox')]//span[@class='toggle-switch-bar']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PUBLISH_FORM_PUBLIC_URL</td>
+	<td>//input[@class='form-control' and @type='text']</td>
 	<td></td>
 </tr>
 </tbody>

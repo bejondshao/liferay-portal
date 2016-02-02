@@ -34,7 +34,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 
-import com.liferay.portlet.messageboards.NoSuchDiscussionException;
+import com.liferay.portlet.messageboards.exception.NoSuchDiscussionException;
 import com.liferay.portlet.messageboards.model.MBDiscussion;
 import com.liferay.portlet.messageboards.service.MBDiscussionLocalServiceUtil;
 import com.liferay.portlet.messageboards.service.persistence.MBDiscussionPersistence;
@@ -43,6 +43,7 @@ import com.liferay.portlet.messageboards.service.persistence.MBDiscussionUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,8 +60,9 @@ import java.util.Set;
  * @generated
  */
 public class MBDiscussionPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -357,11 +359,9 @@ public class MBDiscussionPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = MBDiscussionLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<MBDiscussion>() {
 				@Override
-				public void performAction(Object object) {
-					MBDiscussion mbDiscussion = (MBDiscussion)object;
-
+				public void performAction(MBDiscussion mbDiscussion) {
 					Assert.assertNotNull(mbDiscussion);
 
 					count.increment();

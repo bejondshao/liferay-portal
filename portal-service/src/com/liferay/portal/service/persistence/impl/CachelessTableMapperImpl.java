@@ -34,17 +34,17 @@ import java.util.List;
  * @author Shuyang Zhou
  */
 public class CachelessTableMapperImpl
-		<L extends BaseModel<L>, R extends BaseModel<R>>
-	extends TableMapperImpl<L, R> {
+	<L extends BaseModel<L>, R extends BaseModel<R>>
+		extends TableMapperImpl<L, R> {
 
 	public CachelessTableMapperImpl(
-		String tableName, String leftColumnName, String rightColumnName,
-		BasePersistence<L> leftBasePersistence,
+		String tableName, String companyColumnName, String leftColumnName,
+		String rightColumnName, BasePersistence<L> leftBasePersistence,
 		BasePersistence<R> rightBasePersistence) {
 
 		super(
-			tableName, leftColumnName, rightColumnName, leftBasePersistence,
-			rightBasePersistence);
+			tableName, companyColumnName, leftColumnName, rightColumnName,
+			leftBasePersistence, rightBasePersistence);
 
 		getTableMappingSqlQuery = MappingSqlQueryFactoryUtil.getMappingSqlQuery(
 			leftBasePersistence.getDataSource(),

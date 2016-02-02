@@ -24,12 +24,12 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.LayoutConstants;
 import com.liferay.portal.model.LayoutTypeController;
 import com.liferay.portal.struts.StrutsUtil;
 import com.liferay.portal.util.PropsUtil;
-import com.liferay.portal.util.WebKeys;
 import com.liferay.taglib.servlet.PipingServletResponse;
 
 import java.util.Collection;
@@ -188,6 +188,11 @@ public class LayoutTypeControllerImpl implements LayoutTypeController {
 	}
 
 	@Override
+	public boolean isCheckLayoutViewPermission() {
+		return true;
+	}
+
+	@Override
 	public boolean isFirstPageable() {
 		return _firstPageable;
 	}
@@ -195,6 +200,11 @@ public class LayoutTypeControllerImpl implements LayoutTypeController {
 	@Override
 	public boolean isFullPageDisplayable() {
 		return _fullPageDisplayable;
+	}
+
+	@Override
+	public boolean isInstanceable() {
+		return true;
 	}
 
 	@Override

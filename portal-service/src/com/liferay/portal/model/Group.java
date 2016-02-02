@@ -16,6 +16,7 @@ package com.liferay.portal.model;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.annotation.ImplementationClassName;
 import com.liferay.portal.kernel.util.Accessor;
 
 /**
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.util.Accessor;
  * @see com.liferay.portal.model.impl.GroupModelImpl
  * @generated
  */
+@ImplementationClassName("com.liferay.portal.model.impl.GroupImpl")
 @ProviderType
 public interface Group extends GroupModel, PersistedModel, TreeModel {
 	/*
@@ -52,9 +54,6 @@ public interface Group extends GroupModel, PersistedModel, TreeModel {
 		};
 
 	public void clearStagingGroup();
-
-	public javax.portlet.PortletURL getAdministrationURL(
-		com.liferay.portal.theme.ThemeDisplay themeDisplay);
 
 	public java.util.List<com.liferay.portal.model.Group> getAncestors()
 		throws com.liferay.portal.kernel.exception.PortalException;
@@ -109,6 +108,9 @@ public interface Group extends GroupModel, PersistedModel, TreeModel {
 
 	public java.lang.String getLiveParentTypeSettingsProperty(
 		java.lang.String key);
+
+	public java.lang.String getLogoURL(
+		com.liferay.portal.theme.ThemeDisplay themeDisplay, boolean useDefault);
 
 	public long getOrganizationId();
 
@@ -166,12 +168,6 @@ public interface Group extends GroupModel, PersistedModel, TreeModel {
 	@java.lang.Deprecated()
 	public boolean isChild(long groupId);
 
-	/**
-	* @deprecated As of 6.1.0, renamed to {@link #isRegularSite}
-	*/
-	@java.lang.Deprecated()
-	public boolean isCommunity();
-
 	public boolean isCompany();
 
 	public boolean isCompanyStagingGroup();
@@ -197,7 +193,7 @@ public interface Group extends GroupModel, PersistedModel, TreeModel {
 	public boolean isRoot();
 
 	public boolean isShowSite(
-		com.liferay.portal.security.permission.PermissionChecker permissionChecker,
+		com.liferay.portal.kernel.security.permission.PermissionChecker permissionChecker,
 		boolean privateSite)
 		throws com.liferay.portal.kernel.exception.PortalException;
 

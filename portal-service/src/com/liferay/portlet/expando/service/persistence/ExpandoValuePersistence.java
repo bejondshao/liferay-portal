@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.service.persistence.BasePersistence;
 
+import com.liferay.portlet.expando.exception.NoSuchValueException;
 import com.liferay.portlet.expando.model.ExpandoValue;
 
 /**
@@ -81,6 +82,25 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando values where tableId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoValueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param tableId the table ID
+	* @param start the lower bound of the range of expando values
+	* @param end the upper bound of the range of expando values (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching expando values
+	*/
+	public java.util.List<ExpandoValue> findByTableId(long tableId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first expando value in the ordered set where tableId = &#63;.
 	*
 	* @param tableId the table ID
@@ -90,7 +110,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByTableId_First(long tableId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the first expando value in the ordered set where tableId = &#63;.
@@ -112,7 +132,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByTableId_Last(long tableId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the last expando value in the ordered set where tableId = &#63;.
@@ -135,7 +155,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue[] findByTableId_PrevAndNext(long valueId, long tableId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Removes all the expando values where tableId = &#63; from the database.
@@ -193,6 +213,25 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando values where columnId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoValueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param columnId the column ID
+	* @param start the lower bound of the range of expando values
+	* @param end the upper bound of the range of expando values (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching expando values
+	*/
+	public java.util.List<ExpandoValue> findByColumnId(long columnId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first expando value in the ordered set where columnId = &#63;.
 	*
 	* @param columnId the column ID
@@ -202,7 +241,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByColumnId_First(long columnId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the first expando value in the ordered set where columnId = &#63;.
@@ -224,7 +263,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByColumnId_Last(long columnId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the last expando value in the ordered set where columnId = &#63;.
@@ -248,7 +287,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	public ExpandoValue[] findByColumnId_PrevAndNext(long valueId,
 		long columnId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Removes all the expando values where columnId = &#63; from the database.
@@ -306,6 +345,25 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando values where rowId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoValueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param rowId the row ID
+	* @param start the lower bound of the range of expando values
+	* @param end the upper bound of the range of expando values (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching expando values
+	*/
+	public java.util.List<ExpandoValue> findByRowId(long rowId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first expando value in the ordered set where rowId = &#63;.
 	*
 	* @param rowId the row ID
@@ -315,7 +373,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByRowId_First(long rowId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the first expando value in the ordered set where rowId = &#63;.
@@ -337,7 +395,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByRowId_Last(long rowId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the last expando value in the ordered set where rowId = &#63;.
@@ -360,7 +418,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue[] findByRowId_PrevAndNext(long valueId, long rowId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Removes all the expando values where rowId = &#63; from the database.
@@ -421,6 +479,26 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando values where tableId = &#63; and columnId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoValueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param tableId the table ID
+	* @param columnId the column ID
+	* @param start the lower bound of the range of expando values
+	* @param end the upper bound of the range of expando values (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching expando values
+	*/
+	public java.util.List<ExpandoValue> findByT_C(long tableId, long columnId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first expando value in the ordered set where tableId = &#63; and columnId = &#63;.
 	*
 	* @param tableId the table ID
@@ -431,7 +509,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByT_C_First(long tableId, long columnId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the first expando value in the ordered set where tableId = &#63; and columnId = &#63;.
@@ -455,7 +533,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByT_C_Last(long tableId, long columnId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the last expando value in the ordered set where tableId = &#63; and columnId = &#63;.
@@ -481,7 +559,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	public ExpandoValue[] findByT_C_PrevAndNext(long valueId, long tableId,
 		long columnId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Removes all the expando values where tableId = &#63; and columnId = &#63; from the database.
@@ -544,6 +622,26 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando values where tableId = &#63; and rowId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoValueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param tableId the table ID
+	* @param rowId the row ID
+	* @param start the lower bound of the range of expando values
+	* @param end the upper bound of the range of expando values (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching expando values
+	*/
+	public java.util.List<ExpandoValue> findByT_R(long tableId, long rowId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first expando value in the ordered set where tableId = &#63; and rowId = &#63;.
 	*
 	* @param tableId the table ID
@@ -554,7 +652,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByT_R_First(long tableId, long rowId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the first expando value in the ordered set where tableId = &#63; and rowId = &#63;.
@@ -578,7 +676,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByT_R_Last(long tableId, long rowId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the last expando value in the ordered set where tableId = &#63; and rowId = &#63;.
@@ -604,7 +702,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	public ExpandoValue[] findByT_R_PrevAndNext(long valueId, long tableId,
 		long rowId,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Removes all the expando values where tableId = &#63; and rowId = &#63; from the database.
@@ -667,6 +765,26 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando values where tableId = &#63; and classPK = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoValueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param tableId the table ID
+	* @param classPK the class p k
+	* @param start the lower bound of the range of expando values
+	* @param end the upper bound of the range of expando values (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching expando values
+	*/
+	public java.util.List<ExpandoValue> findByT_CPK(long tableId, long classPK,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first expando value in the ordered set where tableId = &#63; and classPK = &#63;.
 	*
 	* @param tableId the table ID
@@ -677,7 +795,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByT_CPK_First(long tableId, long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the first expando value in the ordered set where tableId = &#63; and classPK = &#63;.
@@ -701,7 +819,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByT_CPK_Last(long tableId, long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the last expando value in the ordered set where tableId = &#63; and classPK = &#63;.
@@ -727,7 +845,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	public ExpandoValue[] findByT_CPK_PrevAndNext(long valueId, long tableId,
 		long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Removes all the expando values where tableId = &#63; and classPK = &#63; from the database.
@@ -755,7 +873,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	* @throws NoSuchValueException if a matching expando value could not be found
 	*/
 	public ExpandoValue findByC_R(long columnId, long rowId)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the expando value where columnId = &#63; and rowId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -771,7 +889,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*
 	* @param columnId the column ID
 	* @param rowId the row ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching expando value, or <code>null</code> if a matching expando value could not be found
 	*/
 	public ExpandoValue fetchByC_R(long columnId, long rowId,
@@ -785,7 +903,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	* @return the expando value that was removed
 	*/
 	public ExpandoValue removeByC_R(long columnId, long rowId)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the number of expando values where columnId = &#63; and rowId = &#63;.
@@ -840,6 +958,26 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando values where classNameId = &#63; and classPK = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoValueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param classNameId the class name ID
+	* @param classPK the class p k
+	* @param start the lower bound of the range of expando values
+	* @param end the upper bound of the range of expando values (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching expando values
+	*/
+	public java.util.List<ExpandoValue> findByC_C(long classNameId,
+		long classPK, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first expando value in the ordered set where classNameId = &#63; and classPK = &#63;.
 	*
 	* @param classNameId the class name ID
@@ -850,7 +988,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByC_C_First(long classNameId, long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the first expando value in the ordered set where classNameId = &#63; and classPK = &#63;.
@@ -874,7 +1012,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	*/
 	public ExpandoValue findByC_C_Last(long classNameId, long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the last expando value in the ordered set where classNameId = &#63; and classPK = &#63;.
@@ -900,7 +1038,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	public ExpandoValue[] findByC_C_PrevAndNext(long valueId, long classNameId,
 		long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Removes all the expando values where classNameId = &#63; and classPK = &#63; from the database.
@@ -929,7 +1067,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	* @throws NoSuchValueException if a matching expando value could not be found
 	*/
 	public ExpandoValue findByT_C_C(long tableId, long columnId, long classPK)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the expando value where tableId = &#63; and columnId = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -947,7 +1085,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	* @param tableId the table ID
 	* @param columnId the column ID
 	* @param classPK the class p k
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching expando value, or <code>null</code> if a matching expando value could not be found
 	*/
 	public ExpandoValue fetchByT_C_C(long tableId, long columnId, long classPK,
@@ -962,7 +1100,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	* @return the expando value that was removed
 	*/
 	public ExpandoValue removeByT_C_C(long tableId, long columnId, long classPK)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the number of expando values where tableId = &#63; and columnId = &#63; and classPK = &#63;.
@@ -1022,6 +1160,27 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando values where tableId = &#63; and columnId = &#63; and data = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoValueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param tableId the table ID
+	* @param columnId the column ID
+	* @param data the data
+	* @param start the lower bound of the range of expando values
+	* @param end the upper bound of the range of expando values (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching expando values
+	*/
+	public java.util.List<ExpandoValue> findByT_C_D(long tableId,
+		long columnId, java.lang.String data, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first expando value in the ordered set where tableId = &#63; and columnId = &#63; and data = &#63;.
 	*
 	* @param tableId the table ID
@@ -1034,7 +1193,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	public ExpandoValue findByT_C_D_First(long tableId, long columnId,
 		java.lang.String data,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the first expando value in the ordered set where tableId = &#63; and columnId = &#63; and data = &#63;.
@@ -1062,7 +1221,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	public ExpandoValue findByT_C_D_Last(long tableId, long columnId,
 		java.lang.String data,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the last expando value in the ordered set where tableId = &#63; and columnId = &#63; and data = &#63;.
@@ -1091,7 +1250,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	public ExpandoValue[] findByT_C_D_PrevAndNext(long valueId, long tableId,
 		long columnId, java.lang.String data,
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Removes all the expando values where tableId = &#63; and columnId = &#63; and data = &#63; from the database.
@@ -1141,8 +1300,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	* @return the expando value that was removed
 	* @throws NoSuchValueException if a expando value with the primary key could not be found
 	*/
-	public ExpandoValue remove(long valueId)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+	public ExpandoValue remove(long valueId) throws NoSuchValueException;
 
 	public ExpandoValue updateImpl(ExpandoValue expandoValue);
 
@@ -1154,7 +1312,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	* @throws NoSuchValueException if a expando value with the primary key could not be found
 	*/
 	public ExpandoValue findByPrimaryKey(long valueId)
-		throws com.liferay.portlet.expando.NoSuchValueException;
+		throws NoSuchValueException;
 
 	/**
 	* Returns the expando value with the primary key or returns <code>null</code> if it could not be found.
@@ -1204,6 +1362,23 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the expando values.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ExpandoValueModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of expando values
+	* @param end the upper bound of the range of expando values (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of expando values
+	*/
+	public java.util.List<ExpandoValue> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the expando values from the database.
 	*/
 	public void removeAll();
@@ -1214,4 +1389,7 @@ public interface ExpandoValuePersistence extends BasePersistence<ExpandoValue> {
 	* @return the number of expando values
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

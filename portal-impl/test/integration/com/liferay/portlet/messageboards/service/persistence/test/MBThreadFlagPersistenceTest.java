@@ -34,7 +34,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 
-import com.liferay.portlet.messageboards.NoSuchThreadFlagException;
+import com.liferay.portlet.messageboards.exception.NoSuchThreadFlagException;
 import com.liferay.portlet.messageboards.model.MBThreadFlag;
 import com.liferay.portlet.messageboards.service.MBThreadFlagLocalServiceUtil;
 import com.liferay.portlet.messageboards.service.persistence.MBThreadFlagPersistence;
@@ -43,6 +43,7 @@ import com.liferay.portlet.messageboards.service.persistence.MBThreadFlagUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,8 +60,9 @@ import java.util.Set;
  * @generated
  */
 public class MBThreadFlagPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -348,11 +350,9 @@ public class MBThreadFlagPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = MBThreadFlagLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<MBThreadFlag>() {
 				@Override
-				public void performAction(Object object) {
-					MBThreadFlag mbThreadFlag = (MBThreadFlag)object;
-
+				public void performAction(MBThreadFlag mbThreadFlag) {
 					Assert.assertNotNull(mbThreadFlag);
 
 					count.increment();

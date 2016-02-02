@@ -114,7 +114,7 @@ public class CountryUtil {
 	* @throws NoSuchCountryException if a matching country could not be found
 	*/
 	public static Country findByName(java.lang.String name)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence().findByName(name);
 	}
 
@@ -132,7 +132,7 @@ public class CountryUtil {
 	* Returns the country where name = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param name the name
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching country, or <code>null</code> if a matching country could not be found
 	*/
 	public static Country fetchByName(java.lang.String name,
@@ -147,7 +147,7 @@ public class CountryUtil {
 	* @return the country that was removed
 	*/
 	public static Country removeByName(java.lang.String name)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence().removeByName(name);
 	}
 
@@ -169,7 +169,7 @@ public class CountryUtil {
 	* @throws NoSuchCountryException if a matching country could not be found
 	*/
 	public static Country findByA2(java.lang.String a2)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence().findByA2(a2);
 	}
 
@@ -187,7 +187,7 @@ public class CountryUtil {
 	* Returns the country where a2 = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param a2 the a2
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching country, or <code>null</code> if a matching country could not be found
 	*/
 	public static Country fetchByA2(java.lang.String a2,
@@ -202,7 +202,7 @@ public class CountryUtil {
 	* @return the country that was removed
 	*/
 	public static Country removeByA2(java.lang.String a2)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence().removeByA2(a2);
 	}
 
@@ -224,7 +224,7 @@ public class CountryUtil {
 	* @throws NoSuchCountryException if a matching country could not be found
 	*/
 	public static Country findByA3(java.lang.String a3)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence().findByA3(a3);
 	}
 
@@ -242,7 +242,7 @@ public class CountryUtil {
 	* Returns the country where a3 = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param a3 the a3
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching country, or <code>null</code> if a matching country could not be found
 	*/
 	public static Country fetchByA3(java.lang.String a3,
@@ -257,7 +257,7 @@ public class CountryUtil {
 	* @return the country that was removed
 	*/
 	public static Country removeByA3(java.lang.String a3)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence().removeByA3(a3);
 	}
 
@@ -317,6 +317,28 @@ public class CountryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the countries where active = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CountryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param active the active
+	* @param start the lower bound of the range of countries
+	* @param end the upper bound of the range of countries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching countries
+	*/
+	public static List<Country> findByActive(boolean active, int start,
+		int end, OrderByComparator<Country> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByActive(active, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first country in the ordered set where active = &#63;.
 	*
 	* @param active the active
@@ -326,7 +348,7 @@ public class CountryUtil {
 	*/
 	public static Country findByActive_First(boolean active,
 		OrderByComparator<Country> orderByComparator)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence().findByActive_First(active, orderByComparator);
 	}
 
@@ -352,7 +374,7 @@ public class CountryUtil {
 	*/
 	public static Country findByActive_Last(boolean active,
 		OrderByComparator<Country> orderByComparator)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence().findByActive_Last(active, orderByComparator);
 	}
 
@@ -379,7 +401,7 @@ public class CountryUtil {
 	*/
 	public static Country[] findByActive_PrevAndNext(long countryId,
 		boolean active, OrderByComparator<Country> orderByComparator)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence()
 				   .findByActive_PrevAndNext(countryId, active,
 			orderByComparator);
@@ -440,7 +462,7 @@ public class CountryUtil {
 	* @throws NoSuchCountryException if a country with the primary key could not be found
 	*/
 	public static Country remove(long countryId)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence().remove(countryId);
 	}
 
@@ -456,7 +478,7 @@ public class CountryUtil {
 	* @throws NoSuchCountryException if a country with the primary key could not be found
 	*/
 	public static Country findByPrimaryKey(long countryId)
-		throws com.liferay.portal.NoSuchCountryException {
+		throws com.liferay.portal.exception.NoSuchCountryException {
 		return getPersistence().findByPrimaryKey(countryId);
 	}
 
@@ -517,6 +539,25 @@ public class CountryUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the countries.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link CountryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of countries
+	* @param end the upper bound of the range of countries (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of countries
+	*/
+	public static List<Country> findAll(int start, int end,
+		OrderByComparator<Country> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the countries from the database.
 	*/
 	public static void removeAll() {
@@ -532,6 +573,10 @@ public class CountryUtil {
 		return getPersistence().countAll();
 	}
 
+	public static java.util.Set<java.lang.String> getBadColumnNames() {
+		return getPersistence().getBadColumnNames();
+	}
+
 	public static CountryPersistence getPersistence() {
 		if (_persistence == null) {
 			_persistence = (CountryPersistence)PortalBeanLocatorUtil.locate(CountryPersistence.class.getName());
@@ -541,13 +586,6 @@ public class CountryUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(CountryPersistence persistence) {
 	}
 
 	private static CountryPersistence _persistence;

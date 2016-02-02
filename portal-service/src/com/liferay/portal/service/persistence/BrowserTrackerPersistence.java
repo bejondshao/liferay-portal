@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchBrowserTrackerException;
 import com.liferay.portal.model.BrowserTracker;
 
 /**
@@ -46,7 +47,7 @@ public interface BrowserTrackerPersistence extends BasePersistence<BrowserTracke
 	* @throws NoSuchBrowserTrackerException if a matching browser tracker could not be found
 	*/
 	public BrowserTracker findByUserId(long userId)
-		throws com.liferay.portal.NoSuchBrowserTrackerException;
+		throws NoSuchBrowserTrackerException;
 
 	/**
 	* Returns the browser tracker where userId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -60,7 +61,7 @@ public interface BrowserTrackerPersistence extends BasePersistence<BrowserTracke
 	* Returns the browser tracker where userId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param userId the user ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching browser tracker, or <code>null</code> if a matching browser tracker could not be found
 	*/
 	public BrowserTracker fetchByUserId(long userId, boolean retrieveFromCache);
@@ -72,7 +73,7 @@ public interface BrowserTrackerPersistence extends BasePersistence<BrowserTracke
 	* @return the browser tracker that was removed
 	*/
 	public BrowserTracker removeByUserId(long userId)
-		throws com.liferay.portal.NoSuchBrowserTrackerException;
+		throws NoSuchBrowserTrackerException;
 
 	/**
 	* Returns the number of browser trackers where userId = &#63;.
@@ -112,7 +113,7 @@ public interface BrowserTrackerPersistence extends BasePersistence<BrowserTracke
 	* @throws NoSuchBrowserTrackerException if a browser tracker with the primary key could not be found
 	*/
 	public BrowserTracker remove(long browserTrackerId)
-		throws com.liferay.portal.NoSuchBrowserTrackerException;
+		throws NoSuchBrowserTrackerException;
 
 	public BrowserTracker updateImpl(BrowserTracker browserTracker);
 
@@ -124,7 +125,7 @@ public interface BrowserTrackerPersistence extends BasePersistence<BrowserTracke
 	* @throws NoSuchBrowserTrackerException if a browser tracker with the primary key could not be found
 	*/
 	public BrowserTracker findByPrimaryKey(long browserTrackerId)
-		throws com.liferay.portal.NoSuchBrowserTrackerException;
+		throws NoSuchBrowserTrackerException;
 
 	/**
 	* Returns the browser tracker with the primary key or returns <code>null</code> if it could not be found.
@@ -172,6 +173,23 @@ public interface BrowserTrackerPersistence extends BasePersistence<BrowserTracke
 	*/
 	public java.util.List<BrowserTracker> findAll(int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<BrowserTracker> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the browser trackers.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link BrowserTrackerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of browser trackers
+	* @param end the upper bound of the range of browser trackers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of browser trackers
+	*/
+	public java.util.List<BrowserTracker> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<BrowserTracker> orderByComparator,
+		boolean retrieveFromCache);
 
 	/**
 	* Removes all the browser trackers from the database.

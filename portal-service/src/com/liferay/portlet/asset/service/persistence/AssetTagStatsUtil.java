@@ -154,6 +154,28 @@ public class AssetTagStatsUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the asset tag statses where tagId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AssetTagStatsModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param tagId the tag ID
+	* @param start the lower bound of the range of asset tag statses
+	* @param end the upper bound of the range of asset tag statses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching asset tag statses
+	*/
+	public static List<AssetTagStats> findByTagId(long tagId, int start,
+		int end, OrderByComparator<AssetTagStats> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByTagId(tagId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first asset tag stats in the ordered set where tagId = &#63;.
 	*
 	* @param tagId the tag ID
@@ -163,7 +185,7 @@ public class AssetTagStatsUtil {
 	*/
 	public static AssetTagStats findByTagId_First(long tagId,
 		OrderByComparator<AssetTagStats> orderByComparator)
-		throws com.liferay.portlet.asset.NoSuchTagStatsException {
+		throws com.liferay.portlet.asset.exception.NoSuchTagStatsException {
 		return getPersistence().findByTagId_First(tagId, orderByComparator);
 	}
 
@@ -189,7 +211,7 @@ public class AssetTagStatsUtil {
 	*/
 	public static AssetTagStats findByTagId_Last(long tagId,
 		OrderByComparator<AssetTagStats> orderByComparator)
-		throws com.liferay.portlet.asset.NoSuchTagStatsException {
+		throws com.liferay.portlet.asset.exception.NoSuchTagStatsException {
 		return getPersistence().findByTagId_Last(tagId, orderByComparator);
 	}
 
@@ -216,7 +238,7 @@ public class AssetTagStatsUtil {
 	*/
 	public static AssetTagStats[] findByTagId_PrevAndNext(long tagStatsId,
 		long tagId, OrderByComparator<AssetTagStats> orderByComparator)
-		throws com.liferay.portlet.asset.NoSuchTagStatsException {
+		throws com.liferay.portlet.asset.exception.NoSuchTagStatsException {
 		return getPersistence()
 				   .findByTagId_PrevAndNext(tagStatsId, tagId, orderByComparator);
 	}
@@ -287,6 +309,28 @@ public class AssetTagStatsUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the asset tag statses where classNameId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AssetTagStatsModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param classNameId the class name ID
+	* @param start the lower bound of the range of asset tag statses
+	* @param end the upper bound of the range of asset tag statses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching asset tag statses
+	*/
+	public static List<AssetTagStats> findByClassNameId(long classNameId,
+		int start, int end, OrderByComparator<AssetTagStats> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByClassNameId(classNameId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first asset tag stats in the ordered set where classNameId = &#63;.
 	*
 	* @param classNameId the class name ID
@@ -296,7 +340,7 @@ public class AssetTagStatsUtil {
 	*/
 	public static AssetTagStats findByClassNameId_First(long classNameId,
 		OrderByComparator<AssetTagStats> orderByComparator)
-		throws com.liferay.portlet.asset.NoSuchTagStatsException {
+		throws com.liferay.portlet.asset.exception.NoSuchTagStatsException {
 		return getPersistence()
 				   .findByClassNameId_First(classNameId, orderByComparator);
 	}
@@ -324,7 +368,7 @@ public class AssetTagStatsUtil {
 	*/
 	public static AssetTagStats findByClassNameId_Last(long classNameId,
 		OrderByComparator<AssetTagStats> orderByComparator)
-		throws com.liferay.portlet.asset.NoSuchTagStatsException {
+		throws com.liferay.portlet.asset.exception.NoSuchTagStatsException {
 		return getPersistence()
 				   .findByClassNameId_Last(classNameId, orderByComparator);
 	}
@@ -354,7 +398,7 @@ public class AssetTagStatsUtil {
 	public static AssetTagStats[] findByClassNameId_PrevAndNext(
 		long tagStatsId, long classNameId,
 		OrderByComparator<AssetTagStats> orderByComparator)
-		throws com.liferay.portlet.asset.NoSuchTagStatsException {
+		throws com.liferay.portlet.asset.exception.NoSuchTagStatsException {
 		return getPersistence()
 				   .findByClassNameId_PrevAndNext(tagStatsId, classNameId,
 			orderByComparator);
@@ -388,7 +432,7 @@ public class AssetTagStatsUtil {
 	* @throws NoSuchTagStatsException if a matching asset tag stats could not be found
 	*/
 	public static AssetTagStats findByT_C(long tagId, long classNameId)
-		throws com.liferay.portlet.asset.NoSuchTagStatsException {
+		throws com.liferay.portlet.asset.exception.NoSuchTagStatsException {
 		return getPersistence().findByT_C(tagId, classNameId);
 	}
 
@@ -408,7 +452,7 @@ public class AssetTagStatsUtil {
 	*
 	* @param tagId the tag ID
 	* @param classNameId the class name ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching asset tag stats, or <code>null</code> if a matching asset tag stats could not be found
 	*/
 	public static AssetTagStats fetchByT_C(long tagId, long classNameId,
@@ -424,7 +468,7 @@ public class AssetTagStatsUtil {
 	* @return the asset tag stats that was removed
 	*/
 	public static AssetTagStats removeByT_C(long tagId, long classNameId)
-		throws com.liferay.portlet.asset.NoSuchTagStatsException {
+		throws com.liferay.portlet.asset.exception.NoSuchTagStatsException {
 		return getPersistence().removeByT_C(tagId, classNameId);
 	}
 
@@ -475,7 +519,7 @@ public class AssetTagStatsUtil {
 	* @throws NoSuchTagStatsException if a asset tag stats with the primary key could not be found
 	*/
 	public static AssetTagStats remove(long tagStatsId)
-		throws com.liferay.portlet.asset.NoSuchTagStatsException {
+		throws com.liferay.portlet.asset.exception.NoSuchTagStatsException {
 		return getPersistence().remove(tagStatsId);
 	}
 
@@ -491,7 +535,7 @@ public class AssetTagStatsUtil {
 	* @throws NoSuchTagStatsException if a asset tag stats with the primary key could not be found
 	*/
 	public static AssetTagStats findByPrimaryKey(long tagStatsId)
-		throws com.liferay.portlet.asset.NoSuchTagStatsException {
+		throws com.liferay.portlet.asset.exception.NoSuchTagStatsException {
 		return getPersistence().findByPrimaryKey(tagStatsId);
 	}
 
@@ -552,6 +596,26 @@ public class AssetTagStatsUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the asset tag statses.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AssetTagStatsModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of asset tag statses
+	* @param end the upper bound of the range of asset tag statses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of asset tag statses
+	*/
+	public static List<AssetTagStats> findAll(int start, int end,
+		OrderByComparator<AssetTagStats> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the asset tag statses from the database.
 	*/
 	public static void removeAll() {
@@ -576,13 +640,6 @@ public class AssetTagStatsUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(AssetTagStatsPersistence persistence) {
 	}
 
 	private static AssetTagStatsPersistence _persistence;

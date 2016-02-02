@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchPreferencesException;
 import com.liferay.portal.model.PortalPreferences;
 
 /**
@@ -47,7 +48,7 @@ public interface PortalPreferencesPersistence extends BasePersistence<PortalPref
 	* @throws NoSuchPreferencesException if a matching portal preferences could not be found
 	*/
 	public PortalPreferences findByO_O(long ownerId, int ownerType)
-		throws com.liferay.portal.NoSuchPreferencesException;
+		throws NoSuchPreferencesException;
 
 	/**
 	* Returns the portal preferences where ownerId = &#63; and ownerType = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -63,7 +64,7 @@ public interface PortalPreferencesPersistence extends BasePersistence<PortalPref
 	*
 	* @param ownerId the owner ID
 	* @param ownerType the owner type
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching portal preferences, or <code>null</code> if a matching portal preferences could not be found
 	*/
 	public PortalPreferences fetchByO_O(long ownerId, int ownerType,
@@ -77,7 +78,7 @@ public interface PortalPreferencesPersistence extends BasePersistence<PortalPref
 	* @return the portal preferences that was removed
 	*/
 	public PortalPreferences removeByO_O(long ownerId, int ownerType)
-		throws com.liferay.portal.NoSuchPreferencesException;
+		throws NoSuchPreferencesException;
 
 	/**
 	* Returns the number of portal preferenceses where ownerId = &#63; and ownerType = &#63;.
@@ -119,7 +120,7 @@ public interface PortalPreferencesPersistence extends BasePersistence<PortalPref
 	* @throws NoSuchPreferencesException if a portal preferences with the primary key could not be found
 	*/
 	public PortalPreferences remove(long portalPreferencesId)
-		throws com.liferay.portal.NoSuchPreferencesException;
+		throws NoSuchPreferencesException;
 
 	public PortalPreferences updateImpl(PortalPreferences portalPreferences);
 
@@ -131,7 +132,7 @@ public interface PortalPreferencesPersistence extends BasePersistence<PortalPref
 	* @throws NoSuchPreferencesException if a portal preferences with the primary key could not be found
 	*/
 	public PortalPreferences findByPrimaryKey(long portalPreferencesId)
-		throws com.liferay.portal.NoSuchPreferencesException;
+		throws NoSuchPreferencesException;
 
 	/**
 	* Returns the portal preferences with the primary key or returns <code>null</code> if it could not be found.
@@ -179,6 +180,23 @@ public interface PortalPreferencesPersistence extends BasePersistence<PortalPref
 	*/
 	public java.util.List<PortalPreferences> findAll(int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<PortalPreferences> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the portal preferenceses.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PortalPreferencesModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of portal preferenceses
+	* @param end the upper bound of the range of portal preferenceses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of portal preferenceses
+	*/
+	public java.util.List<PortalPreferences> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PortalPreferences> orderByComparator,
+		boolean retrieveFromCache);
 
 	/**
 	* Removes all the portal preferenceses from the database.

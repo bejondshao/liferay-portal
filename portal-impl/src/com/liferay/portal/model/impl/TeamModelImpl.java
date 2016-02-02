@@ -99,7 +99,7 @@ public class TeamModelImpl extends BaseModelImpl<Team> implements TeamModel {
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table Team (mvccVersion LONG default 0,uuid_ VARCHAR(75) null,teamId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,groupId LONG,name VARCHAR(75) null,description STRING null,lastPublishDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table Team (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,teamId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,groupId LONG,name VARCHAR(75) null,description STRING null,lastPublishDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table Team";
 	public static final String ORDER_BY_JPQL = " ORDER BY team.name ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY Team.name ASC";
@@ -171,18 +171,20 @@ public class TeamModelImpl extends BaseModelImpl<Team> implements TeamModel {
 
 	public static final String MAPPING_TABLE_USERS_TEAMS_NAME = "Users_Teams";
 	public static final Object[][] MAPPING_TABLE_USERS_TEAMS_COLUMNS = {
+			{ "companyId", Types.BIGINT },
 			{ "teamId", Types.BIGINT },
 			{ "userId", Types.BIGINT }
 		};
-	public static final String MAPPING_TABLE_USERS_TEAMS_SQL_CREATE = "create table Users_Teams (teamId LONG not null,userId LONG not null,primary key (teamId, userId))";
+	public static final String MAPPING_TABLE_USERS_TEAMS_SQL_CREATE = "create table Users_Teams (companyId LONG not null,teamId LONG not null,userId LONG not null,primary key (teamId, userId))";
 	public static final boolean FINDER_CACHE_ENABLED_USERS_TEAMS = GetterUtil.getBoolean(com.liferay.portal.util.PropsUtil.get(
 				"value.object.finder.cache.enabled.Users_Teams"), true);
 	public static final String MAPPING_TABLE_USERGROUPS_TEAMS_NAME = "UserGroups_Teams";
 	public static final Object[][] MAPPING_TABLE_USERGROUPS_TEAMS_COLUMNS = {
+			{ "companyId", Types.BIGINT },
 			{ "teamId", Types.BIGINT },
 			{ "userGroupId", Types.BIGINT }
 		};
-	public static final String MAPPING_TABLE_USERGROUPS_TEAMS_SQL_CREATE = "create table UserGroups_Teams (teamId LONG not null,userGroupId LONG not null,primary key (teamId, userGroupId))";
+	public static final String MAPPING_TABLE_USERGROUPS_TEAMS_SQL_CREATE = "create table UserGroups_Teams (companyId LONG not null,teamId LONG not null,userGroupId LONG not null,primary key (teamId, userGroupId))";
 	public static final boolean FINDER_CACHE_ENABLED_USERGROUPS_TEAMS = GetterUtil.getBoolean(com.liferay.portal.util.PropsUtil.get(
 				"value.object.finder.cache.enabled.UserGroups_Teams"), true);
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.portal.util.PropsUtil.get(

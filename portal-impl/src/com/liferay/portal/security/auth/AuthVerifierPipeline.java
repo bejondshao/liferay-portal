@@ -17,6 +17,7 @@ package com.liferay.portal.security.auth;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifier;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierConfiguration;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
@@ -394,9 +395,7 @@ public class AuthVerifierPipeline {
 
 				Object value = serviceReferenceProperties.get(key);
 
-				if (value instanceof String) {
-					properties.setProperty(propertiesKey, (String)value);
-				}
+				properties.setProperty(propertiesKey, String.valueOf(value));
 			}
 
 			return properties;

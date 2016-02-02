@@ -14,7 +14,9 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.PortletIdException;
+import com.liferay.admin.kernel.util.PortalMyAccountApplicationType;
+import com.liferay.portal.exception.PortletIdException;
+import com.liferay.portal.kernel.application.type.ApplicationType;
 import com.liferay.portal.kernel.cluster.Clusterable;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
@@ -31,10 +33,11 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletLayoutListener;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
-import com.liferay.portal.kernel.scheduler.SchedulerEntry;
 import com.liferay.portal.kernel.scheduler.SchedulerEntryImpl;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
-import com.liferay.portal.kernel.scheduler.TriggerType;
+import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.servlet.ServletContextUtil;
 import com.liferay.portal.kernel.spring.aop.Skip;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -46,6 +49,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.QName;
@@ -70,25 +74,20 @@ import com.liferay.portal.model.impl.PortletFilterImpl;
 import com.liferay.portal.model.impl.PortletImpl;
 import com.liferay.portal.model.impl.PortletURLListenerImpl;
 import com.liferay.portal.model.impl.PublicRenderParameterImpl;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.security.permission.ResourceActionsUtil;
 import com.liferay.portal.service.base.PortletLocalServiceBaseImpl;
 import com.liferay.portal.service.permission.PortletPermissionUtil;
 import com.liferay.portal.servlet.ComboServlet;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.PortletCategoryUtil;
 import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.WebAppPool;
-import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.PortletBagFactory;
 import com.liferay.portlet.PortletConfigFactoryUtil;
-import com.liferay.portlet.PortletContextFactory;
+import com.liferay.portlet.PortletContextFactoryUtil;
 import com.liferay.portlet.PortletInstanceFactoryUtil;
 import com.liferay.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portlet.PortletQNameUtil;
 import com.liferay.portlet.UndeployedPortlet;
-import com.liferay.portlet.admin.util.PortalMyAccountApplicationType;
 import com.liferay.portlet.expando.model.CustomAttributesDisplay;
 import com.liferay.util.ContentUtil;
 
@@ -236,16 +235,6 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		_portletsMaps.clear();
 	}
 
-	/**
-	 * @deprecated As of 6.1.0, replaced by {@link #clonePortlet(String)}
-	 */
-	@Deprecated
-	@Override
-	@Skip
-	public Portlet clonePortlet(long companyId, String portletId) {
-		return clonePortlet(portletId);
-	}
-
 	@Override
 	@Skip
 	public Portlet clonePortlet(String portletId) {
@@ -339,6 +328,17 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 		resourceActionLocalService.checkResourceActions(
 			portlet.getPortletId(), portletActions);
+
+		List<String> modelNames = ResourceActionsUtil.getPortletModelResources(
+			portlet.getPortletId());
+
+		for (String modelName : modelNames) {
+			List<String> modelActions =
+				ResourceActionsUtil.getModelResourceActions(modelName);
+
+			resourceActionLocalService.checkResourceActions(
+				modelName, modelActions);
+		}
 
 		PortletCategory portletCategory = (PortletCategory)WebAppPool.get(
 			portlet.getCompanyId(), WebKeys.PORTLET_CATEGORY);
@@ -772,8 +772,10 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 					PortalMyAccountApplicationType.MyAccount.CLASS_NAME,
 					PortletProvider.Action.VIEW);
 
-				if (!portletModel.getPortletId().equals(PortletKeys.ADMIN) &&
-					!portletModel.getPortletId().equals(portletId) &&
+				if (!Validator.equals(
+						portletModel.getPortletId(),
+						PortletKeys.SERVER_ADMIN) &&
+					!Validator.equals(portletModel.getPortletId(), portletId) &&
 					!portletModel.isInclude()) {
 
 					portletPoolsItr.remove();
@@ -861,14 +863,14 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 					PortletInstanceFactoryUtil.clear(portlet);
 
 					PortletConfigFactoryUtil.destroy(portlet);
-					PortletContextFactory.destroy(portlet);
+					PortletContextFactoryUtil.destroy(portlet);
 				}
 
 				portlet = entry.getValue();
 
 				_portletsMap.put(entry.getKey(), portlet);
 
-				portletBagFactory.create(portlet);
+				portletBagFactory.create(portlet, true);
 			}
 
 			// Sprite images
@@ -891,7 +893,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 					PortletInstanceFactoryUtil.clear(portlet);
 
 					PortletConfigFactoryUtil.destroy(portlet);
-					PortletContextFactory.destroy(portlet);
+					PortletContextFactoryUtil.destroy(portlet);
 				}
 			}
 
@@ -1310,17 +1312,18 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		for (Element schedulerEntryElement :
 				portletElement.elements("scheduler-entry")) {
 
-			SchedulerEntry schedulerEntry = new SchedulerEntryImpl();
+			SchedulerEntryImpl schedulerEntryImpl = new SchedulerEntryImpl();
 
-			schedulerEntry.setDescription(
-				GetterUtil.getString(
-					schedulerEntryElement.elementText(
-						"scheduler-description")));
-			schedulerEntry.setEventListenerClass(
-				GetterUtil.getString(
-					schedulerEntryElement.elementText(
-						"scheduler-event-listener-class"),
-					schedulerEntry.getEventListenerClass()));
+			String description = GetterUtil.getString(
+				schedulerEntryElement.elementText("scheduler-description"));
+
+			schedulerEntryImpl.setDescription(description);
+
+			String eventListenerClass = GetterUtil.getString(
+				schedulerEntryElement.elementText(
+					"scheduler-event-listener-class"));
+
+			schedulerEntryImpl.setEventListenerClass(eventListenerClass);
 
 			Element triggerElement = schedulerEntryElement.element("trigger");
 
@@ -1328,49 +1331,54 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			Element simpleElement = triggerElement.element("simple");
 
 			if (cronElement != null) {
-				schedulerEntry.setTriggerType(TriggerType.CRON);
-
 				Element propertyKeyElement = cronElement.element(
 					"property-key");
 
+				String cronException = null;
+
 				if (propertyKeyElement != null) {
-					schedulerEntry.setTriggerValue(
-						_getTriggerValue(
-							portletModel, propertyKeyElement.getTextTrim()));
+					cronException = _getTriggerValue(
+						portletModel, propertyKeyElement.getTextTrim());
 				}
 				else {
-					schedulerEntry.setTriggerValue(
-						cronElement.elementText("cron-trigger-value"));
+					cronException = cronElement.elementText(
+						"cron-trigger-value");
 				}
+
+				schedulerEntryImpl.setTrigger(
+					TriggerFactoryUtil.createTrigger(
+						eventListenerClass, eventListenerClass, cronException));
 			}
 			else if (simpleElement != null) {
-				schedulerEntry.setTriggerType(TriggerType.SIMPLE);
-
 				Element propertyKeyElement = simpleElement.element(
 					"property-key");
 
+				String intervalString = null;
+
 				if (propertyKeyElement != null) {
-					schedulerEntry.setTriggerValue(
-						_getTriggerValue(
-							portletModel, propertyKeyElement.getTextTrim()));
+					intervalString = _getTriggerValue(
+						portletModel, propertyKeyElement.getTextTrim());
 				}
 				else {
 					Element simpleTriggerValueElement = simpleElement.element(
 						"simple-trigger-value");
 
-					schedulerEntry.setTriggerValue(
-						simpleTriggerValueElement.getTextTrim());
+					intervalString = simpleTriggerValueElement.getTextTrim();
 				}
 
-				String timeUnit = GetterUtil.getString(
-					simpleElement.elementText("time-unit"),
-					TimeUnit.SECOND.getValue());
+				String timeUnitString = StringUtil.toUpperCase(
+					GetterUtil.getString(
+						simpleElement.elementText("time-unit"),
+						TimeUnit.SECOND.getValue()));
 
-				schedulerEntry.setTimeUnit(
-					TimeUnit.valueOf(StringUtil.toUpperCase(timeUnit)));
+				schedulerEntryImpl.setTrigger(
+					TriggerFactoryUtil.createTrigger(
+						eventListenerClass, eventListenerClass,
+						GetterUtil.getIntegerStrict(intervalString),
+						TimeUnit.valueOf(timeUnitString)));
 			}
 
-			portletModel.addSchedulerEntry(schedulerEntry);
+			portletModel.addSchedulerEntry(schedulerEntryImpl);
 		}
 
 		portletModel.setPortletURLClass(
@@ -1443,10 +1451,6 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			GetterUtil.getString(
 				portletElement.elementText("social-request-interpreter-class"),
 				portletModel.getSocialRequestInterpreterClass()));
-		portletModel.setSocialInteractionsConfiguration(
-			GetterUtil.getBoolean(
-				portletElement.elementText("social-interactions-configuration"),
-				portletModel.getSocialInteractionsConfiguration()));
 		portletModel.setUserNotificationDefinitions(
 			GetterUtil.getString(
 				portletElement.elementText("user-notification-definitions"),
@@ -1478,19 +1482,30 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 				portletElement.elementText("xml-rpc-method-class"),
 				portletModel.getXmlRpcMethodClass()));
 
-		String controlPanelEntryCategory = GetterUtil.getString(
-			portletElement.elementText("control-panel-entry-category"),
-			portletModel.getControlPanelEntryCategory());
+		Set<ApplicationType> applicationTypes = new HashSet<>();
 
-		controlPanelEntryCategory = PortletCategoryUtil.getPortletCategoryKey(
-			controlPanelEntryCategory);
+		for (Element applicationTypeElement :
+				portletElement.elements("application-type")) {
 
-		portletModel.setControlPanelEntryCategory(controlPanelEntryCategory);
+			try {
+				applicationTypes.add(
+					ApplicationType.parse(applicationTypeElement.getText()));
+			}
+			catch (IllegalArgumentException iae) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unknown application type " +
+							applicationTypeElement.getText());
+				}
+			}
+		}
 
-		portletModel.setControlPanelEntryWeight(
-			GetterUtil.getDouble(
-				portletElement.elementText("control-panel-entry-weight"),
-				portletModel.getControlPanelEntryWeight()));
+		if (applicationTypes.isEmpty()) {
+			applicationTypes.add(ApplicationType.WIDGET);
+		}
+
+		portletModel.setApplicationTypes(applicationTypes);
+
 		portletModel.setControlPanelEntryClass(
 			GetterUtil.getString(
 				portletElement.elementText("control-panel-entry-class"),

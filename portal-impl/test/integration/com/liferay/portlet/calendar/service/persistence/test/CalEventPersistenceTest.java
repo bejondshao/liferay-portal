@@ -34,7 +34,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 
-import com.liferay.portlet.calendar.NoSuchEventException;
+import com.liferay.portlet.calendar.exception.NoSuchEventException;
 import com.liferay.portlet.calendar.model.CalEvent;
 import com.liferay.portlet.calendar.service.CalEventLocalServiceUtil;
 import com.liferay.portlet.calendar.service.persistence.CalEventPersistence;
@@ -43,6 +43,7 @@ import com.liferay.portlet.calendar.service.persistence.CalEventUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -61,8 +62,9 @@ import java.util.Set;
  */
 @Deprecated
 public class CalEventPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -449,11 +451,9 @@ public class CalEventPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = CalEventLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<CalEvent>() {
 				@Override
-				public void performAction(Object object) {
-					CalEvent calEvent = (CalEvent)object;
-
+				public void performAction(CalEvent calEvent) {
 					Assert.assertNotNull(calEvent);
 
 					count.increment();

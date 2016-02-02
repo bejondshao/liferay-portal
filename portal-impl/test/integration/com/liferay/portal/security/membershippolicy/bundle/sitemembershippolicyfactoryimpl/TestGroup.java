@@ -14,13 +14,13 @@
 
 package com.liferay.portal.security.membershippolicy.bundle.sitemembershippolicyfactoryimpl;
 
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.LayoutSet;
-import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.expando.model.ExpandoBridge;
@@ -30,8 +30,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Peter Fellwock
@@ -60,11 +58,6 @@ public class TestGroup implements Group {
 	@Override
 	public boolean getActive() {
 		return false;
-	}
-
-	@Override
-	public PortletURL getAdministrationURL(ThemeDisplay themeDisplay) {
-		return null;
 	}
 
 	@Override
@@ -269,6 +262,11 @@ public class TestGroup implements Group {
 
 	@Override
 	public String getLiveParentTypeSettingsProperty(String key) {
+		return null;
+	}
+
+	@Override
+	public String getLogoURL(ThemeDisplay themeDisplay, boolean useDefault) {
 		return null;
 	}
 
@@ -515,15 +513,6 @@ public class TestGroup implements Group {
 	@Deprecated
 	@Override
 	public boolean isChild(long groupId) {
-		return false;
-	}
-
-	/**
-	 * @deprecated As of 7.0.0
-	 */
-	@Deprecated
-	@Override
-	public boolean isCommunity() {
 		return false;
 	}
 

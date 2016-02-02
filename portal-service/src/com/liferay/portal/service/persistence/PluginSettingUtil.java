@@ -155,6 +155,28 @@ public class PluginSettingUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the plugin settings where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PluginSettingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of plugin settings
+	* @param end the upper bound of the range of plugin settings (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching plugin settings
+	*/
+	public static List<PluginSetting> findByCompanyId(long companyId,
+		int start, int end, OrderByComparator<PluginSetting> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByCompanyId(companyId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first plugin setting in the ordered set where companyId = &#63;.
 	*
 	* @param companyId the company ID
@@ -164,7 +186,7 @@ public class PluginSettingUtil {
 	*/
 	public static PluginSetting findByCompanyId_First(long companyId,
 		OrderByComparator<PluginSetting> orderByComparator)
-		throws com.liferay.portal.NoSuchPluginSettingException {
+		throws com.liferay.portal.exception.NoSuchPluginSettingException {
 		return getPersistence()
 				   .findByCompanyId_First(companyId, orderByComparator);
 	}
@@ -192,7 +214,7 @@ public class PluginSettingUtil {
 	*/
 	public static PluginSetting findByCompanyId_Last(long companyId,
 		OrderByComparator<PluginSetting> orderByComparator)
-		throws com.liferay.portal.NoSuchPluginSettingException {
+		throws com.liferay.portal.exception.NoSuchPluginSettingException {
 		return getPersistence()
 				   .findByCompanyId_Last(companyId, orderByComparator);
 	}
@@ -222,7 +244,7 @@ public class PluginSettingUtil {
 	public static PluginSetting[] findByCompanyId_PrevAndNext(
 		long pluginSettingId, long companyId,
 		OrderByComparator<PluginSetting> orderByComparator)
-		throws com.liferay.portal.NoSuchPluginSettingException {
+		throws com.liferay.portal.exception.NoSuchPluginSettingException {
 		return getPersistence()
 				   .findByCompanyId_PrevAndNext(pluginSettingId, companyId,
 			orderByComparator);
@@ -258,7 +280,7 @@ public class PluginSettingUtil {
 	*/
 	public static PluginSetting findByC_I_T(long companyId,
 		java.lang.String pluginId, java.lang.String pluginType)
-		throws com.liferay.portal.NoSuchPluginSettingException {
+		throws com.liferay.portal.exception.NoSuchPluginSettingException {
 		return getPersistence().findByC_I_T(companyId, pluginId, pluginType);
 	}
 
@@ -281,7 +303,7 @@ public class PluginSettingUtil {
 	* @param companyId the company ID
 	* @param pluginId the plugin ID
 	* @param pluginType the plugin type
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching plugin setting, or <code>null</code> if a matching plugin setting could not be found
 	*/
 	public static PluginSetting fetchByC_I_T(long companyId,
@@ -302,7 +324,7 @@ public class PluginSettingUtil {
 	*/
 	public static PluginSetting removeByC_I_T(long companyId,
 		java.lang.String pluginId, java.lang.String pluginType)
-		throws com.liferay.portal.NoSuchPluginSettingException {
+		throws com.liferay.portal.exception.NoSuchPluginSettingException {
 		return getPersistence().removeByC_I_T(companyId, pluginId, pluginType);
 	}
 
@@ -355,7 +377,7 @@ public class PluginSettingUtil {
 	* @throws NoSuchPluginSettingException if a plugin setting with the primary key could not be found
 	*/
 	public static PluginSetting remove(long pluginSettingId)
-		throws com.liferay.portal.NoSuchPluginSettingException {
+		throws com.liferay.portal.exception.NoSuchPluginSettingException {
 		return getPersistence().remove(pluginSettingId);
 	}
 
@@ -371,7 +393,7 @@ public class PluginSettingUtil {
 	* @throws NoSuchPluginSettingException if a plugin setting with the primary key could not be found
 	*/
 	public static PluginSetting findByPrimaryKey(long pluginSettingId)
-		throws com.liferay.portal.NoSuchPluginSettingException {
+		throws com.liferay.portal.exception.NoSuchPluginSettingException {
 		return getPersistence().findByPrimaryKey(pluginSettingId);
 	}
 
@@ -432,6 +454,26 @@ public class PluginSettingUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the plugin settings.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PluginSettingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of plugin settings
+	* @param end the upper bound of the range of plugin settings (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of plugin settings
+	*/
+	public static List<PluginSetting> findAll(int start, int end,
+		OrderByComparator<PluginSetting> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the plugin settings from the database.
 	*/
 	public static void removeAll() {
@@ -447,6 +489,10 @@ public class PluginSettingUtil {
 		return getPersistence().countAll();
 	}
 
+	public static java.util.Set<java.lang.String> getBadColumnNames() {
+		return getPersistence().getBadColumnNames();
+	}
+
 	public static PluginSettingPersistence getPersistence() {
 		if (_persistence == null) {
 			_persistence = (PluginSettingPersistence)PortalBeanLocatorUtil.locate(PluginSettingPersistence.class.getName());
@@ -456,13 +502,6 @@ public class PluginSettingUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(PluginSettingPersistence persistence) {
 	}
 
 	private static PluginSettingPersistence _persistence;

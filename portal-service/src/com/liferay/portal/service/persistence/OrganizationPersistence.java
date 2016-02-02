@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchOrganizationException;
 import com.liferay.portal.model.Organization;
 
 /**
@@ -79,6 +80,25 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the organizations where uuid = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OrganizationModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param start the lower bound of the range of organizations
+	* @param end the upper bound of the range of organizations (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching organizations
+	*/
+	public java.util.List<Organization> findByUuid(java.lang.String uuid,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first organization in the ordered set where uuid = &#63;.
 	*
 	* @param uuid the uuid
@@ -88,7 +108,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	*/
 	public Organization findByUuid_First(java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the first organization in the ordered set where uuid = &#63;.
@@ -110,7 +130,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	*/
 	public Organization findByUuid_Last(java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the last organization in the ordered set where uuid = &#63;.
@@ -134,7 +154,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] findByUuid_PrevAndNext(long organizationId,
 		java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns all the organizations that the user has permission to view where uuid = &#63;.
@@ -188,7 +208,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] filterFindByUuid_PrevAndNext(long organizationId,
 		java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Removes all the organizations where uuid = &#63; from the database.
@@ -258,6 +278,26 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the organizations where uuid = &#63; and companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OrganizationModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param companyId the company ID
+	* @param start the lower bound of the range of organizations
+	* @param end the upper bound of the range of organizations (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching organizations
+	*/
+	public java.util.List<Organization> findByUuid_C(java.lang.String uuid,
+		long companyId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first organization in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
 	* @param uuid the uuid
@@ -269,7 +309,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization findByUuid_C_First(java.lang.String uuid,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the first organization in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -295,7 +335,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization findByUuid_C_Last(java.lang.String uuid,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the last organization in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -322,7 +362,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] findByUuid_C_PrevAndNext(long organizationId,
 		java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns all the organizations that the user has permission to view where uuid = &#63; and companyId = &#63;.
@@ -381,7 +421,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] filterFindByUuid_C_PrevAndNext(long organizationId,
 		java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Removes all the organizations where uuid = &#63; and companyId = &#63; from the database.
@@ -450,6 +490,25 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the organizations where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OrganizationModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of organizations
+	* @param end the upper bound of the range of organizations (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching organizations
+	*/
+	public java.util.List<Organization> findByCompanyId(long companyId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first organization in the ordered set where companyId = &#63;.
 	*
 	* @param companyId the company ID
@@ -459,7 +518,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	*/
 	public Organization findByCompanyId_First(long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the first organization in the ordered set where companyId = &#63;.
@@ -481,7 +540,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	*/
 	public Organization findByCompanyId_Last(long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the last organization in the ordered set where companyId = &#63;.
@@ -505,7 +564,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] findByCompanyId_PrevAndNext(long organizationId,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns all the organizations that the user has permission to view where companyId = &#63;.
@@ -559,7 +618,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] filterFindByCompanyId_PrevAndNext(
 		long organizationId, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Removes all the organizations where companyId = &#63; from the database.
@@ -625,6 +684,25 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the organizations where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OrganizationModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of organizations
+	* @param end the upper bound of the range of organizations (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching organizations
+	*/
+	public java.util.List<Organization> findByLocations(long companyId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first organization in the ordered set where companyId = &#63;.
 	*
 	* @param companyId the company ID
@@ -634,7 +712,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	*/
 	public Organization findByLocations_First(long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the first organization in the ordered set where companyId = &#63;.
@@ -656,7 +734,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	*/
 	public Organization findByLocations_Last(long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the last organization in the ordered set where companyId = &#63;.
@@ -680,7 +758,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] findByLocations_PrevAndNext(long organizationId,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns all the organizations that the user has permission to view where companyId = &#63;.
@@ -734,7 +812,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] filterFindByLocations_PrevAndNext(
 		long organizationId, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Removes all the organizations where companyId = &#63; from the database.
@@ -804,6 +882,26 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the organizations where companyId = &#63; and parentOrganizationId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OrganizationModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param parentOrganizationId the parent organization ID
+	* @param start the lower bound of the range of organizations
+	* @param end the upper bound of the range of organizations (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching organizations
+	*/
+	public java.util.List<Organization> findByC_P(long companyId,
+		long parentOrganizationId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first organization in the ordered set where companyId = &#63; and parentOrganizationId = &#63;.
 	*
 	* @param companyId the company ID
@@ -815,7 +913,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization findByC_P_First(long companyId,
 		long parentOrganizationId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the first organization in the ordered set where companyId = &#63; and parentOrganizationId = &#63;.
@@ -841,7 +939,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization findByC_P_Last(long companyId,
 		long parentOrganizationId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the last organization in the ordered set where companyId = &#63; and parentOrganizationId = &#63;.
@@ -868,7 +966,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] findByC_P_PrevAndNext(long organizationId,
 		long companyId, long parentOrganizationId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns all the organizations that the user has permission to view where companyId = &#63; and parentOrganizationId = &#63;.
@@ -927,7 +1025,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] filterFindByC_P_PrevAndNext(long organizationId,
 		long companyId, long parentOrganizationId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Removes all the organizations where companyId = &#63; and parentOrganizationId = &#63; from the database.
@@ -1000,6 +1098,26 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the organizations where companyId = &#63; and treePath LIKE &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OrganizationModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param treePath the tree path
+	* @param start the lower bound of the range of organizations
+	* @param end the upper bound of the range of organizations (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching organizations
+	*/
+	public java.util.List<Organization> findByC_T(long companyId,
+		java.lang.String treePath, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first organization in the ordered set where companyId = &#63; and treePath LIKE &#63;.
 	*
 	* @param companyId the company ID
@@ -1011,7 +1129,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization findByC_T_First(long companyId,
 		java.lang.String treePath,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the first organization in the ordered set where companyId = &#63; and treePath LIKE &#63;.
@@ -1037,7 +1155,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization findByC_T_Last(long companyId,
 		java.lang.String treePath,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the last organization in the ordered set where companyId = &#63; and treePath LIKE &#63;.
@@ -1064,7 +1182,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] findByC_T_PrevAndNext(long organizationId,
 		long companyId, java.lang.String treePath,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns all the organizations that the user has permission to view where companyId = &#63; and treePath LIKE &#63;.
@@ -1123,7 +1241,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization[] filterFindByC_T_PrevAndNext(long organizationId,
 		long companyId, java.lang.String treePath,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Removes all the organizations where companyId = &#63; and treePath LIKE &#63; from the database.
@@ -1160,7 +1278,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	* @throws NoSuchOrganizationException if a matching organization could not be found
 	*/
 	public Organization findByC_N(long companyId, java.lang.String name)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the organization where companyId = &#63; and name = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -1176,7 +1294,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	*
 	* @param companyId the company ID
 	* @param name the name
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching organization, or <code>null</code> if a matching organization could not be found
 	*/
 	public Organization fetchByC_N(long companyId, java.lang.String name,
@@ -1190,7 +1308,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	* @return the organization that was removed
 	*/
 	public Organization removeByC_N(long companyId, java.lang.String name)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the number of organizations where companyId = &#63; and name = &#63;.
@@ -1249,6 +1367,27 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the organizations where organizationId &gt; &#63; and companyId = &#63; and parentOrganizationId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OrganizationModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param organizationId the organization ID
+	* @param companyId the company ID
+	* @param parentOrganizationId the parent organization ID
+	* @param start the lower bound of the range of organizations
+	* @param end the upper bound of the range of organizations (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching organizations
+	*/
+	public java.util.List<Organization> findByO_C_P(long organizationId,
+		long companyId, long parentOrganizationId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first organization in the ordered set where organizationId &gt; &#63; and companyId = &#63; and parentOrganizationId = &#63;.
 	*
 	* @param organizationId the organization ID
@@ -1261,7 +1400,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization findByO_C_P_First(long organizationId, long companyId,
 		long parentOrganizationId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the first organization in the ordered set where organizationId &gt; &#63; and companyId = &#63; and parentOrganizationId = &#63;.
@@ -1289,7 +1428,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	public Organization findByO_C_P_Last(long organizationId, long companyId,
 		long parentOrganizationId,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the last organization in the ordered set where organizationId &gt; &#63; and companyId = &#63; and parentOrganizationId = &#63;.
@@ -1413,7 +1552,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	* @throws NoSuchOrganizationException if a organization with the primary key could not be found
 	*/
 	public Organization remove(long organizationId)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	public Organization updateImpl(Organization organization);
 
@@ -1425,7 +1564,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	* @throws NoSuchOrganizationException if a organization with the primary key could not be found
 	*/
 	public Organization findByPrimaryKey(long organizationId)
-		throws com.liferay.portal.NoSuchOrganizationException;
+		throws NoSuchOrganizationException;
 
 	/**
 	* Returns the organization with the primary key or returns <code>null</code> if it could not be found.
@@ -1473,6 +1612,23 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	*/
 	public java.util.List<Organization> findAll(int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the organizations.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OrganizationModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of organizations
+	* @param end the upper bound of the range of organizations (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of organizations
+	*/
+	public java.util.List<Organization> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Organization> orderByComparator,
+		boolean retrieveFromCache);
 
 	/**
 	* Removes all the organizations from the database.
@@ -1811,4 +1967,7 @@ public interface OrganizationPersistence extends BasePersistence<Organization> {
 	*/
 	public void setUsers(long pk,
 		java.util.List<com.liferay.portal.model.User> users);
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

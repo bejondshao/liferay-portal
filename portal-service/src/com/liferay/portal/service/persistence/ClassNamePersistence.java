@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchClassNameException;
 import com.liferay.portal.model.ClassName;
 
 /**
@@ -46,7 +47,7 @@ public interface ClassNamePersistence extends BasePersistence<ClassName> {
 	* @throws NoSuchClassNameException if a matching class name could not be found
 	*/
 	public ClassName findByValue(java.lang.String value)
-		throws com.liferay.portal.NoSuchClassNameException;
+		throws NoSuchClassNameException;
 
 	/**
 	* Returns the class name where value = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -60,7 +61,7 @@ public interface ClassNamePersistence extends BasePersistence<ClassName> {
 	* Returns the class name where value = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param value the value
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching class name, or <code>null</code> if a matching class name could not be found
 	*/
 	public ClassName fetchByValue(java.lang.String value,
@@ -73,7 +74,7 @@ public interface ClassNamePersistence extends BasePersistence<ClassName> {
 	* @return the class name that was removed
 	*/
 	public ClassName removeByValue(java.lang.String value)
-		throws com.liferay.portal.NoSuchClassNameException;
+		throws NoSuchClassNameException;
 
 	/**
 	* Returns the number of class names where value = &#63;.
@@ -112,8 +113,7 @@ public interface ClassNamePersistence extends BasePersistence<ClassName> {
 	* @return the class name that was removed
 	* @throws NoSuchClassNameException if a class name with the primary key could not be found
 	*/
-	public ClassName remove(long classNameId)
-		throws com.liferay.portal.NoSuchClassNameException;
+	public ClassName remove(long classNameId) throws NoSuchClassNameException;
 
 	public ClassName updateImpl(ClassName className);
 
@@ -125,7 +125,7 @@ public interface ClassNamePersistence extends BasePersistence<ClassName> {
 	* @throws NoSuchClassNameException if a class name with the primary key could not be found
 	*/
 	public ClassName findByPrimaryKey(long classNameId)
-		throws com.liferay.portal.NoSuchClassNameException;
+		throws NoSuchClassNameException;
 
 	/**
 	* Returns the class name with the primary key or returns <code>null</code> if it could not be found.
@@ -173,6 +173,23 @@ public interface ClassNamePersistence extends BasePersistence<ClassName> {
 	*/
 	public java.util.List<ClassName> findAll(int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<ClassName> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the class names.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ClassNameModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of class names
+	* @param end the upper bound of the range of class names (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of class names
+	*/
+	public java.util.List<ClassName> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ClassName> orderByComparator,
+		boolean retrieveFromCache);
 
 	/**
 	* Removes all the class names from the database.

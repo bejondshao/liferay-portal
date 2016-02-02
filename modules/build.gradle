@@ -1,24 +1,7 @@
 import com.liferay.gradle.util.FileUtil
 
-import org.gradle.internal.hash.HashUtil
-import org.gradle.internal.hash.HashValue
-
 buildscript {
-	repositories {
-		if (!Boolean.getBoolean("maven.local.ignore")) {
-			mavenLocal()
-		}
-
-		maven {
-			url "http://cdn.repository.liferay.com/nexus/content/groups/public"
-		}
-	}
-
-	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins", version: "1.0.16"
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.cache", version: "1.0.1"
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.maven.plugin.builder", version: "1.0.2"
-	}
+	apply from: rootProject.file("build-buildscript.gradle"), to: buildscript
 }
 
 buildDir = new File(rootDir.parentFile, "build")
@@ -26,51 +9,83 @@ buildDir = new File(rootDir.parentFile, "build")
 gradle.beforeProject {
 	Project project ->
 
-	File buildGradleFile = project.file("build.gradle")
-
-	if (buildGradleFile.exists() && project.parent) {
-		project.apply from: rootProject.file("build-module.gradle")
-	}
-}
-
-gradle.buildFinished {
-	if (System.getProperty("line.separator") == "\n") {
-		return;
+	if (!project.parent) {
+		return
 	}
 
-	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+	configure(project) {
+		if (project.path.startsWith(":themes:")) {
+			apply from: rootProject.file("build-theme.gradle")
+		}
+		else if (FileUtil.exists(project, "bnd.bnd") && FileUtil.exists(project, "build.gradle")) {
+			apply from: rootProject.file("build-module.gradle")
+			apply plugin: "pmd"
 
-	exec {
-		commandLine "git", "ls-files", "--exclude-standard", "--others"
-		standardOutput = byteArrayOutputStream
-		workingDir = gradle.gradleUserHomeDir
-	}
+			configurations {
+				xmltask
+			}
 
-	String output = byteArrayOutputStream.toString()
+			dependencies {
+				pmd group: "com.liferay", name: "com.liferay.pmd", version: "1.0.1"
+				xmltask rootProject.files("../lib/development/xmltask.jar")
+			}
 
-	List<String> fileNames = output.readLines()
+			pmd {
+				ruleSetFiles = rootProject.files("../tools/sdk/dependencies/net.sourceforge.pmd/rulesets/java/standard-rules.xml")
+				ruleSets = []
+			}
 
-	fileNames.retainAll {
-		it.endsWith ".pom"
-	}
+			testIntegration {
+				doLast {
+					String databaseType = System.properties["database.type"]
 
-	fileNames.each {
-		String pomFileName ->
+					if (!databaseType) {
+						return
+					}
 
-		File pomFile = new File(gradle.gradleUserHomeDir, pomFileName)
+					FileTree fileTree = fileTree(dir: reports.junitXml.destination, exclude: "TEST-*-*.xml", include: "TEST-*.xml")
 
-		ant.fixcrlf eol: "lf", file: pomFile, fixlast: false
+					ant.taskdef classname: "com.oopsconsultancy.xmltask.ant.XmlTask", classpath: configurations.xmltask.asPath, name: "xmltask"
 
-		HashValue hashValue = HashUtil.sha1(pomFile)
+					fileTree.each {
+						File file ->
 
-		String hash = hashValue.asHexString()
-		File hashDir = pomFile.parentFile
+						String fileTitle = FileUtil.stripExtension(file.name)
 
-		if (hashDir.name != hash) {
-			boolean success = hashDir.renameTo new File(hashDir.parentFile, hash)
+						ant.xmltask(dest: new File(file.parentFile, "${fileTitle}-${databaseType}.xml"), source: file) {
+							replace path: "/testsuite/@name", withText: "${fileTitle}-${databaseType}"
+						}
 
-			if (!success) {
-				delete hashDir
+						delete file
+					}
+				}
+			}
+
+			tasks.withType(Pmd) {
+				classpath = null
+			}
+
+			if (gradle.hasProperty("testClassGroupIndex")) {
+				configure([test, testIntegration]) {
+					include gradle.testClasses
+
+					jvmArgs "-Dtest.class.group.index=" + gradle.testClassGroupIndex
+					jvmArgs "-Dtest.class.groups=" + gradle.testClassGroups
+				}
+			}
+
+			if (System.getenv("JENKINS_HOME")) {
+				startTestableTomcat {
+					deleteLiferayHome = false
+				}
+			}
+		}
+
+		if (System.getenv("JENKINS_HOME")) {
+			pluginManager.withPlugin("com.liferay.cache") {
+				cache {
+					forcedCache = true
+				}
 			}
 		}
 	}
@@ -79,37 +94,20 @@ gradle.buildFinished {
 gradle.taskGraph.useFilter {
 	Task task ->
 
-	if (task.name == "buildService") {
-		if (!FileUtil.exists(task.project, "service.xml")) {
-			return false
-		}
-	}
-	else if (task.name == "compileJSP") {
-		FileTree jspFileTree = fileTree(dir: task.project.projectDir, excludes: ["**/custom_jsps/**/*", "**/dependencies/**/*"], includes: ["docroot/**/*.jsp", "src/META-INF/resources/**/*.jsp"])
+	if (task.name == "compileJSP") {
+		FileTree jspFileTree = fileTree(dir: task.project.projectDir, excludes: ["**/custom_jsps/**/*", "**/dependencies/**/*"], includes: ["docroot/**/*.jsp", "src/main/resources/META-INF/resources/**/*.jsp"])
 
 		if (jspFileTree.empty) {
 			return false
 		}
 	}
-	else if (task.name == "configJSModules") {
-		if (!FileUtil.exists(task.project, "bower.json")) {
-			return false
-		}
-	}
 	else if (task.name == "test") {
-		if (!_hasTestClasses(task.project, "test/unit")) {
+		if (!_hasTestClasses(task.project, "src/test/java") && !_hasTestClasses(task.project, "test/unit")) {
 			return false
 		}
 	}
 	else if (task.name == "testIntegration") {
-		if (!_hasTestClasses(task.project, "test/integration")) {
-			return false
-		}
-	}
-	else if (task.name == "transpileJS") {
-		FileTree esJsFileTree = fileTree(dir: task.project.projectDir, exclude: "**/samples/**", include: "src/**/*.es.js")
-
-		if (esJsFileTree.empty) {
+		if (!_hasTestClasses(task.project, "src/testIntegration/java") && !_hasTestClasses(task.project, "test/integration")) {
 			return false
 		}
 	}

@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchListTypeException;
 import com.liferay.portal.model.ListType;
 
 /**
@@ -79,6 +80,25 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 		com.liferay.portal.kernel.util.OrderByComparator<ListType> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the list types where type = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ListTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param type the type
+	* @param start the lower bound of the range of list types
+	* @param end the upper bound of the range of list types (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching list types
+	*/
+	public java.util.List<ListType> findByType(java.lang.String type,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ListType> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first list type in the ordered set where type = &#63;.
 	*
 	* @param type the type
@@ -88,7 +108,7 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 	*/
 	public ListType findByType_First(java.lang.String type,
 		com.liferay.portal.kernel.util.OrderByComparator<ListType> orderByComparator)
-		throws com.liferay.portal.NoSuchListTypeException;
+		throws NoSuchListTypeException;
 
 	/**
 	* Returns the first list type in the ordered set where type = &#63;.
@@ -110,7 +130,7 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 	*/
 	public ListType findByType_Last(java.lang.String type,
 		com.liferay.portal.kernel.util.OrderByComparator<ListType> orderByComparator)
-		throws com.liferay.portal.NoSuchListTypeException;
+		throws NoSuchListTypeException;
 
 	/**
 	* Returns the last list type in the ordered set where type = &#63;.
@@ -134,7 +154,7 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 	public ListType[] findByType_PrevAndNext(long listTypeId,
 		java.lang.String type,
 		com.liferay.portal.kernel.util.OrderByComparator<ListType> orderByComparator)
-		throws com.liferay.portal.NoSuchListTypeException;
+		throws NoSuchListTypeException;
 
 	/**
 	* Removes all the list types where type = &#63; from the database.
@@ -160,7 +180,7 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 	* @throws NoSuchListTypeException if a matching list type could not be found
 	*/
 	public ListType findByN_T(java.lang.String name, java.lang.String type)
-		throws com.liferay.portal.NoSuchListTypeException;
+		throws NoSuchListTypeException;
 
 	/**
 	* Returns the list type where name = &#63; and type = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -176,7 +196,7 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 	*
 	* @param name the name
 	* @param type the type
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching list type, or <code>null</code> if a matching list type could not be found
 	*/
 	public ListType fetchByN_T(java.lang.String name, java.lang.String type,
@@ -190,7 +210,7 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 	* @return the list type that was removed
 	*/
 	public ListType removeByN_T(java.lang.String name, java.lang.String type)
-		throws com.liferay.portal.NoSuchListTypeException;
+		throws NoSuchListTypeException;
 
 	/**
 	* Returns the number of list types where name = &#63; and type = &#63;.
@@ -230,8 +250,7 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 	* @return the list type that was removed
 	* @throws NoSuchListTypeException if a list type with the primary key could not be found
 	*/
-	public ListType remove(long listTypeId)
-		throws com.liferay.portal.NoSuchListTypeException;
+	public ListType remove(long listTypeId) throws NoSuchListTypeException;
 
 	public ListType updateImpl(ListType listType);
 
@@ -243,7 +262,7 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 	* @throws NoSuchListTypeException if a list type with the primary key could not be found
 	*/
 	public ListType findByPrimaryKey(long listTypeId)
-		throws com.liferay.portal.NoSuchListTypeException;
+		throws NoSuchListTypeException;
 
 	/**
 	* Returns the list type with the primary key or returns <code>null</code> if it could not be found.
@@ -293,6 +312,23 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 		com.liferay.portal.kernel.util.OrderByComparator<ListType> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the list types.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ListTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of list types
+	* @param end the upper bound of the range of list types (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of list types
+	*/
+	public java.util.List<ListType> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ListType> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the list types from the database.
 	*/
 	public void removeAll();
@@ -303,4 +339,7 @@ public interface ListTypePersistence extends BasePersistence<ListType> {
 	* @return the number of list types
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

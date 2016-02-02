@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.service.persistence.BasePersistence;
 
+import com.liferay.portlet.documentlibrary.exception.NoSuchContentException;
 import com.liferay.portlet.documentlibrary.model.DLContent;
 
 /**
@@ -84,6 +85,26 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the document library contents where companyId = &#63; and repositoryId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLContentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param repositoryId the repository ID
+	* @param start the lower bound of the range of document library contents
+	* @param end the upper bound of the range of document library contents (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library contents
+	*/
+	public java.util.List<DLContent> findByC_R(long companyId,
+		long repositoryId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first document library content in the ordered set where companyId = &#63; and repositoryId = &#63;.
 	*
 	* @param companyId the company ID
@@ -94,7 +115,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	*/
 	public DLContent findByC_R_First(long companyId, long repositoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Returns the first document library content in the ordered set where companyId = &#63; and repositoryId = &#63;.
@@ -118,7 +139,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	*/
 	public DLContent findByC_R_Last(long companyId, long repositoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Returns the last document library content in the ordered set where companyId = &#63; and repositoryId = &#63;.
@@ -144,7 +165,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	public DLContent[] findByC_R_PrevAndNext(long contentId, long companyId,
 		long repositoryId,
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Removes all the document library contents where companyId = &#63; and repositoryId = &#63; from the database.
@@ -211,6 +232,27 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the document library contents where companyId = &#63; and repositoryId = &#63; and path = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLContentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param repositoryId the repository ID
+	* @param path the path
+	* @param start the lower bound of the range of document library contents
+	* @param end the upper bound of the range of document library contents (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library contents
+	*/
+	public java.util.List<DLContent> findByC_R_P(long companyId,
+		long repositoryId, java.lang.String path, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first document library content in the ordered set where companyId = &#63; and repositoryId = &#63; and path = &#63;.
 	*
 	* @param companyId the company ID
@@ -223,7 +265,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	public DLContent findByC_R_P_First(long companyId, long repositoryId,
 		java.lang.String path,
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Returns the first document library content in the ordered set where companyId = &#63; and repositoryId = &#63; and path = &#63;.
@@ -251,7 +293,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	public DLContent findByC_R_P_Last(long companyId, long repositoryId,
 		java.lang.String path,
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Returns the last document library content in the ordered set where companyId = &#63; and repositoryId = &#63; and path = &#63;.
@@ -280,7 +322,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	public DLContent[] findByC_R_P_PrevAndNext(long contentId, long companyId,
 		long repositoryId, java.lang.String path,
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Removes all the document library contents where companyId = &#63; and repositoryId = &#63; and path = &#63; from the database.
@@ -351,6 +393,27 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the document library contents where companyId = &#63; and repositoryId = &#63; and path LIKE &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLContentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param repositoryId the repository ID
+	* @param path the path
+	* @param start the lower bound of the range of document library contents
+	* @param end the upper bound of the range of document library contents (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document library contents
+	*/
+	public java.util.List<DLContent> findByC_R_LikeP(long companyId,
+		long repositoryId, java.lang.String path, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first document library content in the ordered set where companyId = &#63; and repositoryId = &#63; and path LIKE &#63;.
 	*
 	* @param companyId the company ID
@@ -363,7 +426,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	public DLContent findByC_R_LikeP_First(long companyId, long repositoryId,
 		java.lang.String path,
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Returns the first document library content in the ordered set where companyId = &#63; and repositoryId = &#63; and path LIKE &#63;.
@@ -391,7 +454,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	public DLContent findByC_R_LikeP_Last(long companyId, long repositoryId,
 		java.lang.String path,
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Returns the last document library content in the ordered set where companyId = &#63; and repositoryId = &#63; and path LIKE &#63;.
@@ -420,7 +483,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	public DLContent[] findByC_R_LikeP_PrevAndNext(long contentId,
 		long companyId, long repositoryId, java.lang.String path,
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Removes all the document library contents where companyId = &#63; and repositoryId = &#63; and path LIKE &#63; from the database.
@@ -455,7 +518,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	*/
 	public DLContent findByC_R_P_V(long companyId, long repositoryId,
 		java.lang.String path, java.lang.String version)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Returns the document library content where companyId = &#63; and repositoryId = &#63; and path = &#63; and version = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -476,7 +539,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	* @param repositoryId the repository ID
 	* @param path the path
 	* @param version the version
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching document library content, or <code>null</code> if a matching document library content could not be found
 	*/
 	public DLContent fetchByC_R_P_V(long companyId, long repositoryId,
@@ -494,7 +557,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	*/
 	public DLContent removeByC_R_P_V(long companyId, long repositoryId,
 		java.lang.String path, java.lang.String version)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Returns the number of document library contents where companyId = &#63; and repositoryId = &#63; and path = &#63; and version = &#63;.
@@ -537,8 +600,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	* @return the document library content that was removed
 	* @throws NoSuchContentException if a document library content with the primary key could not be found
 	*/
-	public DLContent remove(long contentId)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+	public DLContent remove(long contentId) throws NoSuchContentException;
 
 	public DLContent updateImpl(DLContent dlContent);
 
@@ -550,7 +612,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	* @throws NoSuchContentException if a document library content with the primary key could not be found
 	*/
 	public DLContent findByPrimaryKey(long contentId)
-		throws com.liferay.portlet.documentlibrary.NoSuchContentException;
+		throws NoSuchContentException;
 
 	/**
 	* Returns the document library content with the primary key or returns <code>null</code> if it could not be found.
@@ -600,6 +662,23 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the document library contents.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DLContentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of document library contents
+	* @param end the upper bound of the range of document library contents (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of document library contents
+	*/
+	public java.util.List<DLContent> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DLContent> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the document library contents from the database.
 	*/
 	public void removeAll();
@@ -610,4 +689,7 @@ public interface DLContentPersistence extends BasePersistence<DLContent> {
 	* @return the number of document library contents
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

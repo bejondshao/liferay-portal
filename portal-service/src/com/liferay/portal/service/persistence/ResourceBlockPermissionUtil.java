@@ -162,6 +162,29 @@ public class ResourceBlockPermissionUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the resource block permissions where resourceBlockId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockPermissionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param resourceBlockId the resource block ID
+	* @param start the lower bound of the range of resource block permissions
+	* @param end the upper bound of the range of resource block permissions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching resource block permissions
+	*/
+	public static List<ResourceBlockPermission> findByResourceBlockId(
+		long resourceBlockId, int start, int end,
+		OrderByComparator<ResourceBlockPermission> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByResourceBlockId(resourceBlockId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first resource block permission in the ordered set where resourceBlockId = &#63;.
 	*
 	* @param resourceBlockId the resource block ID
@@ -172,7 +195,7 @@ public class ResourceBlockPermissionUtil {
 	public static ResourceBlockPermission findByResourceBlockId_First(
 		long resourceBlockId,
 		OrderByComparator<ResourceBlockPermission> orderByComparator)
-		throws com.liferay.portal.NoSuchResourceBlockPermissionException {
+		throws com.liferay.portal.exception.NoSuchResourceBlockPermissionException {
 		return getPersistence()
 				   .findByResourceBlockId_First(resourceBlockId,
 			orderByComparator);
@@ -204,7 +227,7 @@ public class ResourceBlockPermissionUtil {
 	public static ResourceBlockPermission findByResourceBlockId_Last(
 		long resourceBlockId,
 		OrderByComparator<ResourceBlockPermission> orderByComparator)
-		throws com.liferay.portal.NoSuchResourceBlockPermissionException {
+		throws com.liferay.portal.exception.NoSuchResourceBlockPermissionException {
 		return getPersistence()
 				   .findByResourceBlockId_Last(resourceBlockId,
 			orderByComparator);
@@ -237,7 +260,7 @@ public class ResourceBlockPermissionUtil {
 	public static ResourceBlockPermission[] findByResourceBlockId_PrevAndNext(
 		long resourceBlockPermissionId, long resourceBlockId,
 		OrderByComparator<ResourceBlockPermission> orderByComparator)
-		throws com.liferay.portal.NoSuchResourceBlockPermissionException {
+		throws com.liferay.portal.exception.NoSuchResourceBlockPermissionException {
 		return getPersistence()
 				   .findByResourceBlockId_PrevAndNext(resourceBlockPermissionId,
 			resourceBlockId, orderByComparator);
@@ -310,6 +333,29 @@ public class ResourceBlockPermissionUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the resource block permissions where roleId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockPermissionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param roleId the role ID
+	* @param start the lower bound of the range of resource block permissions
+	* @param end the upper bound of the range of resource block permissions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching resource block permissions
+	*/
+	public static List<ResourceBlockPermission> findByRoleId(long roleId,
+		int start, int end,
+		OrderByComparator<ResourceBlockPermission> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByRoleId(roleId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first resource block permission in the ordered set where roleId = &#63;.
 	*
 	* @param roleId the role ID
@@ -319,7 +365,7 @@ public class ResourceBlockPermissionUtil {
 	*/
 	public static ResourceBlockPermission findByRoleId_First(long roleId,
 		OrderByComparator<ResourceBlockPermission> orderByComparator)
-		throws com.liferay.portal.NoSuchResourceBlockPermissionException {
+		throws com.liferay.portal.exception.NoSuchResourceBlockPermissionException {
 		return getPersistence().findByRoleId_First(roleId, orderByComparator);
 	}
 
@@ -345,7 +391,7 @@ public class ResourceBlockPermissionUtil {
 	*/
 	public static ResourceBlockPermission findByRoleId_Last(long roleId,
 		OrderByComparator<ResourceBlockPermission> orderByComparator)
-		throws com.liferay.portal.NoSuchResourceBlockPermissionException {
+		throws com.liferay.portal.exception.NoSuchResourceBlockPermissionException {
 		return getPersistence().findByRoleId_Last(roleId, orderByComparator);
 	}
 
@@ -373,7 +419,7 @@ public class ResourceBlockPermissionUtil {
 	public static ResourceBlockPermission[] findByRoleId_PrevAndNext(
 		long resourceBlockPermissionId, long roleId,
 		OrderByComparator<ResourceBlockPermission> orderByComparator)
-		throws com.liferay.portal.NoSuchResourceBlockPermissionException {
+		throws com.liferay.portal.exception.NoSuchResourceBlockPermissionException {
 		return getPersistence()
 				   .findByRoleId_PrevAndNext(resourceBlockPermissionId, roleId,
 			orderByComparator);
@@ -408,7 +454,7 @@ public class ResourceBlockPermissionUtil {
 	*/
 	public static ResourceBlockPermission findByR_R(long resourceBlockId,
 		long roleId)
-		throws com.liferay.portal.NoSuchResourceBlockPermissionException {
+		throws com.liferay.portal.exception.NoSuchResourceBlockPermissionException {
 		return getPersistence().findByR_R(resourceBlockId, roleId);
 	}
 
@@ -429,7 +475,7 @@ public class ResourceBlockPermissionUtil {
 	*
 	* @param resourceBlockId the resource block ID
 	* @param roleId the role ID
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching resource block permission, or <code>null</code> if a matching resource block permission could not be found
 	*/
 	public static ResourceBlockPermission fetchByR_R(long resourceBlockId,
@@ -447,7 +493,7 @@ public class ResourceBlockPermissionUtil {
 	*/
 	public static ResourceBlockPermission removeByR_R(long resourceBlockId,
 		long roleId)
-		throws com.liferay.portal.NoSuchResourceBlockPermissionException {
+		throws com.liferay.portal.exception.NoSuchResourceBlockPermissionException {
 		return getPersistence().removeByR_R(resourceBlockId, roleId);
 	}
 
@@ -500,7 +546,7 @@ public class ResourceBlockPermissionUtil {
 	* @throws NoSuchResourceBlockPermissionException if a resource block permission with the primary key could not be found
 	*/
 	public static ResourceBlockPermission remove(long resourceBlockPermissionId)
-		throws com.liferay.portal.NoSuchResourceBlockPermissionException {
+		throws com.liferay.portal.exception.NoSuchResourceBlockPermissionException {
 		return getPersistence().remove(resourceBlockPermissionId);
 	}
 
@@ -518,7 +564,7 @@ public class ResourceBlockPermissionUtil {
 	*/
 	public static ResourceBlockPermission findByPrimaryKey(
 		long resourceBlockPermissionId)
-		throws com.liferay.portal.NoSuchResourceBlockPermissionException {
+		throws com.liferay.portal.exception.NoSuchResourceBlockPermissionException {
 		return getPersistence().findByPrimaryKey(resourceBlockPermissionId);
 	}
 
@@ -580,6 +626,26 @@ public class ResourceBlockPermissionUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the resource block permissions.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ResourceBlockPermissionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of resource block permissions
+	* @param end the upper bound of the range of resource block permissions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of resource block permissions
+	*/
+	public static List<ResourceBlockPermission> findAll(int start, int end,
+		OrderByComparator<ResourceBlockPermission> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the resource block permissions from the database.
 	*/
 	public static void removeAll() {
@@ -604,13 +670,6 @@ public class ResourceBlockPermissionUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(ResourceBlockPermissionPersistence persistence) {
 	}
 
 	private static ResourceBlockPermissionPersistence _persistence;

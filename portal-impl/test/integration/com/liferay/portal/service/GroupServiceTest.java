@@ -14,10 +14,15 @@
 
 package com.liferay.portal.service;
 
-import com.liferay.portal.GroupParentException;
 import com.liferay.portal.LocaleException;
+import com.liferay.portal.exception.GroupParentException;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
@@ -42,13 +47,7 @@ import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.RoleConstants;
 import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.PrincipalException;
-import com.liferay.portal.security.permission.ActionKeys;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.security.permission.PermissionThreadLocal;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.test.rule.MainServletTestRule;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.test.LayoutTestUtil;
@@ -85,7 +84,7 @@ public class GroupServiceTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
-			new LiferayIntegrationTestRule(), MainServletTestRule.INSTANCE,
+			new LiferayIntegrationTestRule(),
 			SynchronousDestinationTestRule.INSTANCE);
 
 	@Before
@@ -183,6 +182,38 @@ public class GroupServiceTest {
 		testGroup(
 			user, group1, group11, null, true, false, false, true, false, true,
 			true);
+	}
+
+	@Test
+	public void testDeleteOrganizationSiteOnlyRemovesSiteRoles()
+		throws Exception {
+
+		Organization organization = OrganizationTestUtil.addOrganization(true);
+
+		Group organizationSite = GroupLocalServiceUtil.getOrganizationGroup(
+			TestPropsValues.getCompanyId(), organization.getOrganizationId());
+
+		organizationSite.setManualMembership(true);
+
+		User user = UserTestUtil.addOrganizationOwnerUser(organization);
+
+		UserLocalServiceUtil.addGroupUser(
+			organizationSite.getGroupId(), user.getUserId());
+		UserLocalServiceUtil.addOrganizationUsers(
+			organization.getOrganizationId(), new long[] {user.getUserId()});
+
+		Role siteRole = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
+
+		UserGroupRoleLocalServiceUtil.addUserGroupRoles(
+			user.getUserId(), organizationSite.getGroupId(),
+			new long[] {siteRole.getRoleId()});
+
+		GroupLocalServiceUtil.deleteGroup(organizationSite);
+
+		Assert.assertEquals(
+			1,
+			UserGroupRoleLocalServiceUtil.getUserGroupRolesCount(
+				user.getUserId(), organizationSite.getGroupId()));
 	}
 
 	@Test
@@ -304,6 +335,38 @@ public class GroupServiceTest {
 	}
 
 	@Test
+	public void testFindGroupByRole() throws Exception {
+		Group group = GroupTestUtil.addGroup(
+			GroupConstants.DEFAULT_PARENT_GROUP_ID);
+
+		long roleId = RoleTestUtil.addGroupRole(group.getGroupId());
+
+		LinkedHashMap<String, Object> groupParams = new LinkedHashMap<>();
+
+		groupParams.put("groupsRoles", Long.valueOf(roleId));
+		groupParams.put("site", Boolean.TRUE);
+
+		Assert.assertEquals(
+			1,
+			GroupLocalServiceUtil.searchCount(
+				TestPropsValues.getCompanyId(), null, groupParams));
+
+		List<Group> groups = GroupLocalServiceUtil.search(
+			TestPropsValues.getCompanyId(), null, groupParams,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(1, groups.size());
+		Assert.assertEquals(group, groups.get(0));
+		Assert.assertEquals(
+			1, GroupLocalServiceUtil.getRoleGroupsCount(roleId));
+
+		groups = GroupLocalServiceUtil.getRoleGroups(roleId);
+
+		Assert.assertEquals(1, groups.size());
+		Assert.assertEquals(group, groups.get(0));
+	}
+
+	@Test
 	public void testFindGuestGroupByCompanyName() throws Exception {
 		LinkedHashMap<String, Object> groupParams = new LinkedHashMap<>();
 
@@ -340,39 +403,6 @@ public class GroupServiceTest {
 			0,
 			GroupLocalServiceUtil.searchCount(
 				TestPropsValues.getCompanyId(), null, "cabina14", groupParams));
-	}
-
-	@Test
-	public void testGetUserSitesGroups() throws Exception {
-		Organization parentOrganization = OrganizationTestUtil.addOrganization(
-			true);
-
-		Group parentOrganizationGroup = parentOrganization.getGroup();
-
-		LayoutTestUtil.addLayout(parentOrganizationGroup);
-
-		Organization organization = OrganizationTestUtil.addOrganization(
-			parentOrganization.getOrganizationId(),
-			RandomTestUtil.randomString(), false);
-
-		_organizations.add(organization);
-		_organizations.add(parentOrganization);
-
-		UserLocalServiceUtil.addOrganizationUsers(
-			organization.getOrganizationId(),
-			new long[] {TestPropsValues.getUserId()});
-
-		try {
-			List<Group> groups = GroupServiceUtil.getUserSitesGroups(
-				TestPropsValues.getUserId(), null, false, QueryUtil.ALL_POS);
-
-			Assert.assertTrue(groups.contains(parentOrganizationGroup));
-		}
-		finally {
-			UserLocalServiceUtil.unsetOrganizationUsers(
-				organization.getOrganizationId(),
-				new long[] {TestPropsValues.getUserId()});
-		}
 	}
 
 	@Test
@@ -1047,8 +1077,5 @@ public class GroupServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	@DeleteAfterTestRun
-	private final List<Organization> _organizations = new ArrayList<>();
 
 }

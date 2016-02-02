@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchImageException;
 import com.liferay.portal.model.Image;
 
 /**
@@ -77,6 +78,24 @@ public interface ImagePersistence extends BasePersistence<Image> {
 		com.liferay.portal.kernel.util.OrderByComparator<Image> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the images where size &lt; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ImageModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param size the size
+	* @param start the lower bound of the range of images
+	* @param end the upper bound of the range of images (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching images
+	*/
+	public java.util.List<Image> findByLtSize(int size, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Image> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first image in the ordered set where size &lt; &#63;.
 	*
 	* @param size the size
@@ -86,7 +105,7 @@ public interface ImagePersistence extends BasePersistence<Image> {
 	*/
 	public Image findByLtSize_First(int size,
 		com.liferay.portal.kernel.util.OrderByComparator<Image> orderByComparator)
-		throws com.liferay.portal.NoSuchImageException;
+		throws NoSuchImageException;
 
 	/**
 	* Returns the first image in the ordered set where size &lt; &#63;.
@@ -108,7 +127,7 @@ public interface ImagePersistence extends BasePersistence<Image> {
 	*/
 	public Image findByLtSize_Last(int size,
 		com.liferay.portal.kernel.util.OrderByComparator<Image> orderByComparator)
-		throws com.liferay.portal.NoSuchImageException;
+		throws NoSuchImageException;
 
 	/**
 	* Returns the last image in the ordered set where size &lt; &#63;.
@@ -131,7 +150,7 @@ public interface ImagePersistence extends BasePersistence<Image> {
 	*/
 	public Image[] findByLtSize_PrevAndNext(long imageId, int size,
 		com.liferay.portal.kernel.util.OrderByComparator<Image> orderByComparator)
-		throws com.liferay.portal.NoSuchImageException;
+		throws NoSuchImageException;
 
 	/**
 	* Removes all the images where size &lt; &#63; from the database.
@@ -177,8 +196,7 @@ public interface ImagePersistence extends BasePersistence<Image> {
 	* @return the image that was removed
 	* @throws NoSuchImageException if a image with the primary key could not be found
 	*/
-	public Image remove(long imageId)
-		throws com.liferay.portal.NoSuchImageException;
+	public Image remove(long imageId) throws NoSuchImageException;
 
 	public Image updateImpl(Image image);
 
@@ -189,8 +207,7 @@ public interface ImagePersistence extends BasePersistence<Image> {
 	* @return the image
 	* @throws NoSuchImageException if a image with the primary key could not be found
 	*/
-	public Image findByPrimaryKey(long imageId)
-		throws com.liferay.portal.NoSuchImageException;
+	public Image findByPrimaryKey(long imageId) throws NoSuchImageException;
 
 	/**
 	* Returns the image with the primary key or returns <code>null</code> if it could not be found.
@@ -240,6 +257,23 @@ public interface ImagePersistence extends BasePersistence<Image> {
 		com.liferay.portal.kernel.util.OrderByComparator<Image> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the images.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ImageModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of images
+	* @param end the upper bound of the range of images (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of images
+	*/
+	public java.util.List<Image> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Image> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the images from the database.
 	*/
 	public void removeAll();
@@ -250,4 +284,7 @@ public interface ImagePersistence extends BasePersistence<Image> {
 	* @return the number of images
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

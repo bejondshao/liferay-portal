@@ -24,7 +24,9 @@ import com.liferay.portal.kernel.portlet.PortletContainer;
 import com.liferay.portal.kernel.portlet.PortletContainerException;
 import com.liferay.portal.kernel.portlet.PortletModeFactory;
 import com.liferay.portal.kernel.portlet.WindowStateFactory;
+import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIconMenu;
 import com.liferay.portal.kernel.portlet.toolbar.PortletToolbar;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
@@ -38,10 +40,10 @@ import com.liferay.portal.kernel.xml.QName;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.LayoutTypePortlet;
 import com.liferay.portal.model.Portlet;
+import com.liferay.portal.model.PortletApp;
 import com.liferay.portal.model.PortletPreferencesIds;
 import com.liferay.portal.model.PublicRenderParameter;
 import com.liferay.portal.model.User;
-import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
@@ -52,6 +54,7 @@ import com.liferay.portal.theme.PortletDisplay;
 import com.liferay.portal.theme.PortletDisplayFactory;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.util.comparator.PortletConfigurationIconFactoryComparator;
 import com.liferay.util.SerializableUtil;
 
 import java.io.Serializable;
@@ -153,6 +156,12 @@ public class PortletContainerImpl implements PortletContainer {
 		}
 	}
 
+	public void setPortletConfigurationIconMenu(
+		PortletConfigurationIconMenu portletConfigurationIconMenu) {
+
+		_portletConfigurationIconMenu = portletConfigurationIconMenu;
+	}
+
 	public void setPortletToolbar(PortletToolbar portletToolbar) {
 		_portletToolbar = portletToolbar;
 	}
@@ -187,8 +196,11 @@ public class PortletContainerImpl implements PortletContainer {
 		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
+		PortletApp portletApp = portlet.getPortletApp();
+
 		Map<String, String[]> publicRenderParameters =
-			PublicRenderParametersPool.get(request, layout.getPlid());
+			PublicRenderParametersPool.get(
+				request, layout.getPlid(), portletApp.isWARFile());
 
 		Map<String, String[]> parameters = request.getParameterMap();
 
@@ -534,14 +546,15 @@ public class PortletContainerImpl implements PortletContainer {
 			invokerPortlet.processEvent(eventRequestImpl, eventResponseImpl);
 
 			if (eventResponseImpl.isCalledSetRenderParameter()) {
-				Map<String, String[]> renderParameterMap = new HashMap<>();
+				Map<String, String[]> renderParameterMap =
+					eventResponseImpl.getRenderParameterMap();
 
-				renderParameterMap.putAll(
-					eventResponseImpl.getRenderParameterMap());
-
-				RenderParametersPool.put(
-					request, requestLayout.getPlid(), portlet.getPortletId(),
-					renderParameterMap);
+				if (!renderParameterMap.isEmpty()) {
+					RenderParametersPool.put(
+						request, requestLayout.getPlid(),
+						portlet.getPortletId(),
+						new HashMap<>(renderParameterMap));
+				}
 			}
 
 			return eventResponseImpl.getEvents();
@@ -587,6 +600,12 @@ public class PortletContainerImpl implements PortletContainer {
 			themeDisplay, portlet);
 
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		_portletConfigurationIconMenu.setComparator(
+			PortletConfigurationIconFactoryComparator.INSTANCE);
+
+		portletDisplay.setPortletConfigurationIconMenu(
+			_portletConfigurationIconMenu);
 
 		portletDisplay.setPortletToolbar(_portletToolbar);
 
@@ -739,8 +758,6 @@ public class PortletContainerImpl implements PortletContainer {
 		String portletPrimaryKey = PortletPermissionUtil.getPrimaryKey(
 			layout.getPlid(), portlet.getPortletId());
 
-		portletDisplay.setControlPanelCategory(
-			portlet.getControlPanelEntryCategory());
 		portletDisplay.setId(portlet.getPortletId());
 		portletDisplay.setInstanceId(portlet.getInstanceId());
 		portletDisplay.setNamespace(
@@ -790,6 +807,7 @@ public class PortletContainerImpl implements PortletContainer {
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortletContainerImpl.class);
 
+	private PortletConfigurationIconMenu _portletConfigurationIconMenu;
 	private PortletToolbar _portletToolbar;
 
 }

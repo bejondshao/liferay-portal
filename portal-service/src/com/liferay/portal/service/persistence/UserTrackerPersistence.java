@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchUserTrackerException;
 import com.liferay.portal.model.UserTracker;
 
 /**
@@ -79,6 +80,25 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the user trackers where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link UserTrackerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of user trackers
+	* @param end the upper bound of the range of user trackers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching user trackers
+	*/
+	public java.util.List<UserTracker> findByCompanyId(long companyId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first user tracker in the ordered set where companyId = &#63;.
 	*
 	* @param companyId the company ID
@@ -88,7 +108,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	*/
 	public UserTracker findByCompanyId_First(long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	/**
 	* Returns the first user tracker in the ordered set where companyId = &#63;.
@@ -110,7 +130,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	*/
 	public UserTracker findByCompanyId_Last(long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	/**
 	* Returns the last user tracker in the ordered set where companyId = &#63;.
@@ -134,7 +154,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	public UserTracker[] findByCompanyId_PrevAndNext(long userTrackerId,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	/**
 	* Removes all the user trackers where companyId = &#63; from the database.
@@ -192,6 +212,25 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the user trackers where userId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link UserTrackerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param start the lower bound of the range of user trackers
+	* @param end the upper bound of the range of user trackers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching user trackers
+	*/
+	public java.util.List<UserTracker> findByUserId(long userId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first user tracker in the ordered set where userId = &#63;.
 	*
 	* @param userId the user ID
@@ -201,7 +240,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	*/
 	public UserTracker findByUserId_First(long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	/**
 	* Returns the first user tracker in the ordered set where userId = &#63;.
@@ -223,7 +262,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	*/
 	public UserTracker findByUserId_Last(long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	/**
 	* Returns the last user tracker in the ordered set where userId = &#63;.
@@ -247,7 +286,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	public UserTracker[] findByUserId_PrevAndNext(long userTrackerId,
 		long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	/**
 	* Removes all the user trackers where userId = &#63; from the database.
@@ -306,6 +345,25 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the user trackers where sessionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link UserTrackerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param sessionId the session ID
+	* @param start the lower bound of the range of user trackers
+	* @param end the upper bound of the range of user trackers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching user trackers
+	*/
+	public java.util.List<UserTracker> findBySessionId(
+		java.lang.String sessionId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first user tracker in the ordered set where sessionId = &#63;.
 	*
 	* @param sessionId the session ID
@@ -315,7 +373,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	*/
 	public UserTracker findBySessionId_First(java.lang.String sessionId,
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	/**
 	* Returns the first user tracker in the ordered set where sessionId = &#63;.
@@ -337,7 +395,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	*/
 	public UserTracker findBySessionId_Last(java.lang.String sessionId,
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	/**
 	* Returns the last user tracker in the ordered set where sessionId = &#63;.
@@ -361,7 +419,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	public UserTracker[] findBySessionId_PrevAndNext(long userTrackerId,
 		java.lang.String sessionId,
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	/**
 	* Removes all the user trackers where sessionId = &#63; from the database.
@@ -408,7 +466,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	* @throws NoSuchUserTrackerException if a user tracker with the primary key could not be found
 	*/
 	public UserTracker remove(long userTrackerId)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	public UserTracker updateImpl(UserTracker userTracker);
 
@@ -420,7 +478,7 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	* @throws NoSuchUserTrackerException if a user tracker with the primary key could not be found
 	*/
 	public UserTracker findByPrimaryKey(long userTrackerId)
-		throws com.liferay.portal.NoSuchUserTrackerException;
+		throws NoSuchUserTrackerException;
 
 	/**
 	* Returns the user tracker with the primary key or returns <code>null</code> if it could not be found.
@@ -468,6 +526,23 @@ public interface UserTrackerPersistence extends BasePersistence<UserTracker> {
 	*/
 	public java.util.List<UserTracker> findAll(int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the user trackers.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link UserTrackerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of user trackers
+	* @param end the upper bound of the range of user trackers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of user trackers
+	*/
+	public java.util.List<UserTracker> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<UserTracker> orderByComparator,
+		boolean retrieveFromCache);
 
 	/**
 	* Removes all the user trackers from the database.

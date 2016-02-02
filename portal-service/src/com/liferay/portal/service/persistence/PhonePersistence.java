@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchPhoneException;
 import com.liferay.portal.model.Phone;
 
 /**
@@ -79,6 +80,25 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the phones where uuid = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PhoneModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param start the lower bound of the range of phones
+	* @param end the upper bound of the range of phones (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching phones
+	*/
+	public java.util.List<Phone> findByUuid(java.lang.String uuid, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first phone in the ordered set where uuid = &#63;.
 	*
 	* @param uuid the uuid
@@ -88,7 +108,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone findByUuid_First(java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the first phone in the ordered set where uuid = &#63;.
@@ -110,7 +130,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone findByUuid_Last(java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the last phone in the ordered set where uuid = &#63;.
@@ -133,7 +153,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone[] findByUuid_PrevAndNext(long phoneId, java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Removes all the phones where uuid = &#63; from the database.
@@ -195,6 +215,26 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the phones where uuid = &#63; and companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PhoneModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param companyId the company ID
+	* @param start the lower bound of the range of phones
+	* @param end the upper bound of the range of phones (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching phones
+	*/
+	public java.util.List<Phone> findByUuid_C(java.lang.String uuid,
+		long companyId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first phone in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
 	* @param uuid the uuid
@@ -205,7 +245,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone findByUuid_C_First(java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the first phone in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -229,7 +269,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone findByUuid_C_Last(java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the last phone in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -255,7 +295,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	public Phone[] findByUuid_C_PrevAndNext(long phoneId,
 		java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Removes all the phones where uuid = &#63; and companyId = &#63; from the database.
@@ -315,6 +355,25 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the phones where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PhoneModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of phones
+	* @param end the upper bound of the range of phones (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching phones
+	*/
+	public java.util.List<Phone> findByCompanyId(long companyId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first phone in the ordered set where companyId = &#63;.
 	*
 	* @param companyId the company ID
@@ -324,7 +383,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone findByCompanyId_First(long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the first phone in the ordered set where companyId = &#63;.
@@ -346,7 +405,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone findByCompanyId_Last(long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the last phone in the ordered set where companyId = &#63;.
@@ -369,7 +428,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone[] findByCompanyId_PrevAndNext(long phoneId, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Removes all the phones where companyId = &#63; from the database.
@@ -425,6 +484,24 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the phones where userId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PhoneModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param start the lower bound of the range of phones
+	* @param end the upper bound of the range of phones (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching phones
+	*/
+	public java.util.List<Phone> findByUserId(long userId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first phone in the ordered set where userId = &#63;.
 	*
 	* @param userId the user ID
@@ -434,7 +511,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone findByUserId_First(long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the first phone in the ordered set where userId = &#63;.
@@ -456,7 +533,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone findByUserId_Last(long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the last phone in the ordered set where userId = &#63;.
@@ -479,7 +556,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone[] findByUserId_PrevAndNext(long phoneId, long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Removes all the phones where userId = &#63; from the database.
@@ -540,6 +617,26 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the phones where companyId = &#63; and classNameId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PhoneModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param classNameId the class name ID
+	* @param start the lower bound of the range of phones
+	* @param end the upper bound of the range of phones (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching phones
+	*/
+	public java.util.List<Phone> findByC_C(long companyId, long classNameId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first phone in the ordered set where companyId = &#63; and classNameId = &#63;.
 	*
 	* @param companyId the company ID
@@ -550,7 +647,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone findByC_C_First(long companyId, long classNameId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the first phone in the ordered set where companyId = &#63; and classNameId = &#63;.
@@ -574,7 +671,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	*/
 	public Phone findByC_C_Last(long companyId, long classNameId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the last phone in the ordered set where companyId = &#63; and classNameId = &#63;.
@@ -600,7 +697,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	public Phone[] findByC_C_PrevAndNext(long phoneId, long companyId,
 		long classNameId,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Removes all the phones where companyId = &#63; and classNameId = &#63; from the database.
@@ -667,6 +764,27 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the phones where companyId = &#63; and classNameId = &#63; and classPK = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PhoneModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param classNameId the class name ID
+	* @param classPK the class p k
+	* @param start the lower bound of the range of phones
+	* @param end the upper bound of the range of phones (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching phones
+	*/
+	public java.util.List<Phone> findByC_C_C(long companyId, long classNameId,
+		long classPK, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first phone in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63;.
 	*
 	* @param companyId the company ID
@@ -679,7 +797,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	public Phone findByC_C_C_First(long companyId, long classNameId,
 		long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the first phone in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63;.
@@ -707,7 +825,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	public Phone findByC_C_C_Last(long companyId, long classNameId,
 		long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the last phone in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63;.
@@ -736,7 +854,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	public Phone[] findByC_C_C_PrevAndNext(long phoneId, long companyId,
 		long classNameId, long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Removes all the phones where companyId = &#63; and classNameId = &#63; and classPK = &#63; from the database.
@@ -808,6 +926,28 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the phones where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PhoneModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param classNameId the class name ID
+	* @param classPK the class p k
+	* @param primary the primary
+	* @param start the lower bound of the range of phones
+	* @param end the upper bound of the range of phones (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching phones
+	*/
+	public java.util.List<Phone> findByC_C_C_P(long companyId,
+		long classNameId, long classPK, boolean primary, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first phone in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63;.
 	*
 	* @param companyId the company ID
@@ -821,7 +961,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	public Phone findByC_C_C_P_First(long companyId, long classNameId,
 		long classPK, boolean primary,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the first phone in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63;.
@@ -851,7 +991,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	public Phone findByC_C_C_P_Last(long companyId, long classNameId,
 		long classPK, boolean primary,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Returns the last phone in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63;.
@@ -882,7 +1022,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	public Phone[] findByC_C_C_P_PrevAndNext(long phoneId, long companyId,
 		long classNameId, long classPK, boolean primary,
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator)
-		throws com.liferay.portal.NoSuchPhoneException;
+		throws NoSuchPhoneException;
 
 	/**
 	* Removes all the phones where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63; from the database.
@@ -936,8 +1076,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	* @return the phone that was removed
 	* @throws NoSuchPhoneException if a phone with the primary key could not be found
 	*/
-	public Phone remove(long phoneId)
-		throws com.liferay.portal.NoSuchPhoneException;
+	public Phone remove(long phoneId) throws NoSuchPhoneException;
 
 	public Phone updateImpl(Phone phone);
 
@@ -948,8 +1087,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	* @return the phone
 	* @throws NoSuchPhoneException if a phone with the primary key could not be found
 	*/
-	public Phone findByPrimaryKey(long phoneId)
-		throws com.liferay.portal.NoSuchPhoneException;
+	public Phone findByPrimaryKey(long phoneId) throws NoSuchPhoneException;
 
 	/**
 	* Returns the phone with the primary key or returns <code>null</code> if it could not be found.
@@ -999,6 +1137,23 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the phones.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PhoneModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of phones
+	* @param end the upper bound of the range of phones (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of phones
+	*/
+	public java.util.List<Phone> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Phone> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the phones from the database.
 	*/
 	public void removeAll();
@@ -1009,4 +1164,7 @@ public interface PhonePersistence extends BasePersistence<Phone> {
 	* @return the number of phones
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

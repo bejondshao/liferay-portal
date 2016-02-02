@@ -34,7 +34,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 
-import com.liferay.portlet.documentlibrary.NoSuchFileShortcutException;
+import com.liferay.portlet.documentlibrary.exception.NoSuchFileShortcutException;
 import com.liferay.portlet.documentlibrary.model.DLFileShortcut;
 import com.liferay.portlet.documentlibrary.service.DLFileShortcutLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.persistence.DLFileShortcutPersistence;
@@ -43,6 +43,7 @@ import com.liferay.portlet.documentlibrary.service.persistence.DLFileShortcutUti
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,8 +60,9 @@ import java.util.Set;
  * @generated
  */
 public class DLFileShortcutPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -409,11 +411,9 @@ public class DLFileShortcutPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = DLFileShortcutLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<DLFileShortcut>() {
 				@Override
-				public void performAction(Object object) {
-					DLFileShortcut dlFileShortcut = (DLFileShortcut)object;
-
+				public void performAction(DLFileShortcut dlFileShortcut) {
 					Assert.assertNotNull(dlFileShortcut);
 
 					count.increment();

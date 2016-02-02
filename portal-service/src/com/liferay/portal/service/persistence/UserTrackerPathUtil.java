@@ -157,6 +157,29 @@ public class UserTrackerPathUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the user tracker paths where userTrackerId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link UserTrackerPathModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userTrackerId the user tracker ID
+	* @param start the lower bound of the range of user tracker paths
+	* @param end the upper bound of the range of user tracker paths (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching user tracker paths
+	*/
+	public static List<UserTrackerPath> findByUserTrackerId(
+		long userTrackerId, int start, int end,
+		OrderByComparator<UserTrackerPath> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByUserTrackerId(userTrackerId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first user tracker path in the ordered set where userTrackerId = &#63;.
 	*
 	* @param userTrackerId the user tracker ID
@@ -166,7 +189,7 @@ public class UserTrackerPathUtil {
 	*/
 	public static UserTrackerPath findByUserTrackerId_First(
 		long userTrackerId, OrderByComparator<UserTrackerPath> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerPathException {
+		throws com.liferay.portal.exception.NoSuchUserTrackerPathException {
 		return getPersistence()
 				   .findByUserTrackerId_First(userTrackerId, orderByComparator);
 	}
@@ -194,7 +217,7 @@ public class UserTrackerPathUtil {
 	*/
 	public static UserTrackerPath findByUserTrackerId_Last(long userTrackerId,
 		OrderByComparator<UserTrackerPath> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerPathException {
+		throws com.liferay.portal.exception.NoSuchUserTrackerPathException {
 		return getPersistence()
 				   .findByUserTrackerId_Last(userTrackerId, orderByComparator);
 	}
@@ -224,7 +247,7 @@ public class UserTrackerPathUtil {
 	public static UserTrackerPath[] findByUserTrackerId_PrevAndNext(
 		long userTrackerPathId, long userTrackerId,
 		OrderByComparator<UserTrackerPath> orderByComparator)
-		throws com.liferay.portal.NoSuchUserTrackerPathException {
+		throws com.liferay.portal.exception.NoSuchUserTrackerPathException {
 		return getPersistence()
 				   .findByUserTrackerId_PrevAndNext(userTrackerPathId,
 			userTrackerId, orderByComparator);
@@ -285,7 +308,7 @@ public class UserTrackerPathUtil {
 	* @throws NoSuchUserTrackerPathException if a user tracker path with the primary key could not be found
 	*/
 	public static UserTrackerPath remove(long userTrackerPathId)
-		throws com.liferay.portal.NoSuchUserTrackerPathException {
+		throws com.liferay.portal.exception.NoSuchUserTrackerPathException {
 		return getPersistence().remove(userTrackerPathId);
 	}
 
@@ -301,7 +324,7 @@ public class UserTrackerPathUtil {
 	* @throws NoSuchUserTrackerPathException if a user tracker path with the primary key could not be found
 	*/
 	public static UserTrackerPath findByPrimaryKey(long userTrackerPathId)
-		throws com.liferay.portal.NoSuchUserTrackerPathException {
+		throws com.liferay.portal.exception.NoSuchUserTrackerPathException {
 		return getPersistence().findByPrimaryKey(userTrackerPathId);
 	}
 
@@ -362,6 +385,26 @@ public class UserTrackerPathUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the user tracker paths.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link UserTrackerPathModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of user tracker paths
+	* @param end the upper bound of the range of user tracker paths (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of user tracker paths
+	*/
+	public static List<UserTrackerPath> findAll(int start, int end,
+		OrderByComparator<UserTrackerPath> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the user tracker paths from the database.
 	*/
 	public static void removeAll() {
@@ -377,6 +420,10 @@ public class UserTrackerPathUtil {
 		return getPersistence().countAll();
 	}
 
+	public static java.util.Set<java.lang.String> getBadColumnNames() {
+		return getPersistence().getBadColumnNames();
+	}
+
 	public static UserTrackerPathPersistence getPersistence() {
 		if (_persistence == null) {
 			_persistence = (UserTrackerPathPersistence)PortalBeanLocatorUtil.locate(UserTrackerPathPersistence.class.getName());
@@ -386,13 +433,6 @@ public class UserTrackerPathUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(UserTrackerPathPersistence persistence) {
 	}
 
 	private static UserTrackerPathPersistence _persistence;

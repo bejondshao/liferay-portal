@@ -1478,9 +1478,9 @@ public class LocalProcessExecutorTest {
 		arguments.add(
 			"-D" + SystemProperties.SYSTEM_PROPERTIES_QUIET + "=true");
 
-		if (Boolean.getBoolean("junit.debug")) {
+		if (Boolean.getBoolean("jvm.debug")) {
 			arguments.add(jpdaOptions);
-			arguments.add("-Djunit.debug=true");
+			arguments.add("-Djvm.debug=true");
 		}
 
 		String whipAgentLine = System.getProperty("whip.agent");
@@ -1537,8 +1537,8 @@ public class LocalProcessExecutorTest {
 		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
 			new UnsyncByteArrayOutputStream();
 
-		try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(
-				unsyncByteArrayOutputStream) {
+		try (ObjectOutputStream objectOutputStream =
+				new ObjectOutputStream(unsyncByteArrayOutputStream) {
 
 					@Override
 					protected void writeStreamHeader() {
@@ -1602,14 +1602,14 @@ public class LocalProcessExecutorTest {
 	private static final ServerSocketConfigurator _serverSocketConfigurator =
 		new ServerSocketConfigurator() {
 
-		@Override
-		public void configure(ServerSocket serverSocket)
-			throws SocketException {
+			@Override
+			public void configure(ServerSocket serverSocket)
+				throws SocketException {
 
-			serverSocket.setReuseAddress(true);
-		}
+				serverSocket.setReuseAddress(true);
+			}
 
-	};
+		};
 
 	private final LocalProcessExecutor _localProcessExecutor =
 		new LocalProcessExecutor();
@@ -1825,6 +1825,7 @@ public class LocalProcessExecutorTest {
 							// Swallow unconcerned uncaught exception
 
 						}
+
 					});
 
 				if (!result || !ProcessContext.isAttached()) {

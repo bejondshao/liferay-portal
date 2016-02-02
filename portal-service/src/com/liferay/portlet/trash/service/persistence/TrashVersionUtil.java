@@ -156,6 +156,28 @@ public class TrashVersionUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the trash versions where entryId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrashVersionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param entryId the entry ID
+	* @param start the lower bound of the range of trash versions
+	* @param end the upper bound of the range of trash versions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching trash versions
+	*/
+	public static List<TrashVersion> findByEntryId(long entryId, int start,
+		int end, OrderByComparator<TrashVersion> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByEntryId(entryId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
 	* Returns the first trash version in the ordered set where entryId = &#63;.
 	*
 	* @param entryId the entry ID
@@ -165,7 +187,7 @@ public class TrashVersionUtil {
 	*/
 	public static TrashVersion findByEntryId_First(long entryId,
 		OrderByComparator<TrashVersion> orderByComparator)
-		throws com.liferay.portlet.trash.NoSuchVersionException {
+		throws com.liferay.portlet.trash.exception.NoSuchVersionException {
 		return getPersistence().findByEntryId_First(entryId, orderByComparator);
 	}
 
@@ -191,7 +213,7 @@ public class TrashVersionUtil {
 	*/
 	public static TrashVersion findByEntryId_Last(long entryId,
 		OrderByComparator<TrashVersion> orderByComparator)
-		throws com.liferay.portlet.trash.NoSuchVersionException {
+		throws com.liferay.portlet.trash.exception.NoSuchVersionException {
 		return getPersistence().findByEntryId_Last(entryId, orderByComparator);
 	}
 
@@ -218,7 +240,7 @@ public class TrashVersionUtil {
 	*/
 	public static TrashVersion[] findByEntryId_PrevAndNext(long versionId,
 		long entryId, OrderByComparator<TrashVersion> orderByComparator)
-		throws com.liferay.portlet.trash.NoSuchVersionException {
+		throws com.liferay.portlet.trash.exception.NoSuchVersionException {
 		return getPersistence()
 				   .findByEntryId_PrevAndNext(versionId, entryId,
 			orderByComparator);
@@ -294,6 +316,29 @@ public class TrashVersionUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the trash versions where entryId = &#63; and classNameId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrashVersionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param entryId the entry ID
+	* @param classNameId the class name ID
+	* @param start the lower bound of the range of trash versions
+	* @param end the upper bound of the range of trash versions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching trash versions
+	*/
+	public static List<TrashVersion> findByE_C(long entryId, long classNameId,
+		int start, int end, OrderByComparator<TrashVersion> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByE_C(entryId, classNameId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Returns the first trash version in the ordered set where entryId = &#63; and classNameId = &#63;.
 	*
 	* @param entryId the entry ID
@@ -304,7 +349,7 @@ public class TrashVersionUtil {
 	*/
 	public static TrashVersion findByE_C_First(long entryId, long classNameId,
 		OrderByComparator<TrashVersion> orderByComparator)
-		throws com.liferay.portlet.trash.NoSuchVersionException {
+		throws com.liferay.portlet.trash.exception.NoSuchVersionException {
 		return getPersistence()
 				   .findByE_C_First(entryId, classNameId, orderByComparator);
 	}
@@ -334,7 +379,7 @@ public class TrashVersionUtil {
 	*/
 	public static TrashVersion findByE_C_Last(long entryId, long classNameId,
 		OrderByComparator<TrashVersion> orderByComparator)
-		throws com.liferay.portlet.trash.NoSuchVersionException {
+		throws com.liferay.portlet.trash.exception.NoSuchVersionException {
 		return getPersistence()
 				   .findByE_C_Last(entryId, classNameId, orderByComparator);
 	}
@@ -366,7 +411,7 @@ public class TrashVersionUtil {
 	public static TrashVersion[] findByE_C_PrevAndNext(long versionId,
 		long entryId, long classNameId,
 		OrderByComparator<TrashVersion> orderByComparator)
-		throws com.liferay.portlet.trash.NoSuchVersionException {
+		throws com.liferay.portlet.trash.exception.NoSuchVersionException {
 		return getPersistence()
 				   .findByE_C_PrevAndNext(versionId, entryId, classNameId,
 			orderByComparator);
@@ -402,7 +447,7 @@ public class TrashVersionUtil {
 	* @throws NoSuchVersionException if a matching trash version could not be found
 	*/
 	public static TrashVersion findByC_C(long classNameId, long classPK)
-		throws com.liferay.portlet.trash.NoSuchVersionException {
+		throws com.liferay.portlet.trash.exception.NoSuchVersionException {
 		return getPersistence().findByC_C(classNameId, classPK);
 	}
 
@@ -422,7 +467,7 @@ public class TrashVersionUtil {
 	*
 	* @param classNameId the class name ID
 	* @param classPK the class p k
-	* @param retrieveFromCache whether to use the finder cache
+	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching trash version, or <code>null</code> if a matching trash version could not be found
 	*/
 	public static TrashVersion fetchByC_C(long classNameId, long classPK,
@@ -439,7 +484,7 @@ public class TrashVersionUtil {
 	* @return the trash version that was removed
 	*/
 	public static TrashVersion removeByC_C(long classNameId, long classPK)
-		throws com.liferay.portlet.trash.NoSuchVersionException {
+		throws com.liferay.portlet.trash.exception.NoSuchVersionException {
 		return getPersistence().removeByC_C(classNameId, classPK);
 	}
 
@@ -490,7 +535,7 @@ public class TrashVersionUtil {
 	* @throws NoSuchVersionException if a trash version with the primary key could not be found
 	*/
 	public static TrashVersion remove(long versionId)
-		throws com.liferay.portlet.trash.NoSuchVersionException {
+		throws com.liferay.portlet.trash.exception.NoSuchVersionException {
 		return getPersistence().remove(versionId);
 	}
 
@@ -506,7 +551,7 @@ public class TrashVersionUtil {
 	* @throws NoSuchVersionException if a trash version with the primary key could not be found
 	*/
 	public static TrashVersion findByPrimaryKey(long versionId)
-		throws com.liferay.portlet.trash.NoSuchVersionException {
+		throws com.liferay.portlet.trash.exception.NoSuchVersionException {
 		return getPersistence().findByPrimaryKey(versionId);
 	}
 
@@ -567,6 +612,26 @@ public class TrashVersionUtil {
 	}
 
 	/**
+	* Returns an ordered range of all the trash versions.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrashVersionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of trash versions
+	* @param end the upper bound of the range of trash versions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of trash versions
+	*/
+	public static List<TrashVersion> findAll(int start, int end,
+		OrderByComparator<TrashVersion> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
 	* Removes all the trash versions from the database.
 	*/
 	public static void removeAll() {
@@ -591,13 +656,6 @@ public class TrashVersionUtil {
 		}
 
 		return _persistence;
-	}
-
-	/**
-	 * @deprecated As of 6.2.0
-	 */
-	@Deprecated
-	public void setPersistence(TrashVersionPersistence persistence) {
 	}
 
 	private static TrashVersionPersistence _persistence;

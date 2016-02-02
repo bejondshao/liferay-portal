@@ -14,7 +14,7 @@
 
 package com.liferay.portal.service.persistence.test;
 
-import com.liferay.portal.NoSuchCompanyException;
+import com.liferay.portal.exception.NoSuchCompanyException;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
@@ -41,6 +41,7 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -57,8 +58,9 @@ import java.util.Set;
  * @generated
  */
 public class CompanyPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -324,11 +326,9 @@ public class CompanyPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = CompanyLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<Company>() {
 				@Override
-				public void performAction(Object object) {
-					Company company = (Company)object;
-
+				public void performAction(Company company) {
 					Assert.assertNotNull(company);
 
 					count.increment();

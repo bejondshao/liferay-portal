@@ -2,30 +2,71 @@
 	<property name="testray.main.component.name" value="Recycle Bin" />
 
 	<set-up>
+		<execute macro="TestCase#setUpPortalInstance" />
+
 		<execute macro="User#firstLoginPG" />
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
 		<execute macro="Site#addBlankCP">
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
+		<execute macro="ProductMenu#gotoControlPanelSites">
+			<var name="portlet" value="Sites" />
 		</execute>
 
-		<execute macro="SitePage#addCP">
+		<execute macro="Page#add">
+			<var name="page" value="Public Pages" />
+			<var name="pageName" value="Test Page" />
 			<var name="siteName" value="Site Name" />
-			<var name="sitePageName" value="Test Page" />
-			<var name="sitePagePrivacy" value="Public" />
 		</execute>
 	</set-up>
 
 	<tear-down>
-		<execute macro="Site#tearDownCP" />
+		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
+
+		<if>
+			<equals arg1="${testPortalInstance}" arg2="true" />
+			<then>
+				<execute macro="PortalInstances#tearDownCP" />
+			</then>
+			<else>
+				<execute macro="Site#tearDownCP" />
+			</else>
+		</if>
 	</tear-down>
+
+	<command name="DisableRecycleBin" priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesConfiguration">
+			<var name="portlet" value="Site Settings" />
+		</execute>
+
+		<execute macro="RecycleBin#disableRecycleBinViaSiteSettings" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
+		</execute>
+
+		<execute macro="WebContentNavigator#gotoAddCP" />
+
+		<execute macro="WebContent#addCP">
+			<var name="webContentContent" value="Web Content Content" />
+			<var name="webContentTitle" value="Web Content Title" />
+		</execute>
+
+		<execute macro="WebContent#publish" />
+
+		<execute macro="WebContent#deleteWithDisabledRB">
+			<var name="entryTitle" value="Web Content Title" />
+		</execute>
+	</command>
 
 	<command name="RecycleBinBlogs" priority="3">
 		<execute macro="Page#gotoPG">
@@ -55,9 +96,12 @@
 			<var name="entryTitle" value="Blogs Entry Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -128,21 +172,25 @@
 			<var name="bookmarkURL" value="http://www.liferay.com/" />
 		</execute>
 
-		<execute macro="BookmarksFolder#gotoSubfolderPG">
-			<var name="folderName" value="Folder Name" />
+		<execute macro="Navigator#gotoSitePage">
 			<var name="pageName" value="Test Page" />
 			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
-			<var name="subfolderName" value="Subfolder Name" />
+		</execute>
+
+		<execute macro="BookmarksFolder#gotoPG">
+			<var name="folderName" value="Folder Name" />
 		</execute>
 
 		<execute macro="BookmarksFolder#moveSubfolderToRecycleBinPG">
 			<var name="subfolderName" value="Subfolder Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -165,12 +213,7 @@
 			<var name="subfolderName" value="Subfolder Name" />
 		</execute>
 
-		<execute macro="Bookmark#gotoPG">
-			<var name="bookmarkName" value="Bookmark Name" />
-			<var name="bookmarkURL" value="http://www.liferay.com/" />
-		</execute>
-
-		<execute macro="Bookmark#viewPG">
+		<execute macro="Bookmark#viewBookmark">
 			<var name="bookmarkName" value="Bookmark Name" />
 			<var name="bookmarkURL" value="http://www.liferay.com/" />
 		</execute>
@@ -187,9 +230,12 @@
 			<var name="bookmarkName" value="Bookmark Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -212,224 +258,19 @@
 			<var name="subfolderName" value="Subfolder Name" />
 		</execute>
 
-		<execute macro="Bookmark#gotoPG">
+		<execute macro="Bookmark#viewBookmark">
 			<var name="bookmarkName" value="Bookmark Name" />
 			<var name="bookmarkURL" value="http://www.liferay.com/" />
 		</execute>
-
-		<execute macro="Bookmark#viewPG">
-			<var name="bookmarkName" value="Bookmark Name" />
-			<var name="bookmarkURL" value="http://www.liferay.com/" />
-		</execute>
-	</command>
-
-	<command name="RecycleBinEntriesMaxAge" priority="4">
-		<property name="custom.properties" value="trash.entries.max.age=86400" />
-
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
-			<var name="siteScopeName" value="Site Name" />
-		</execute>
-
-		<execute macro="Site#disableRecycleBinCP" />
-
-		<execute macro="RecycleBin#viewDisabledCP">
-			<var name="siteScopeName" value="Site Name" />
-		</execute>
-
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Blogs" />
-			<var name="siteScopeName" value="Site Name" />
-		</execute>
-
-		<execute macro="Blogs#addEntry">
-			<var name="entryContent" value="Blogs Entry Content" />
-			<var name="entryTitle" value="Blogs Entry Title" />
-		</execute>
-
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Blogs" />
-			<var name="siteScopeName" value="Site Name" />
-		</execute>
-
-		<execute macro="RecycleBin#viewDeleteWithDisabledRBViaBlogsCP">
-			<var name="entryTitle" value="Blogs Entry Title" />
-		</execute>
-
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
-			<var name="siteScopeName" value="Site Name" />
-		</execute>
-
-		<execute macro="Site#enableRecycleBinCP" />
-
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Sites" />
-		</execute>
-
-		<execute macro="Site#addBlankCP">
-			<var name="siteName" value="Test Site Name" />
-		</execute>
-
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
-			<var name="siteScopeName" value="Test Site Name" />
-		</execute>
-
-		<execute macro="RecycleBin#viewRecyclebinViaSiteSettingsCP">
-			<var name="maxAgeField" value="60" />
-		</execute>
-	</command>
-
-	<command name="RecycleBinGeneralRestoring" priority="4">
-		<execute macro="Page#gotoPG">
-			<var name="pageName" value="Test Page" />
-			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
-		</execute>
-
-		<execute macro="Portlet#addPG">
-			<var name="portletName" value="Documents and Media" />
-		</execute>
-
-		<execute macro="Page#gotoPG">
-			<var name="pageName" value="Test Page" />
-			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
-		</execute>
-
-		<execute macro="DMDocument#addPG">
-			<var name="dmDocumentDescription" value="Document Description 1" />
-			<var name="dmDocumentFile" value="Document_1.doc" />
-			<var name="dmDocumentTitle" value="Document Title 1" />
-		</execute>
-
-		<execute macro="Page#gotoPG">
-			<var name="pageName" value="Test Page" />
-			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
-		</execute>
-
-		<execute macro="DMDocument#addPG">
-			<var name="dmDocumentDescription" value="Document Description 2" />
-			<var name="dmDocumentFile" value="Document_2.doc" />
-			<var name="dmDocumentTitle" value="Document Title 2" />
-		</execute>
-
-		<execute macro="Page#gotoPG">
-			<var name="pageName" value="Test Page" />
-			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
-		</execute>
-
-		<execute macro="DMDocument#addPG">
-			<var name="dmDocumentDescription" value="Document Description 3" />
-			<var name="dmDocumentFile" value="Document_3.doc" />
-			<var name="dmDocumentTitle" value="Document Title 3" />
-		</execute>
-
-		<execute macro="Page#gotoPG">
-			<var name="pageName" value="Test Page" />
-			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
-		</execute>
-
-		<execute macro="DMDocument#editPG">
-			<var name="dmDocumentTitle" value="Document Title 2" />
-			<var name="dmDocumentTitleEdit" value="Document Title 2 Edit" />
-		</execute>
-
-		<execute macro="Page#openURL" />
-
-		<execute macro="Page#gotoPG">
-			<var name="pageName" value="Test Page" />
-			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
-		</execute>
-
-		<execute macro="DMDocument#viewDocumentVersionNumberPG">
-			<var name="dmDocumentTitle" value="Document Title 2 Edit" />
-			<var name="dmDocumentVersionNumber" value="1.1" />
-		</execute>
-
-		<execute macro="Page#openURL" />
-
-		<execute macro="Page#gotoPG">
-			<var name="pageName" value="Test Page" />
-			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
-		</execute>
-
-		<execute macro="DMDocument#checkoutPG">
-			<var name="dmDocumentTitle" value="Document Title 3" />
-		</execute>
-
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Documents and Media" />
-			<var name="siteScopeName" value="Site Name" />
-		</execute>
-
-		<execute macro="DMDocument#moveToRecycleBinCP">
-			<var name="assetType" value="Document" />
-			<var name="dmDocumentTitle" value="Document Title 1" />
-		</execute>
-
-		<execute macro="Page#gotoPG">
-			<var name="pageName" value="Test Page" />
-			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
-		</execute>
-
-		<execute macro="DMDocument#editPG">
-			<var name="dmDocumentTitle" value="Document Title 2 Edit" />
-			<var name="dmDocumentTitleEdit" value="Document Title 1" />
-		</execute>
-
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
-		</execute>
-
-		<execute macro="RecycleBin#restoreWarningCP">
-			<var name="assetName" value="Document Title 1" />
-			<var name="assetRestoreLocation" value="Home" />
-			<var name="assetType" value="Document" />
-			<var name="newAssetName" value="Document Title 4" />
-		</execute>
-
-		<execute macro="Page#gotoPG">
-			<var name="pageName" value="Test Page" />
-			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
-		</execute>
-
-		<execute macro="DMDocument#viewPG">
-			<var name="dmDocumentDescription" value="Document Description 1" />
-			<var name="dmDocumentTitle" value="Document Title 4" />
-		</execute>
-
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Documents and Media" />
-			<var name="siteScopeName" value="Site Name" />
-		</execute>
-
-		<execute macro="DMDocument#moveToRecycleBinCP">
-			<var name="assetType" value="Document" />
-			<var name="dmDocumentTitle" value="Document Title 3" />
-		</execute>
-
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
-		</execute>
-
-		<execute macro="RecycleBin#emptyCP" />
 	</command>
 
 	<command name="RecycleBinMBAttachment" priority="3">
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Message Boards" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
 		</execute>
 
 		<execute macro="MessageboardsThread#addCPWithAttachment">
@@ -438,9 +279,12 @@
 			<var name="threadSubject" value="MB Subject" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Message Boards" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
 		</execute>
 
 		<execute macro="MessageboardsThread#gotoCP">
@@ -453,9 +297,12 @@
 			<var name="threadBodyEdit" value="MB Body Edit" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Message Boards" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewCP">
@@ -470,9 +317,12 @@
 			<var name="mbAttachmentFile" value="Document_1.doc" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Message Boards" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewCP">
@@ -514,9 +364,12 @@
 			<var name="entryTitle" value="Blogs Entry Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -597,9 +450,12 @@
 			<var name="entryTitle" value="Blogs Entry Title 1" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#searchCP">
@@ -612,9 +468,12 @@
 			<var name="deleteUser" value="Test Test" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#searchCP">
@@ -627,9 +486,12 @@
 			<var name="deleteUser" value="Test Test" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#searchCP">
@@ -665,7 +527,7 @@
 			<var name="siteURL" value="true" />
 		</execute>
 
-		<execute macro="DMFolder#gotoPG">
+		<execute macro="DMNavigator#gotoFolderPG">
 			<var name="dmFolderName" value="DM Folder Name" />
 		</execute>
 
@@ -675,7 +537,7 @@
 			<var name="dmDocumentTitle" value="DM Document Title 1" />
 		</execute>
 
-		<execute macro="Page#openURL" />
+		<execute macro="Navigator#openURL" />
 
 		<execute macro="Page#gotoPG">
 			<var name="pageName" value="Test Page" />
@@ -683,7 +545,7 @@
 			<var name="siteURL" value="true" />
 		</execute>
 
-		<execute macro="DMFolder#gotoPG">
+		<execute macro="DMNavigator#gotoFolderPG">
 			<var name="dmFolderName" value="DM Folder Name" />
 		</execute>
 
@@ -693,7 +555,7 @@
 			<var name="dmDocumentTitle" value="DM Document Title 2" />
 		</execute>
 
-		<execute macro="Page#openURL" />
+		<execute macro="Navigator#openURL" />
 
 		<execute macro="Page#gotoPG">
 			<var name="pageName" value="Test Page" />
@@ -705,9 +567,12 @@
 			<var name="dmFolderName" value="DM Folder Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#searchCP">
@@ -720,9 +585,12 @@
 			<var name="deleteUser" value="test test" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#searchCP">
@@ -754,10 +622,12 @@
 			<var name="webContentTitle" value="WC Title" />
 		</execute>
 
-		<execute macro="Page#gotoPublishingTools">
-			<var name="portletName" value="Staging Configuration" />
+		<execute macro="Navigator#openSiteURL">
 			<var name="siteName" value="Site Name" />
-			<var name="siteURL" value="true" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesPublishingTools">
+			<var name="portlet" value="Staging" />
 		</execute>
 
 		<execute macro="Staging#activateStagingCP">
@@ -783,12 +653,16 @@
 			<var name="entryTitle" value="Blogs Entry Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContent#moveToRecycleBinCP">
+			<var name="assetType" value="Web Content Article" />
 			<var name="webContentTitle" value="WC Title" />
 		</execute>
 
@@ -805,9 +679,14 @@
 			<var name="entryTitle" value="Blogs Entry Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoStagingSite" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -826,9 +705,12 @@
 	</command>
 
 	<command name="RecycleBinWebContent" priority="3">
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoManageStructures" />
@@ -848,21 +730,32 @@
 			<var name="structureName" value="WC Structure Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentTemplates#addCP">
-			<var name="structureName" value="WC Structure Name" />
 			<var name="templateDescription" value="WC Template Description" />
-			<var name="templateFieldNames" value="Text" />
 			<var name="templateName" value="WC Template Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="WebContentTemplates#addStructure">
+			<var name="structureName" value="WC Structure Name" />
+			<var name="templateFieldNames" value="Text" />
+		</execute>
+
+		<execute macro="WebContentTemplates#save" />
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoAddWithStructureCP">
@@ -880,18 +773,25 @@
 			<var name="webContentTitle" value="WC WebContent Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContent#moveToRecycleBinCP">
+			<var name="assetType" value="Web Content Article" />
 			<var name="webContentTitle" value="WC WebContent Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -906,18 +806,25 @@
 			<var name="assetType" value="Web Content Article" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContent#viewWithStructureCP">
+			<var name="webContentText" value="WC WebContent Text" />
 			<var name="webContentTitle" value="WC WebContent Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoManageStructures" />
@@ -932,9 +839,12 @@
 			<var name="fieldName" value="Text" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentTemplates#viewCP">
@@ -946,47 +856,63 @@
 	</command>
 
 	<command name="RecycleBinWiki" priority="3">
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Wiki" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Wiki" />
 		</execute>
 
 		<execute macro="WikiNode#addCP">
 			<var name="wikiNodeName" value="Wiki Node Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Wiki" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Wiki" />
 		</execute>
 
 		<execute macro="WikiNode#addCP">
 			<var name="wikiNodeName" value="Wiki2 Node2 Name2" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Wiki" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="WikiNode#gotoCP">
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Wiki" />
+		</execute>
+
+		<execute macro="WikiNavigator#gotoNode">
 			<var name="wikiNodeName" value="Wiki Node Name" />
 		</execute>
 
-		<execute macro="WikiPage#gotoAllPagesCP" />
+		<execute macro="WikiNavigator#gotoAllPagesCP" />
 
 		<execute macro="WikiPage#addCP">
 			<var name="wikiPageContent" value="Wiki Page Content" />
 			<var name="wikiPageTitle" value="Wiki Page Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Wiki" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="WikiNode#gotoCP">
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Wiki" />
+		</execute>
+
+		<execute macro="WikiNavigator#gotoNode">
 			<var name="wikiNodeName" value="Wiki Node Name" />
+		</execute>
+
+		<execute macro="Portlet#changeDisplayStyle">
+			<var name="displayStyle" value="List" />
 		</execute>
 
 		<execute macro="WikiPage#deleteCP">
@@ -995,9 +921,12 @@
 			<var name="wikiPageTitle" value="Wiki Page Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Wiki" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Wiki" />
 		</execute>
 
 		<execute macro="WikiNode#deleteCP">
@@ -1005,9 +934,12 @@
 			<var name="wikiNodeName" value="Wiki Node Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -1035,9 +967,12 @@
 			<var name="assetType" value="Wiki Page" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Wiki" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Wiki" />
 		</execute>
 
 		<execute macro="WikiNode#viewCP">
@@ -1045,7 +980,11 @@
 			<var name="wikiNodeName" value="Wiki Node Name" />
 		</execute>
 
-		<execute macro="WikiPage#gotoCP">
+		<execute macro="Portlet#changeDisplayStyle">
+			<var name="displayStyle" value="Descriptive" />
+		</execute>
+
+		<execute macro="WikiNavigator#gotoCP">
 			<var name="wikiPageTitle" value="Wiki Page Title" />
 		</execute>
 
@@ -1056,18 +995,26 @@
 	</command>
 
 	<command name="RestoreDMDocumentFromFolderCP" priority="5">
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Documents and Media" />
-			<var name="siteScopeName" value="Site Name" />
+		<property name="portal.acceptance" value="true" />
+
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Documents and Media" />
 		</execute>
 
 		<execute macro="DMFolder#addCP">
 			<var name="dmFolderName" value="DM Folder Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Documents and Media" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Documents and Media" />
 		</execute>
 
 		<execute macro="DMFolder#gotoCP">
@@ -1079,9 +1026,12 @@
 			<var name="dmDocumentTitle" value="DM Document Title 1" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Documents and Media" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Documents and Media" />
 		</execute>
 
 		<execute macro="DMFolder#gotoCP">
@@ -1093,9 +1043,12 @@
 			<var name="dmDocumentTitle" value="DM Document Title 2" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Documents and Media" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Documents and Media" />
 		</execute>
 
 		<execute macro="DMFolder#gotoCP">
@@ -1107,9 +1060,12 @@
 			<var name="dmDocumentTitle" value="DM Document Title 3" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Documents and Media" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Documents and Media" />
 		</execute>
 
 		<execute macro="DMFolder#moveToRecycleBinCP">
@@ -1117,9 +1073,12 @@
 			<var name="dmFolderName" value="DM Folder Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#restoreContentFromFolderCP">
@@ -1130,12 +1089,15 @@
 			<var name="documentName" value="DM Document Title 2" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Documents and Media" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
 		</execute>
 
-		<execute macro="DMDocument#gotoCP">
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Documents and Media" />
+		</execute>
+
+		<execute macro="DMNavigator#gotoDocumentCP">
 			<var name="dmDocumentTitle" value="DM Document Title 2" />
 		</execute>
 
@@ -1145,9 +1107,12 @@
 	</command>
 
 	<command name="RestoreMessageboardsThreadViaRBCP" priority="3">
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Message Boards" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
 		</execute>
 
 		<execute macro="MessageboardsCategory#addCP">
@@ -1170,13 +1135,26 @@
 			<var name="threadSubject" value="MB Subject" />
 		</execute>
 
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
+		</execute>
+
 		<execute macro="MessageboardsCategory#deleteCP">
+			<var name="assetType" value="Message Boards Category" />
+			<var name="categoryName" value="MB Category Name" />
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#viewCP">
@@ -1191,29 +1169,35 @@
 			<var name="assetType" value="Message Boards Category" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Message Boards" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
 		</execute>
 
 		<execute macro="MessageboardsCategory#viewCP">
-			<var name="categoriesNumber" value="0" />
 			<var name="categoryName" value="MB Category Name" />
 			<var name="postsNumber" value="2" />
+			<var name="subcategoriesNumber" value="0" />
 			<var name="threadsNumber" value="1" />
 		</execute>
 
 		<execute macro="MessageboardsThread#viewCP">
-			<var name="mbAttachmentFile" value="Document_1.doc" />
+			<var name="mbAttachmentFile" value="1 Recently Removed Attachment" />
 			<var name="postsNumber" value="2" />
 			<var name="threadBody" value="MB Body" />
 			<var name="threadSubject" value="MB Subject" />
 			<var name="userName" value="Test Test" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Message Boards" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Message Boards" />
 		</execute>
 
 		<execute macro="MessageboardsCategory#gotoCP">
@@ -1222,7 +1206,6 @@
 		</execute>
 
 		<execute macro="MessageboardsThread#viewReplyCP">
-			<var name="mbAttachmentFile" value="Document_1.doc" />
 			<var name="postsNumber" value="2" />
 			<var name="threadBody" value="MB Body" />
 			<var name="threadBody2" value="MB Body Reply" />
@@ -1232,10 +1215,13 @@
 		</execute>
 	</command>
 
-	<command name="RestoreWebContentFromFolderCP" priority="4">
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+	<command name="RestoreWebContentFromFolderCP" priority="3">
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#addCP">
@@ -1243,9 +1229,12 @@
 			<var name="folderName" value="WC Folder Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#gotoCP">
@@ -1266,18 +1255,25 @@
 			<var name="webContentTitle" value="Web Content Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#moveToRecycleBinCP">
+			<var name="assetType" value="Web Content Folder" />
 			<var name="folderName" value="WC Folder Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#restoreContentFromFolderCP">
@@ -1288,13 +1284,16 @@
 			<var name="documentName" value="Web Content Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentNavigator#gotoEditCP">
-			<var name="webContentTitle" value="WC WebContent Title" />
+			<var name="webContentTitle" value="Web Content Title" />
 		</execute>
 
 		<execute macro="WebContent#viewCP">
@@ -1303,10 +1302,13 @@
 		</execute>
 	</command>
 
-	<command name="RestoreWebContentWithArticleVersions" priority="4">
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+	<command name="RestoreWebContentWithArticleVersions" priority="3">
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#addCP">
@@ -1314,9 +1316,12 @@
 			<var name="folderName" value="WC Folder Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#gotoCP">
@@ -1337,9 +1342,12 @@
 			<var name="webContentTitle" value="Web Content Title" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#gotoCP">
@@ -1357,9 +1365,12 @@
 			<var name="webContentTitleEdit" value="Web Content Title Edit 1" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#gotoCP">
@@ -1377,9 +1388,12 @@
 			<var name="webContentTitleEdit" value="Web Content Title Edit 2" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#gotoCP">
@@ -1397,9 +1411,12 @@
 			<var name="webContentTitleEdit" value="Web Content Title Edit 3" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#gotoCP">
@@ -1412,9 +1429,12 @@
 			<var name="webContentTitle" value="Web Content Title Edit 3" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#gotoCP">
@@ -1433,18 +1453,25 @@
 			<var name="webContentTitleEdit" value="Web Content Title Edit Draft" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#moveToRecycleBinCP">
+			<var name="assetType" value="Web Content Folder" />
 			<var name="folderName" value="WC Folder Name" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Recycle Bin" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Recycle Bin" />
 		</execute>
 
 		<execute macro="RecycleBin#restoreCP">
@@ -1453,9 +1480,12 @@
 			<var name="assetType" value="Web Content Folder" />
 		</execute>
 
-		<execute macro="Page#gotoContentCP">
-			<var name="portletName" value="Web Content" />
-			<var name="siteScopeName" value="Site Name" />
+		<execute macro="ProductMenu#gotoSite">
+			<var name="site" value="Site Name" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Web Content" />
 		</execute>
 
 		<execute macro="WebContentFolder#gotoCP">
@@ -1463,11 +1493,9 @@
 			<var name="webContentTitle" value="WC Folder Name" />
 		</execute>
 
-		<execute macro="WebContentNavigator#gotoEditCP">
+		<execute macro="WebContent#gotoViewSpecificVersionHistoryCP">
 			<var name="webContentTitle" value="Web Content Title Edit Draft" />
 		</execute>
-
-		<execute macro="WebContent#gotoViewSpecificVersionHistoryCP" />
 
 		<execute macro="WebContent#viewSpecificVersionHistoryCP">
 			<var name="webContentStatus" value="Approved" />

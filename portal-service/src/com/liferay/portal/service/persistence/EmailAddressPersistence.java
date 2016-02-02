@@ -16,6 +16,7 @@ package com.liferay.portal.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.exception.NoSuchEmailAddressException;
 import com.liferay.portal.model.EmailAddress;
 
 /**
@@ -79,6 +80,25 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the email addresses where uuid = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmailAddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param start the lower bound of the range of email addresses
+	* @param end the upper bound of the range of email addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching email addresses
+	*/
+	public java.util.List<EmailAddress> findByUuid(java.lang.String uuid,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first email address in the ordered set where uuid = &#63;.
 	*
 	* @param uuid the uuid
@@ -88,7 +108,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	*/
 	public EmailAddress findByUuid_First(java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the first email address in the ordered set where uuid = &#63;.
@@ -110,7 +130,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	*/
 	public EmailAddress findByUuid_Last(java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the last email address in the ordered set where uuid = &#63;.
@@ -134,7 +154,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress[] findByUuid_PrevAndNext(long emailAddressId,
 		java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Removes all the email addresses where uuid = &#63; from the database.
@@ -196,6 +216,26 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the email addresses where uuid = &#63; and companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmailAddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param uuid the uuid
+	* @param companyId the company ID
+	* @param start the lower bound of the range of email addresses
+	* @param end the upper bound of the range of email addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching email addresses
+	*/
+	public java.util.List<EmailAddress> findByUuid_C(java.lang.String uuid,
+		long companyId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first email address in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
 	* @param uuid the uuid
@@ -207,7 +247,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress findByUuid_C_First(java.lang.String uuid,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the first email address in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -233,7 +273,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress findByUuid_C_Last(java.lang.String uuid,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the last email address in the ordered set where uuid = &#63; and companyId = &#63;.
@@ -260,7 +300,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress[] findByUuid_C_PrevAndNext(long emailAddressId,
 		java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Removes all the email addresses where uuid = &#63; and companyId = &#63; from the database.
@@ -320,6 +360,25 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the email addresses where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmailAddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of email addresses
+	* @param end the upper bound of the range of email addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching email addresses
+	*/
+	public java.util.List<EmailAddress> findByCompanyId(long companyId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first email address in the ordered set where companyId = &#63;.
 	*
 	* @param companyId the company ID
@@ -329,7 +388,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	*/
 	public EmailAddress findByCompanyId_First(long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the first email address in the ordered set where companyId = &#63;.
@@ -351,7 +410,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	*/
 	public EmailAddress findByCompanyId_Last(long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the last email address in the ordered set where companyId = &#63;.
@@ -375,7 +434,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress[] findByCompanyId_PrevAndNext(long emailAddressId,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Removes all the email addresses where companyId = &#63; from the database.
@@ -433,6 +492,25 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the email addresses where userId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmailAddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param start the lower bound of the range of email addresses
+	* @param end the upper bound of the range of email addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching email addresses
+	*/
+	public java.util.List<EmailAddress> findByUserId(long userId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first email address in the ordered set where userId = &#63;.
 	*
 	* @param userId the user ID
@@ -442,7 +520,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	*/
 	public EmailAddress findByUserId_First(long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the first email address in the ordered set where userId = &#63;.
@@ -464,7 +542,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	*/
 	public EmailAddress findByUserId_Last(long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the last email address in the ordered set where userId = &#63;.
@@ -488,7 +566,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress[] findByUserId_PrevAndNext(long emailAddressId,
 		long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Removes all the email addresses where userId = &#63; from the database.
@@ -550,6 +628,26 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the email addresses where companyId = &#63; and classNameId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmailAddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param classNameId the class name ID
+	* @param start the lower bound of the range of email addresses
+	* @param end the upper bound of the range of email addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching email addresses
+	*/
+	public java.util.List<EmailAddress> findByC_C(long companyId,
+		long classNameId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first email address in the ordered set where companyId = &#63; and classNameId = &#63;.
 	*
 	* @param companyId the company ID
@@ -560,7 +658,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	*/
 	public EmailAddress findByC_C_First(long companyId, long classNameId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the first email address in the ordered set where companyId = &#63; and classNameId = &#63;.
@@ -584,7 +682,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	*/
 	public EmailAddress findByC_C_Last(long companyId, long classNameId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the last email address in the ordered set where companyId = &#63; and classNameId = &#63;.
@@ -610,7 +708,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress[] findByC_C_PrevAndNext(long emailAddressId,
 		long companyId, long classNameId,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Removes all the email addresses where companyId = &#63; and classNameId = &#63; from the database.
@@ -677,6 +775,27 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the email addresses where companyId = &#63; and classNameId = &#63; and classPK = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmailAddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param classNameId the class name ID
+	* @param classPK the class p k
+	* @param start the lower bound of the range of email addresses
+	* @param end the upper bound of the range of email addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching email addresses
+	*/
+	public java.util.List<EmailAddress> findByC_C_C(long companyId,
+		long classNameId, long classPK, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first email address in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63;.
 	*
 	* @param companyId the company ID
@@ -689,7 +808,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress findByC_C_C_First(long companyId, long classNameId,
 		long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the first email address in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63;.
@@ -717,7 +836,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress findByC_C_C_Last(long companyId, long classNameId,
 		long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the last email address in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63;.
@@ -746,7 +865,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress[] findByC_C_C_PrevAndNext(long emailAddressId,
 		long companyId, long classNameId, long classPK,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Removes all the email addresses where companyId = &#63; and classNameId = &#63; and classPK = &#63; from the database.
@@ -818,6 +937,28 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the email addresses where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmailAddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param classNameId the class name ID
+	* @param classPK the class p k
+	* @param primary the primary
+	* @param start the lower bound of the range of email addresses
+	* @param end the upper bound of the range of email addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching email addresses
+	*/
+	public java.util.List<EmailAddress> findByC_C_C_P(long companyId,
+		long classNameId, long classPK, boolean primary, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Returns the first email address in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63;.
 	*
 	* @param companyId the company ID
@@ -831,7 +972,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress findByC_C_C_P_First(long companyId, long classNameId,
 		long classPK, boolean primary,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the first email address in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63;.
@@ -861,7 +1002,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress findByC_C_C_P_Last(long companyId, long classNameId,
 		long classPK, boolean primary,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the last email address in the ordered set where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63;.
@@ -892,7 +1033,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	public EmailAddress[] findByC_C_C_P_PrevAndNext(long emailAddressId,
 		long companyId, long classNameId, long classPK, boolean primary,
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Removes all the email addresses where companyId = &#63; and classNameId = &#63; and classPK = &#63; and primary = &#63; from the database.
@@ -947,7 +1088,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	* @throws NoSuchEmailAddressException if a email address with the primary key could not be found
 	*/
 	public EmailAddress remove(long emailAddressId)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	public EmailAddress updateImpl(EmailAddress emailAddress);
 
@@ -959,7 +1100,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	* @throws NoSuchEmailAddressException if a email address with the primary key could not be found
 	*/
 	public EmailAddress findByPrimaryKey(long emailAddressId)
-		throws com.liferay.portal.NoSuchEmailAddressException;
+		throws NoSuchEmailAddressException;
 
 	/**
 	* Returns the email address with the primary key or returns <code>null</code> if it could not be found.
@@ -1009,6 +1150,23 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator);
 
 	/**
+	* Returns an ordered range of all the email addresses.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmailAddressModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param start the lower bound of the range of email addresses
+	* @param end the upper bound of the range of email addresses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of email addresses
+	*/
+	public java.util.List<EmailAddress> findAll(int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<EmailAddress> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
 	* Removes all the email addresses from the database.
 	*/
 	public void removeAll();
@@ -1019,4 +1177,7 @@ public interface EmailAddressPersistence extends BasePersistence<EmailAddress> {
 	* @return the number of email addresses
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<java.lang.String> getBadColumnNames();
 }

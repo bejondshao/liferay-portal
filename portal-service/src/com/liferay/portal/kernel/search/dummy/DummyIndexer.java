@@ -22,8 +22,8 @@ import com.liferay.portal.kernel.search.IndexerPostProcessor;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.security.permission.PermissionChecker;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -148,6 +148,11 @@ public class DummyIndexer implements Indexer<Object> {
 	}
 
 	@Override
+	public boolean isIndexerEnabled() {
+		return false;
+	}
+
+	@Override
 	public boolean isPermissionAware() {
 		return false;
 	}
@@ -241,6 +246,10 @@ public class DummyIndexer implements Indexer<Object> {
 	@Override
 	public long searchCount(SearchContext searchContext) {
 		return 0;
+	}
+
+	@Override
+	public void setIndexerEnabled(boolean indexerEnabled) {
 	}
 
 	@Override

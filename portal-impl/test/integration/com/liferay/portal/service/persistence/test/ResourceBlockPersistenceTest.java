@@ -14,7 +14,7 @@
 
 package com.liferay.portal.service.persistence.test;
 
-import com.liferay.portal.NoSuchResourceBlockException;
+import com.liferay.portal.exception.NoSuchResourceBlockException;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
@@ -41,6 +41,7 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -57,8 +58,9 @@ import java.util.Set;
  * @generated
  */
 public class ResourceBlockPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -311,11 +313,9 @@ public class ResourceBlockPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = ResourceBlockLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<ResourceBlock>() {
 				@Override
-				public void performAction(Object object) {
-					ResourceBlock resourceBlock = (ResourceBlock)object;
-
+				public void performAction(ResourceBlock resourceBlock) {
 					Assert.assertNotNull(resourceBlock);
 
 					count.increment();

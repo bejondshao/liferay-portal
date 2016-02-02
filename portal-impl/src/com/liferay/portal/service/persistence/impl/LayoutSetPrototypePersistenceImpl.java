@@ -16,8 +16,11 @@ package com.liferay.portal.service.persistence.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.NoSuchLayoutSetPrototypeException;
+import com.liferay.portal.exception.NoSuchLayoutSetPrototypeException;
+import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
+import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Query;
@@ -27,6 +30,7 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -38,9 +42,10 @@ import com.liferay.portal.model.LayoutSetPrototype;
 import com.liferay.portal.model.MVCCModel;
 import com.liferay.portal.model.impl.LayoutSetPrototypeImpl;
 import com.liferay.portal.model.impl.LayoutSetPrototypeModelImpl;
-import com.liferay.portal.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextThreadLocal;
+import com.liferay.portal.service.persistence.CompanyProvider;
+import com.liferay.portal.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.service.persistence.LayoutSetPrototypePersistence;
 
 import java.io.Serializable;
@@ -155,6 +160,27 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	@Override
 	public List<LayoutSetPrototype> findByUuid(String uuid, int start, int end,
 		OrderByComparator<LayoutSetPrototype> orderByComparator) {
+		return findByUuid(uuid, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the layout set prototypes where uuid = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link LayoutSetPrototypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param uuid the uuid
+	 * @param start the lower bound of the range of layout set prototypes
+	 * @param end the upper bound of the range of layout set prototypes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching layout set prototypes
+	 */
+	@Override
+	public List<LayoutSetPrototype> findByUuid(String uuid, int start, int end,
+		OrderByComparator<LayoutSetPrototype> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -170,15 +196,19 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 			finderArgs = new Object[] { uuid, start, end, orderByComparator };
 		}
 
-		List<LayoutSetPrototype> list = (List<LayoutSetPrototype>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<LayoutSetPrototype> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (LayoutSetPrototype layoutSetPrototype : list) {
-				if (!Validator.equals(uuid, layoutSetPrototype.getUuid())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<LayoutSetPrototype>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (LayoutSetPrototype layoutSetPrototype : list) {
+					if (!Validator.equals(uuid, layoutSetPrototype.getUuid())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -188,7 +218,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -249,10 +279,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -419,8 +449,9 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -585,10 +616,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		if (orderByComparator != null) {
 			query = new StringBundler(3 +
-					(orderByComparator.getOrderByFields().length * 3));
+					(orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -723,11 +754,12 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -896,8 +928,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		Object[] finderArgs = new Object[] { uuid };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -935,10 +966,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1091,6 +1122,29 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	public List<LayoutSetPrototype> findByUuid_C(String uuid, long companyId,
 		int start, int end,
 		OrderByComparator<LayoutSetPrototype> orderByComparator) {
+		return findByUuid_C(uuid, companyId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the layout set prototypes where uuid = &#63; and companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link LayoutSetPrototypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param uuid the uuid
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of layout set prototypes
+	 * @param end the upper bound of the range of layout set prototypes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching layout set prototypes
+	 */
+	@Override
+	public List<LayoutSetPrototype> findByUuid_C(String uuid, long companyId,
+		int start, int end,
+		OrderByComparator<LayoutSetPrototype> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -1110,16 +1164,20 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 				};
 		}
 
-		List<LayoutSetPrototype> list = (List<LayoutSetPrototype>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<LayoutSetPrototype> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (LayoutSetPrototype layoutSetPrototype : list) {
-				if (!Validator.equals(uuid, layoutSetPrototype.getUuid()) ||
-						(companyId != layoutSetPrototype.getCompanyId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<LayoutSetPrototype>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (LayoutSetPrototype layoutSetPrototype : list) {
+					if (!Validator.equals(uuid, layoutSetPrototype.getUuid()) ||
+							(companyId != layoutSetPrototype.getCompanyId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -1129,7 +1187,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 			if (orderByComparator != null) {
 				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -1194,10 +1252,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1376,11 +1434,12 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		query.append(_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE);
@@ -1552,10 +1611,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		if (orderByComparator != null) {
 			query = new StringBundler(4 +
-					(orderByComparator.getOrderByFields().length * 3));
+					(orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
-			query = new StringBundler(4);
+			query = new StringBundler(5);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -1698,10 +1757,11 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		if (orderByComparator != null) {
 			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(5);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -1876,8 +1936,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		Object[] finderArgs = new Object[] { uuid, companyId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(3);
@@ -1919,10 +1978,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -2077,6 +2136,27 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	@Override
 	public List<LayoutSetPrototype> findByCompanyId(long companyId, int start,
 		int end, OrderByComparator<LayoutSetPrototype> orderByComparator) {
+		return findByCompanyId(companyId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the layout set prototypes where companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link LayoutSetPrototypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of layout set prototypes
+	 * @param end the upper bound of the range of layout set prototypes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching layout set prototypes
+	 */
+	@Override
+	public List<LayoutSetPrototype> findByCompanyId(long companyId, int start,
+		int end, OrderByComparator<LayoutSetPrototype> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -2092,15 +2172,19 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 			finderArgs = new Object[] { companyId, start, end, orderByComparator };
 		}
 
-		List<LayoutSetPrototype> list = (List<LayoutSetPrototype>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<LayoutSetPrototype> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (LayoutSetPrototype layoutSetPrototype : list) {
-				if ((companyId != layoutSetPrototype.getCompanyId())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<LayoutSetPrototype>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (LayoutSetPrototype layoutSetPrototype : list) {
+					if ((companyId != layoutSetPrototype.getCompanyId())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -2110,7 +2194,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 			if (orderByComparator != null) {
 				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -2157,10 +2241,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -2328,8 +2412,9 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
 			query = new StringBundler(3);
@@ -2482,10 +2567,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		if (orderByComparator != null) {
 			query = new StringBundler(3 +
-					(orderByComparator.getOrderByFields().length * 3));
+					(orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -2606,11 +2691,12 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -2765,8 +2851,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		Object[] finderArgs = new Object[] { companyId };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(2);
@@ -2790,10 +2875,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -2926,6 +3011,29 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	public List<LayoutSetPrototype> findByC_A(long companyId, boolean active,
 		int start, int end,
 		OrderByComparator<LayoutSetPrototype> orderByComparator) {
+		return findByC_A(companyId, active, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the layout set prototypes where companyId = &#63; and active = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link LayoutSetPrototypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param start the lower bound of the range of layout set prototypes
+	 * @param end the upper bound of the range of layout set prototypes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching layout set prototypes
+	 */
+	@Override
+	public List<LayoutSetPrototype> findByC_A(long companyId, boolean active,
+		int start, int end,
+		OrderByComparator<LayoutSetPrototype> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -2945,16 +3053,20 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 				};
 		}
 
-		List<LayoutSetPrototype> list = (List<LayoutSetPrototype>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<LayoutSetPrototype> list = null;
 
-		if ((list != null) && !list.isEmpty()) {
-			for (LayoutSetPrototype layoutSetPrototype : list) {
-				if ((companyId != layoutSetPrototype.getCompanyId()) ||
-						(active != layoutSetPrototype.getActive())) {
-					list = null;
+		if (retrieveFromCache) {
+			list = (List<LayoutSetPrototype>)finderCache.getResult(finderPath,
+					finderArgs, this);
 
-					break;
+			if ((list != null) && !list.isEmpty()) {
+				for (LayoutSetPrototype layoutSetPrototype : list) {
+					if ((companyId != layoutSetPrototype.getCompanyId()) ||
+							(active != layoutSetPrototype.getActive())) {
+						list = null;
+
+						break;
+					}
 				}
 			}
 		}
@@ -2964,7 +3076,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 			if (orderByComparator != null) {
 				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -3015,10 +3127,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -3197,11 +3309,12 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(4);
 		}
 
 		query.append(_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE);
@@ -3359,10 +3472,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		if (orderByComparator != null) {
 			query = new StringBundler(4 +
-					(orderByComparator.getOrderByFields().length * 3));
+					(orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
-			query = new StringBundler(4);
+			query = new StringBundler(5);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -3489,10 +3602,11 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		if (orderByComparator != null) {
 			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(3);
+			query = new StringBundler(5);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -3653,8 +3767,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		Object[] finderArgs = new Object[] { companyId, active };
 
-		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
-				this);
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler query = new StringBundler(3);
@@ -3682,10 +3795,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				finderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -3765,7 +3878,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	 */
 	@Override
 	public void cacheResult(LayoutSetPrototype layoutSetPrototype) {
-		EntityCacheUtil.putResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.putResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
 			LayoutSetPrototypeImpl.class, layoutSetPrototype.getPrimaryKey(),
 			layoutSetPrototype);
 
@@ -3780,7 +3893,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	@Override
 	public void cacheResult(List<LayoutSetPrototype> layoutSetPrototypes) {
 		for (LayoutSetPrototype layoutSetPrototype : layoutSetPrototypes) {
-			if (EntityCacheUtil.getResult(
+			if (entityCache.getResult(
 						LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
 						LayoutSetPrototypeImpl.class,
 						layoutSetPrototype.getPrimaryKey()) == null) {
@@ -3796,41 +3909,41 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	 * Clears the cache for all layout set prototypes.
 	 *
 	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache() {
-		EntityCacheUtil.clearCache(LayoutSetPrototypeImpl.class);
+		entityCache.clearCache(LayoutSetPrototypeImpl.class);
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
 	/**
 	 * Clears the cache for the layout set prototype.
 	 *
 	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache(LayoutSetPrototype layoutSetPrototype) {
-		EntityCacheUtil.removeResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.removeResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
 			LayoutSetPrototypeImpl.class, layoutSetPrototype.getPrimaryKey());
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
 	@Override
 	public void clearCache(List<LayoutSetPrototype> layoutSetPrototypes) {
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
 		for (LayoutSetPrototype layoutSetPrototype : layoutSetPrototypes) {
-			EntityCacheUtil.removeResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
+			entityCache.removeResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
 				LayoutSetPrototypeImpl.class, layoutSetPrototype.getPrimaryKey());
 		}
 	}
@@ -3851,6 +3964,8 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		String uuid = PortalUUIDUtil.generate();
 
 		layoutSetPrototype.setUuid(uuid);
+
+		layoutSetPrototype.setCompanyId(companyProvider.getCompanyId());
 
 		return layoutSetPrototype;
 	}
@@ -4000,10 +4115,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 			closeSession(session);
 		}
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 
 		if (isNew || !LayoutSetPrototypeModelImpl.COLUMN_BITMASK_ENABLED) {
-			FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 		}
 
 		else {
@@ -4013,14 +4128,14 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 						layoutSetPrototypeModelImpl.getOriginalUuid()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
 					args);
 
 				args = new Object[] { layoutSetPrototypeModelImpl.getUuid() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
 					args);
 			}
 
@@ -4031,8 +4146,8 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 						layoutSetPrototypeModelImpl.getOriginalCompanyId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 					args);
 
 				args = new Object[] {
@@ -4040,8 +4155,8 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 						layoutSetPrototypeModelImpl.getCompanyId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 					args);
 			}
 
@@ -4051,16 +4166,14 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 						layoutSetPrototypeModelImpl.getOriginalCompanyId()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
-					args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_COMPANYID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
 					args);
 
 				args = new Object[] { layoutSetPrototypeModelImpl.getCompanyId() };
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
-					args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_COMPANYID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
 					args);
 			}
 
@@ -4071,8 +4184,8 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 						layoutSetPrototypeModelImpl.getOriginalActive()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_A, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_A,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_C_A, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_A,
 					args);
 
 				args = new Object[] {
@@ -4080,13 +4193,13 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 						layoutSetPrototypeModelImpl.getActive()
 					};
 
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_A, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_A,
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_C_A, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_A,
 					args);
 			}
 		}
 
-		EntityCacheUtil.putResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.putResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
 			LayoutSetPrototypeImpl.class, layoutSetPrototype.getPrimaryKey(),
 			layoutSetPrototype, false);
 
@@ -4118,13 +4231,12 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		layoutSetPrototypeImpl.setDescription(layoutSetPrototype.getDescription());
 		layoutSetPrototypeImpl.setSettings(layoutSetPrototype.getSettings());
 		layoutSetPrototypeImpl.setActive(layoutSetPrototype.isActive());
-		layoutSetPrototypeImpl.setLastPublishDate(layoutSetPrototype.getLastPublishDate());
 
 		return layoutSetPrototypeImpl;
 	}
 
 	/**
-	 * Returns the layout set prototype with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
+	 * Returns the layout set prototype with the primary key or throws a {@link com.liferay.portal.exception.NoSuchModelException} if it could not be found.
 	 *
 	 * @param primaryKey the primary key of the layout set prototype
 	 * @return the layout set prototype
@@ -4168,7 +4280,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	 */
 	@Override
 	public LayoutSetPrototype fetchByPrimaryKey(Serializable primaryKey) {
-		LayoutSetPrototype layoutSetPrototype = (LayoutSetPrototype)EntityCacheUtil.getResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
+		LayoutSetPrototype layoutSetPrototype = (LayoutSetPrototype)entityCache.getResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
 				LayoutSetPrototypeImpl.class, primaryKey);
 
 		if (layoutSetPrototype == _nullLayoutSetPrototype) {
@@ -4188,13 +4300,13 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 					cacheResult(layoutSetPrototype);
 				}
 				else {
-					EntityCacheUtil.putResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
+					entityCache.putResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
 						LayoutSetPrototypeImpl.class, primaryKey,
 						_nullLayoutSetPrototype);
 				}
 			}
 			catch (Exception e) {
-				EntityCacheUtil.removeResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
+				entityCache.removeResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
 					LayoutSetPrototypeImpl.class, primaryKey);
 
 				throw processException(e);
@@ -4244,7 +4356,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			LayoutSetPrototype layoutSetPrototype = (LayoutSetPrototype)EntityCacheUtil.getResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
+			LayoutSetPrototype layoutSetPrototype = (LayoutSetPrototype)entityCache.getResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
 					LayoutSetPrototypeImpl.class, primaryKey);
 
 			if (layoutSetPrototype == null) {
@@ -4297,7 +4409,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 			}
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
-				EntityCacheUtil.putResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
+				entityCache.putResult(LayoutSetPrototypeModelImpl.ENTITY_CACHE_ENABLED,
 					LayoutSetPrototypeImpl.class, primaryKey,
 					_nullLayoutSetPrototype);
 			}
@@ -4353,6 +4465,26 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	@Override
 	public List<LayoutSetPrototype> findAll(int start, int end,
 		OrderByComparator<LayoutSetPrototype> orderByComparator) {
+		return findAll(start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the layout set prototypes.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link LayoutSetPrototypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param start the lower bound of the range of layout set prototypes
+	 * @param end the upper bound of the range of layout set prototypes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of layout set prototypes
+	 */
+	@Override
+	public List<LayoutSetPrototype> findAll(int start, int end,
+		OrderByComparator<LayoutSetPrototype> orderByComparator,
+		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -4368,8 +4500,12 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 			finderArgs = new Object[] { start, end, orderByComparator };
 		}
 
-		List<LayoutSetPrototype> list = (List<LayoutSetPrototype>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
+		List<LayoutSetPrototype> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<LayoutSetPrototype>)finderCache.getResult(finderPath,
+					finderArgs, this);
+		}
 
 		if (list == null) {
 			StringBundler query = null;
@@ -4377,7 +4513,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 			if (orderByComparator != null) {
 				query = new StringBundler(2 +
-						(orderByComparator.getOrderByFields().length * 3));
+						(orderByComparator.getOrderByFields().length * 2));
 
 				query.append(_SQL_SELECT_LAYOUTSETPROTOTYPE);
 
@@ -4416,10 +4552,10 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 				cacheResult(list);
 
-				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(finderPath, finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -4449,7 +4585,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	 */
 	@Override
 	public int countAll() {
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
+		Long count = (Long)finderCache.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
@@ -4462,11 +4598,11 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 				count = (Long)q.uniqueResult();
 
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL,
-					FINDER_ARGS_EMPTY, count);
+				finderCache.putResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY,
+					count);
 			}
 			catch (Exception e) {
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_ALL,
+				finderCache.removeResult(FINDER_PATH_COUNT_ALL,
 					FINDER_ARGS_EMPTY);
 
 				throw processException(e);
@@ -4480,7 +4616,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
 	}
 
@@ -4496,12 +4632,16 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	}
 
 	public void destroy() {
-		EntityCacheUtil.removeCache(LayoutSetPrototypeImpl.class.getName());
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		entityCache.removeCache(LayoutSetPrototypeImpl.class.getName());
+		finderCache.removeCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	@BeanReference(type = CompanyProviderWrapper.class)
+	protected CompanyProvider companyProvider;
+	protected EntityCache entityCache = EntityCacheUtil.getEntityCache();
+	protected FinderCache finderCache = FinderCacheUtil.getFinderCache();
 	private static final String _SQL_SELECT_LAYOUTSETPROTOTYPE = "SELECT layoutSetPrototype FROM LayoutSetPrototype layoutSetPrototype";
 	private static final String _SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE_PKS_IN = "SELECT layoutSetPrototype FROM LayoutSetPrototype layoutSetPrototype WHERE layoutSetPrototypeId IN (";
 	private static final String _SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE = "SELECT layoutSetPrototype FROM LayoutSetPrototype layoutSetPrototype WHERE ";
